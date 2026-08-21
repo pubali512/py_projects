@@ -14,8 +14,8 @@ class ControlBar(tk.Frame):
     """
 
     BG_COLOR = "#f5f5f5"
-    CONNECT_COLOR = "#4CAF50"
-    DISCONNECT_COLOR = "#e53935"
+    CONNECT_COLOR = "#88D18A"
+    DISCONNECT_COLOR = "#f08381"
 
     def __init__(self, parent: tk.Widget, on_connect: callable, on_disconnect: callable):
         """Args:
@@ -36,7 +36,7 @@ class ControlBar(tk.Frame):
             text="Connect 🟢",
             command=self._on_connect,
             bg=self.CONNECT_COLOR,
-            fg="white",
+            fg="black",
             activebackground="#388E3C",
             relief=tk.FLAT,
             padx=12,
@@ -50,7 +50,7 @@ class ControlBar(tk.Frame):
             text="Disconnect 🔴",
             command=self._on_disconnect,
             bg=self.DISCONNECT_COLOR,
-            fg="white",
+            fg="black",
             activebackground="#b71c1c",
             relief=tk.FLAT,
             padx=12,

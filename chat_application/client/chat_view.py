@@ -11,8 +11,8 @@ class ChatView(tk.Frame):
         3C  Input bar      - text entry + Send button, bound to the Enter key.
 
     Message rendering uses tk.Text tags to align and color messages:
-        own_bubble     Right-indented, light-green background.
-        other_bubble   Left-indented, light-gray background.
+        own_bubble     Light-gray background.
+        other_bubble   Light-green background.
         system_msg     Centered, italic, muted gray - for SYS notifications.
         name_own       Bold green username label for own messages.
         name_other     Bold blue username label for others' messages.
@@ -23,8 +23,8 @@ class ChatView(tk.Frame):
     """
 
     BG_CHAT = "#ffffff"
-    BG_OWN = "#DCF8C6"
-    BG_OTHER = "#f0f0f0"
+    BG_OWN = "#f0f0f0"
+    BG_OTHER = "#DCF8C6"
     COLOR_SYS = "#9e9e9e"
     COLOR_NAME_OWN = "#1b5e20"
     COLOR_NAME_OTHER = "#0d47a1"
@@ -98,8 +98,8 @@ class ChatView(tk.Frame):
             input_frame,
             text="Send 🚀",
             command=self.on_send_clicked,
-            bg="#1976D2",
-            fg="white",
+            bg="#8DAFD2",
+            fg="black",
             activebackground="#0D47A1",
             relief=tk.FLAT,
             padx=12,
@@ -131,9 +131,9 @@ class ChatView(tk.Frame):
         self._text_area.tag_configure(
             "other_bubble",
             background=self.BG_OTHER,
-            lmargin1=10,
-            lmargin2=10,
-            rmargin=100,
+            lmargin1=100,
+            lmargin2=100,
+            rmargin=10,
             spacing3=4,
         )
         self._text_area.tag_configure(
