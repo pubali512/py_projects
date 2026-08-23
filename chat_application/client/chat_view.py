@@ -30,18 +30,29 @@ class ChatView(tk.Frame):
     COLOR_NAME_OTHER = "#0d47a1"
     COLOR_TIMESTAMP = "#aaaaaa"
 
-    def __init__(self, parent: tk.Widget, on_send_callback: callable):
-        """Args:
-            parent: Parent Tkinter widget.
-            on_send_callback: Callback(text: str) invoked with message text on send.
+    def __init__(self, parent: tk.Widget, on_send_callback: callable) -> None:
+        """
+        Initialize the chat view with its parent widget and send callback.
+
+        :param parent: Parent Tkinter widget.
+        :type parent: tk.Widget
+        :param on_send_callback: Callback(text: str) invoked with message text on send.
+        :type on_send_callback: callable
+        :return: None
+        :rtype: None
         """
         super().__init__(parent, bg=self.BG_CHAT)
         self._on_send = on_send_callback
         self._own_username: str = None
         self.build_widgets()
 
-    def build_widgets(self):
-        """Construct header, chat history Text widget with scrollbar, and input bar."""
+    def build_widgets(self) -> None:
+        """
+        Construct header, chat history Text widget with scrollbar, and input bar.
+
+        :return: None
+        :rtype: None
+        """
         # 3A Header
         self._header_label = tk.Label(
             self,
@@ -109,8 +120,13 @@ class ChatView(tk.Frame):
         )
         self._send_btn.pack(side=tk.RIGHT, padx=(0, 10))
 
-    def configure_tags(self):
-        """Set up Text widget tags for message styling."""
+    def configure_tags(self) -> None:
+        """
+        Set up Text widget tags for message styling.
+
+        :return: None
+        :rtype: None
+        """
         self._text_area.tag_configure(
             "name_own", font=("Arial", 9, "bold"), foreground=self.COLOR_NAME_OWN
         )
@@ -147,10 +163,10 @@ class ChatView(tk.Frame):
 
     # Event handlers
 
-    def on_enter_pressed(self, _event):
+    def on_enter_pressed(self, _event) -> None:
         self.on_send_clicked()
 
-    def on_send_clicked(self):
+    def on_send_clicked(self) -> None:
         text = self._message_var.get().strip()
         if text:
             self._on_send(text)
@@ -160,43 +176,58 @@ class ChatView(tk.Frame):
 
     @property
     def header(self) -> str:
-        """The text currently shown in the channel/DM header label."""
+        """
+        The text currently shown in the channel/DM header label.
+        """
         return self._header_label.cget("text")
 
     @header.setter
-    def header(self, title: str):
-        """Update the channel/DM header label.
+    def header(self, title: str) -> None:
+        """
+        Update the channel/DM header label.
 
-        Args:
-            title: New header text (e.g., '📢 BROADCAST CHANNEL' or '💬 Private Chat with @Bob').
+        :param title: New header text (e.g., '📢 BROADCAST CHANNEL' or '💬 Private Chat with @Bob').
+        :type title: str
+        :return: None
+        :rtype: None
         """
         self._header_label.config(text=title)
 
     @property
     def own_username(self) -> str:
-        """The local user's handle used for message alignment."""
+        """
+        The local user's handle used for message alignment.
+        """
         return self._own_username
 
     @own_username.setter
-    def own_username(self, username: str):
-        """Set the local user's username for message alignment.
+    def own_username(self, username: str) -> None:
+        """
+        Set the local user's username for message alignment.
 
-        Args:
-            username: The authenticated username of the local user.
+        :param username: The authenticated username of the local user.
+        :type username: str
+        :return: None
+        :rtype: None
         """
         self._own_username = username
 
     @property
     def input_enabled(self) -> bool:
-        """True when the input entry and send button are active."""
+        """
+        True when the input entry and send button are active.
+        """
         return self._input_entry["state"] == str(tk.NORMAL)
 
     @input_enabled.setter
-    def input_enabled(self, enabled: bool):
-        """Enable or disable the message input entry and send button.
+    def input_enabled(self, enabled: bool) -> None:
+        """
+        Enable or disable the message input entry and send button.
 
-        Args:
-            enabled: True to allow sending, False to disable (e.g., when offline).
+        :param enabled: True to allow sending, False to disable (e.g., when offline).
+        :type enabled: bool
+        :return: None
+        :rtype: None
         """
         state = tk.NORMAL if enabled else tk.DISABLED
         self._input_entry.config(state=state)
@@ -204,14 +235,20 @@ class ChatView(tk.Frame):
 
     # Public methods
 
-    def add_message(self, sender: str, text: str, timestamp: str, is_system: bool = False):
-        """Append a single message entry to the history area.
+    def add_message(self, sender: str, text: str, timestamp: str, is_system: bool = False) -> None:
+        """
+        Append a single message entry to the history area.
 
-        Args:
-            sender: Username of the message author.
-            text: Message body.
-            timestamp: ISO-8601 timestamp string.
-            is_system: True for SYS-type notifications (centered, italic style).
+        :param sender: Username of the message author.
+        :type sender: str
+        :param text: Message body.
+        :type text: str
+        :param timestamp: ISO-8601 timestamp string.
+        :type timestamp: str
+        :param is_system: True for SYS-type notifications (centered, italic style).
+        :type is_system: bool
+        :return: None
+        :rtype: None
         """
         self._text_area.config(state=tk.NORMAL)
 
@@ -231,17 +268,25 @@ class ChatView(tk.Frame):
         self._text_area.config(state=tk.DISABLED)
         self._text_area.see(tk.END)
 
-    def clear(self):
-        """Remove all messages from the history display."""
+    def clear(self) -> None:
+        """
+        Remove all messages from the history display.
+
+        :return: None
+        :rtype: None
+        """
         self._text_area.config(state=tk.NORMAL)
         self._text_area.delete("1.0", tk.END)
         self._text_area.config(state=tk.DISABLED)
 
-    def load_history(self, messages: list):
-        """Clear the view and render a list of stored message dicts.
+    def load_history(self, messages: list) -> None:
+        """
+        Clear the view and render a list of stored message dicts.
 
-        Args:
-            messages: List of message payload dicts (MSG or SYS type).
+        :param messages: List of message payload dicts (MSG or SYS type).
+        :type messages: list
+        :return: None
+        :rtype: None
         """
         self.clear()
         for msg in messages:

@@ -141,7 +141,7 @@ Applied by both client input pre-checks and server handshake verification:
      * `user_<username>.json`: Stores private direct message history for each handle, ensuring full conversation logs are restored upon future logins.
 
 --- 
-# TASKS 
+# TASKS (1)
 
 - Read the specification above and understand the requirements. If you have any questions, ask them **one by one** before starting the implementation. Do not start implementing until all questions are answered and you have a clear understanding of the requirements - Implement the design when you have understood the requirements and have a clear plan. 
 
@@ -152,4 +152,41 @@ Applied by both client input pre-checks and server handshake verification:
 - Once implementation is done, ask the user to test the application and provide feedback. If there are any issues, fix them and ask the user to test again. Repeat this process until the user is satisfied with the application. 
 - After each iteration of implementation or getting answer to a question or completing a task, **keep the session alive** using the *ask_questions* tool. **Do not close the session**. 
 
+--- 
+# TASKS (2)
 
+The comments are very verbose and mechanical. They need to be rewritten in a more human style. Rewrite 
+the docstrings in a more human style with the following guidelines: 
+
+- Avoid adding description even for obvious methods. For example, for the following method there is no need to add the `        Set up the server socket configuration and initialize all shared services.` description. (*DO NOT REMOVE THE parameter docstrings - only the obvious method descriptions*) 
+
+``` python 
+    def __init__(self, host: str, port: int) -> None:
+        """
+        Set up the server socket configuration and initialize all shared services.
+
+        :param host: Hostname or IP address to bind to (e.g., 'localhost').
+        :type host: str
+        :param port: TCP port number to listen on (e.g., 5555).
+        :type port: int
+        :return: None
+        :rtype: None
+        """
+```
+
+- Avoid complex jargon and technical terms. 
+
+   - Instead of `Persist a broadcast message to broadcast.json.` use `Save a broadcast message to broadcast.json.` (e.g. save instead of persist, load instead of retrieve, etc.)
+
+
+- Simpler grammar and sentence structure.
+   - Instead of `Append a single message dict to a log file, creating it if needed` use `Add a message to a log file. Create the file if it doesn't exist.`
+
+- Use inconsistent and mixed styles in a couple of different files 
+   - e.g. `Do X and return Y` can be written as 
+      - `X is done and Y returned`. e.g, `Message is added to a log file. File is created if it doesn't exist.` 
+      - `This method does X and returns Y` (`The method adds a message to a log file.` )
+
+   - *REMEMBER* 
+      - use same style in the same file, but can be inconsistent across files
+      - *DO NOT OVERDO IT* -> Inconsistency only in a couple of files is enough. 

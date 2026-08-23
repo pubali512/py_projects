@@ -12,20 +12,26 @@ from server.user_registry import UserRegistry
 class ChatServer:
     """TCP chat server that accepts client connections and spawns handler threads.
 
-    Startup sequence:
-        1. Bind the server socket to the configured host and port.
-        2. Enter the accept loop.
+    How it works:
+        1. Start the server and bind the server socket to the configured host and port.
+        2. Wait in a loop to accept incoming client connections.
         3. For each accepted connection, create a ClientHandler and run it
-           in a new daemon thread.
+           in a separate thread.
 
     Shutdown:
         Call stop() to signal the accept loop to exit and close the server socket.
     """
 
-    def __init__(self, host: str, port: int):
-        """Args:
-            host: Hostname or IP address to bind to (e.g., 'localhost').
-            port: TCP port number to listen on (e.g., 5555).
+    def __init__(self, host: str, port: int) -> None:
+        """
+        Set up the server socket configuration and initialize all shared services.
+
+        :param host: Hostname or IP address to bind to (e.g., 'localhost').
+        :type host: str
+        :param port: TCP port number to listen on (e.g., 5555).
+        :type port: int
+        :return: None
+        :rtype: None
         """
         self._host = host
         self._port = port
@@ -38,8 +44,13 @@ class ChatServer:
         self._router = MessageRouter(self._registry, self._persistence)
         self._validator = UsernameValidator()
 
-    def start(self):
-        """Bind the server socket and enter the blocking connection-accept loop."""
+    def start(self) -> None:
+        """
+        Server starts and waits for client connections. 
+
+        :return: None
+        :rtype: None
+        """
         self._server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._server_socket.bind((self._host, self._port))
@@ -68,8 +79,13 @@ class ChatServer:
 
         print("Server stopped.")
 
-    def stop(self):
-        """Signal the accept loop to exit and release the server socket."""
+    def stop(self) -> None:
+        """
+        Stops server. 
+
+        :return: None
+        :rtype: None
+        """
         self._is_running = False
         if self._server_socket:
             try:
@@ -79,5 +95,7 @@ class ChatServer:
 
     @property
     def is_running(self) -> bool:
-        """True while the server accept loop is active."""
+        """
+        Returns True when the server is running. 
+        """
         return self._is_running

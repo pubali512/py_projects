@@ -25,11 +25,18 @@ class SidebarPanel(tk.Frame):
     FONT_NORMAL = ("Arial", 10)
     FONT_UNREAD = ("Arial", 10, "bold")
 
-    def __init__(self, parent: tk.Widget, on_broadcast_click: callable, on_user_click: callable):
-        """Args:
-            parent: Parent Tkinter widget.
-            on_broadcast_click: Callback invoked when the Broadcast button is clicked.
-            on_user_click: Callback(username: str) invoked when a user button is clicked.
+    def __init__(self, parent: tk.Widget, on_broadcast_click: callable, on_user_click: callable) -> None:
+        """
+        Initialize the sidebar with its parent widget and interaction callbacks.
+
+        :param parent: Parent Tkinter widget.
+        :type parent: tk.Widget
+        :param on_broadcast_click: Callback invoked when the Broadcast button is clicked.
+        :type on_broadcast_click: callable
+        :param on_user_click: Callback(username: str) invoked when a user button is clicked.
+        :type on_user_click: callable
+        :return: None
+        :rtype: None
         """
         super().__init__(parent, bg=self.BG_COLOR, width=190)
         self.pack_propagate(False)
@@ -40,8 +47,13 @@ class SidebarPanel(tk.Frame):
         self._active_target: str = None
         self.build_widgets()
 
-    def build_widgets(self):
-        """Construct the broadcast button, section header, and the user list container."""
+    def build_widgets(self) -> None:
+        """
+        Construct the broadcast button, section header, and the user list container.
+
+        :return: None
+        :rtype: None
+        """
         self._broadcast_btn = tk.Button(
             self,
             text="📢 BROADCAST",
@@ -67,14 +79,17 @@ class SidebarPanel(tk.Frame):
         self._user_list_frame = tk.Frame(self, bg=self.BG_COLOR)
         self._user_list_frame.pack(fill=tk.BOTH, expand=True, padx=6)
 
-    def set_users(self, usernames: list[str]):
-        """Rebuild the user button list with the supplied usernames.
+    def set_users(self, usernames: list[str]) -> None:
+        """
+        Rebuild the user button list with the supplied usernames.
 
         Preserves existing unread highlighting for users who are still online.
         Users who disconnected are removed from the unread set automatically.
 
-        Args:
-            usernames: List of currently online peer handles (own username excluded).
+        :param usernames: List of currently online peer handles (own username excluded).
+        :type usernames: list[str]
+        :return: None
+        :rtype: None
         """
         for widget in self._user_list_frame.winfo_children():
             widget.destroy()
@@ -101,22 +116,28 @@ class SidebarPanel(tk.Frame):
             btn.pack(fill=tk.X, pady=1)
             self._user_buttons[username] = btn
 
-    def highlight_user(self, username: str):
-        """Mark a user as having an unread message (bold text).
+    def highlight_user(self, username: str) -> None:
+        """
+        Mark a user as having an unread message (bold text).
 
-        Args:
-            username: The handle of the user with the new message.
+        :param username: The handle of the user with the new message.
+        :type username: str
+        :return: None
+        :rtype: None
         """
         self._unread_users.add(username)
         btn = self._user_buttons.get(username)
         if btn:
             btn.config(font=self.FONT_UNREAD)
 
-    def clear_highlight(self, username: str):
-        """Remove the unread indicator from a user button.
+    def clear_highlight(self, username: str) -> None:
+        """
+        Remove the unread indicator from a user button.
 
-        Args:
-            username: The handle whose highlight should be cleared.
+        :param username: The handle whose highlight should be cleared.
+        :type username: str
+        :return: None
+        :rtype: None
         """
         self._unread_users.discard(username)
         btn = self._user_buttons.get(username)
@@ -125,15 +146,20 @@ class SidebarPanel(tk.Frame):
 
     @property
     def active_target(self) -> str:
-        """The username of the currently selected DM peer, or None for Broadcast."""
+        """
+        The username of the currently selected DM peer, or None for Broadcast.
+        """
         return self._active_target
 
     @active_target.setter
-    def active_target(self, target: str):
-        """Visually distinguish the currently selected chat target.
+    def active_target(self, target: str) -> None:
+        """
+        Visually distinguish the currently selected chat target.
 
-        Args:
-            target: Username of the active DM peer, or None when Broadcast is active.
+        :param target: Username of the active DM peer, or None when Broadcast is active.
+        :type target: str
+        :return: None
+        :rtype: None
         """
         self._active_target = target
         for username, btn in self._user_buttons.items():

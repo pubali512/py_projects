@@ -30,41 +30,80 @@ class Protocol:
 
     @staticmethod
     def encode(payload: dict) -> bytes:
-        """Serialize a payload dict to a newline-terminated UTF-8 JSON bytes message."""
+        """
+        Serialize a payload dict to a newline-terminated UTF-8 JSON bytes message.
+
+        :param payload: The message data to serialize.
+        :type payload: dict
+        :return: Newline-terminated UTF-8 encoded JSON bytes.
+        :rtype: bytes
+        """
         return (json.dumps(payload, ensure_ascii=False) + "\n").encode("utf-8")
 
     @staticmethod
     def decode(line: str) -> dict:
-        """Deserialize a JSON string (one protocol line) to a payload dict."""
+        """
+        Deserialize a JSON string (one protocol line) to a payload dict.
+
+        :param line: A single newline-delimited JSON string.
+        :type line: str
+        :return: Parsed message payload.
+        :rtype: dict
+        """
         return json.loads(line.strip())
 
     # Client -> Server factories
 
     @staticmethod
     def make_login(username: str) -> bytes:
-        """Login request sent by client."""
+        """
+        Build a LOGIN request packet to send to the server.
+
+        :param username: The handle to register on the server.
+        :type username: str
+        :return: Encoded LOGIN message bytes.
+        :rtype: bytes
+        """
         return Protocol.encode({"type": Protocol.TYPE_LOGIN, "username": username})
 
     @staticmethod
     def make_client_msg(target: str, text: str) -> bytes:
-        """Chat message sent by client to server (no sender or timestamp field)."""
+        """
+        Build a chat message packet to send from client to server.
+
+        :param target: 'BROADCAST' for the public channel, or a username for a DM.
+        :type target: str
+        :param text: Message body with emoji shortcodes already replaced.
+        :type text: str
+        :return: Encoded MSG message bytes.
+        :rtype: bytes
+        """
         return Protocol.encode({"type": Protocol.TYPE_MSG, "target": target, "text": text})
 
     @staticmethod
     def make_logout() -> bytes:
-        """Graceful disconnect request sent by client."""
+        """
+        Build a LOGOUT packet for a graceful client disconnect.
+
+        :return: Encoded LOGOUT message bytes.
+        :rtype: bytes
+        """
         return Protocol.encode({"type": Protocol.TYPE_LOGOUT})
 
     # Server -> Client factories
 
     @staticmethod
     def make_login_ok(users: list, history: dict) -> bytes:
-        """Login approval with current user list and full chat history for this session.
+        """
+        Build a LOGIN_OK approval packet with the current user list and chat history.
 
-        Args:
-            users: List of currently connected usernames (including the new user).
-            history: Dict mapping conversation key to list of message dicts.
-                     Keys: 'BROADCAST' for the public channel, or a username for DMs.
+        :param users: List of currently connected usernames (including the new user).
+        :type users: list
+        :param history: Dict mapping conversation key to list of message dicts.
+            Keys: 'BROADCAST' for the public channel, or a username for DMs.
+        :type history: dict
+        :return: Encoded LOGIN_OK message bytes.
+        :rtype: bytes
         """
         return Protocol.encode({
             "type": Protocol.TYPE_LOGIN_OK,
@@ -74,18 +113,31 @@ class Protocol:
 
     @staticmethod
     def make_login_err(reason: str) -> bytes:
-        """Login rejection with a human-readable reason."""
+        """
+        Build a LOGIN_ERR rejection packet with a human-readable reason.
+
+        :param reason: Description of why the login was rejected.
+        :type reason: str
+        :return: Encoded LOGIN_ERR message bytes.
+        :rtype: bytes
+        """
         return Protocol.encode({"type": Protocol.TYPE_LOGIN_ERR, "reason": reason})
 
     @staticmethod
     def make_server_msg(target: str, sender: str, text: str, timestamp: str) -> bytes:
-        """Routed chat message sent from server to client(s).
+        """
+        Build a routed chat message packet sent from server to client(s).
 
-        Args:
-            target: 'BROADCAST' or the recipient username for DMs.
-            sender: Username of the message author.
-            text: Message body (emoji shortcodes already replaced by client).
-            timestamp: ISO-8601 timestamp string set by the server.
+        :param target: 'BROADCAST' or the recipient username for DMs.
+        :type target: str
+        :param sender: Username of the message author.
+        :type sender: str
+        :param text: Message body with emoji shortcodes already replaced by the client.
+        :type text: str
+        :param timestamp: ISO-8601 timestamp string set by the server.
+        :type timestamp: str
+        :return: Encoded MSG message bytes.
+        :rtype: bytes
         """
         return Protocol.encode({
             "type": Protocol.TYPE_MSG,
@@ -97,10 +149,26 @@ class Protocol:
 
     @staticmethod
     def make_users(users: list) -> bytes:
-        """Broadcast updated list of online usernames to all clients."""
+        """
+        Build a USERS packet to broadcast the updated list of online usernames.
+
+        :param users: List of currently online usernames.
+        :type users: list
+        :return: Encoded USERS message bytes.
+        :rtype: bytes
+        """
         return Protocol.encode({"type": Protocol.TYPE_USERS, "users": users})
 
     @staticmethod
     def make_sys(text: str, timestamp: str) -> bytes:
-        """System notification (e.g., 'Alice joined the chat')."""
+        """
+        Build a SYS notification packet (e.g., 'Alice joined the chat').
+
+        :param text: Human-readable notification text.
+        :type text: str
+        :param timestamp: ISO-8601 timestamp string.
+        :type timestamp: str
+        :return: Encoded SYS message bytes.
+        :rtype: bytes
+        """
         return Protocol.encode({"type": Protocol.TYPE_SYS, "text": text, "timestamp": timestamp})

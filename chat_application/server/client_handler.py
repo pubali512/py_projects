@@ -32,14 +32,24 @@ class ClientHandler:
         registry: UserRegistry,
         persistence: ChatPersistence,
         validator: UsernameValidator,
-    ):
-        """Args:
-            client_socket: The accepted TCP socket for this client.
-            address: (host, port) of the remote peer.
-            router: Shared message router.
-            registry: Shared user registry.
-            persistence: Shared chat persistence layer.
-            validator: Username validator (stateless, shared safely).
+    ) -> None:
+        """
+        Initialize the handler with the accepted socket and shared server services.
+
+        :param client_socket: The accepted TCP socket for this client.
+        :type client_socket: socket.socket
+        :param address: (host, port) tuple of the remote peer.
+        :type address: tuple
+        :param router: Shared message router.
+        :type router: MessageRouter
+        :param registry: Shared user registry.
+        :type registry: UserRegistry
+        :param persistence: Shared chat persistence layer.
+        :type persistence: ChatPersistence
+        :param validator: Username validator (stateless, shared safely).
+        :type validator: UsernameValidator
+        :return: None
+        :rtype: None
         """
         self._socket = client_socket
         self._address = address
@@ -51,8 +61,15 @@ class ClientHandler:
 
     # Used as the send callable stored in UserRegistry.
 
-    def send(self, data: bytes):
-        """Write bytes to this client's socket."""
+    def send(self, data: bytes) -> None:
+        """
+        Write bytes to this client's socket.
+
+        :param data: Encoded protocol message bytes to deliver.
+        :type data: bytes
+        :return: None
+        :rtype: None
+        """
         try:
             self._socket.sendall(data)
         except OSError:
@@ -60,8 +77,15 @@ class ClientHandler:
 
     # Message handlers
 
-    def handle_login(self, payload: dict):
-        """Process a LOGIN request: validate, register, and send history."""
+    def handle_login(self, payload: dict) -> None:
+        """
+        Process a LOGIN request: validate the username, register the user, and send history.
+
+        :param payload: Decoded LOGIN message dict containing the 'username' field.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         username = payload.get("username", "")
         is_valid, reason = self._validator.validate(username)
         if not is_valid:
@@ -82,8 +106,15 @@ class ClientHandler:
         self._router.broadcast_users_list()
         self._router.broadcast_sys(f"{username} joined the chat")
 
-    def handle_message(self, payload: dict):
-        """Route a broadcast or direct message from the authenticated client."""
+    def handle_message(self, payload: dict) -> None:
+        """
+        Route a broadcast or direct message from the authenticated client.
+
+        :param payload: Decoded MSG message dict with 'target' and 'text' fields.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         if not self._username:
             return
 
@@ -97,8 +128,13 @@ class ClientHandler:
         else:
             self._router.route_direct(self._username, target, text)
 
-    def cleanup(self):
-        """Remove the user from the registry and notify remaining clients."""
+    def cleanup(self) -> None:
+        """
+        Remove the user from the registry and notify remaining clients.
+
+        :return: None
+        :rtype: None
+        """
         if self._username:
             was_registered = self._registry.remove_user(self._username)
             if was_registered:
@@ -113,12 +149,14 @@ class ClientHandler:
     # Main thread entry point
 
     def run(self):
-        """Read and process protocol messages until the client disconnects.
+        """
+        Read and process protocol messages until the client disconnects.
 
         This method is intended to be called inside a daemon thread.
         Malformed JSON lines are silently skipped; unexpected socket errors
         and graceful LOGOUT both terminate the loop cleanly.
-        """
+        :return: None
+        :rtype: None        """
         socket_file = self._socket.makefile("r", encoding="utf-8")
         try:
             for line in socket_file:

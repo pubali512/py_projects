@@ -21,13 +21,21 @@ class ChatClient:
 
     CONNECTION_TIMEOUT_SECONDS = 5.0
 
-    def __init__(self, host: str, port: int, on_message: callable, on_disconnect: callable):
-        """Args:
-            host: Server hostname or IP address.
-            port: Server TCP port.
-            on_message: Callback(payload: dict) invoked for every server message
-                        (called from the background NetworkReceiver thread).
-            on_disconnect: Callback() invoked when the connection is closed.
+    def __init__(self, host: str, port: int, on_message: callable, on_disconnect: callable) -> None:
+        """
+        Initialize the client with server address and network event callbacks.
+
+        :param host: Server hostname or IP address.
+        :type host: str
+        :param port: Server TCP port.
+        :type port: int
+        :param on_message: Callback(payload: dict) invoked for every server message,
+            called from the background NetworkReceiver thread.
+        :type on_message: callable
+        :param on_disconnect: Callback() invoked when the connection is closed.
+        :type on_disconnect: callable
+        :return: None
+        :rtype: None
         """
         self._host = host
         self._port = port
@@ -39,18 +47,18 @@ class ChatClient:
         self._connected = False
 
     def connect(self, username: str) -> tuple[bool, str]:
-        """Open a TCP connection to the server and send the LOGIN message.
+        """
+        Open a TCP connection to the server and send the LOGIN message.
 
         The method returns as soon as the socket is established and the login
         request is sent. The caller should wait for LOGIN_OK or LOGIN_ERR via
         the on_message_callback to know whether authentication succeeded.
 
-        Args:
-            username: The handle to register on the server.
-
-        Returns:
-            (True, None) if the TCP connection was established.
+        :param username: The handle to register on the server.
+        :type username: str
+        :return: (True, None) if the TCP connection was established;
             (False, error_message) if the connection could not be opened.
+        :rtype: tuple[bool, str]
         """
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,8 +81,13 @@ class ChatClient:
         self._socket.sendall(Protocol.make_login(username))
         return True, None
 
-    def disconnect(self):
-        """Send LOGOUT and close the connection gracefully."""
+    def disconnect(self) -> None:
+        """
+        Send LOGOUT and close the connection gracefully.
+
+        :return: None
+        :rtype: None
+        """
         if not self._connected:
             return
         self._connected = False
@@ -87,12 +100,16 @@ class ChatClient:
             pass
         self._on_disconnect()
 
-    def send_message(self, target: str, text: str):
-        """Send a chat message to the given target.
+    def send_message(self, target: str, text: str) -> None:
+        """
+        Send a chat message to the given target.
 
-        Args:
-            target: 'BROADCAST' for public channel, or a username for a DM.
-            text: Message body (emoji shortcodes should be replaced before calling).
+        :param target: 'BROADCAST' for the public channel, or a username for a DM.
+        :type target: str
+        :param text: Message body with emoji shortcodes already replaced.
+        :type text: str
+        :return: None
+        :rtype: None
         """
         if not self._connected:
             return
@@ -104,16 +121,25 @@ class ChatClient:
 
     @property
     def is_connected(self) -> bool:
-        """Return True if the client currently has an active server connection."""
+        """
+        Return True if the client currently has an active server connection.
+        """
         return self._connected
 
     @property
     def username(self) -> str:
-        """Return the username used for the current (or last) connection."""
+        """
+        Return the username used for the current (or last) connection.
+        """
         return self._username
 
-    def handle_network_disconnect(self):
-        """Called by NetworkReceiver when the socket drops unexpectedly."""
+    def handle_network_disconnect(self) -> None:
+        """
+        Called by NetworkReceiver when the socket drops unexpectedly.
+
+        :return: None
+        :rtype: None
+        """
         if self._connected:
             self._connected = False
             self._on_disconnect()

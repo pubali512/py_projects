@@ -17,7 +17,12 @@ from server.chat_server import ChatServer
 
 
 def load_config() -> dict:
-    """Load server configuration from config.json in the project root."""
+    """
+    Load server configuration from config.json in the project root.
+
+    :return: Dict with 'host' and 'port' keys.
+    :rtype: dict
+    """
     config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.json")
     with open(config_path, "r", encoding="utf-8") as config_file:
         return json.load(config_file)

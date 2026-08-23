@@ -33,9 +33,14 @@ class AppGui:
     WINDOW_MIN_HEIGHT = 450
     WINDOW_START_SIZE = "960x600"
 
-    def __init__(self, config: dict):
-        """Args:
-            config: Dict with 'host' (str) and 'port' (int) keys read from config.json.
+    def __init__(self, config: dict) -> None:
+        """
+        Initialize the application window and build the GUI layout.
+
+        :param config: Dict with 'host' (str) and 'port' (int) keys read from config.json.
+        :type config: dict
+        :return: None
+        :rtype: None
         """
         self._config = config
         self._chat_client: ChatClient = None
@@ -50,8 +55,13 @@ class AppGui:
 
         self.build_layout()
 
-    def build_layout(self):
-        """Create and arrange top bar, sidebar, divider, and chat view."""
+    def build_layout(self) -> None:
+        """
+        Create and arrange top bar, sidebar, divider, and chat view.
+
+        :return: None
+        :rtype: None
+        """
         self._control_bar = ControlBar(
             self._root,
             on_connect=self.on_connect_clicked,
@@ -79,8 +89,13 @@ class AppGui:
 
     # Connect / disconnect
 
-    def on_connect_clicked(self):
-        """Prompt for a username, validate locally, then attempt server connection."""
+    def on_connect_clicked(self) -> None:
+        """
+        Prompt for a username, validate locally, then attempt server connection.
+
+        :return: None
+        :rtype: None
+        """
         username = simpledialog.askstring("Connect", "Enter your username:", parent=self._root)
         if not username:
             return
@@ -105,17 +120,32 @@ class AppGui:
             messagebox.showerror("Connection Failed", error, parent=self._root)
             self._chat_client = None
 
-    def on_disconnect_clicked(self):
-        """Gracefully disconnect from the server."""
+    def on_disconnect_clicked(self) -> None:
+        """
+        Gracefully disconnect from the server.
+
+        :return: None
+        :rtype: None
+        """
         if self._chat_client:
             self._chat_client.disconnect()
 
-    def on_network_disconnect(self):
-        """Called from the network thread when the connection drops; dispatches to GUI thread."""
+    def on_network_disconnect(self) -> None:
+        """
+        Called from the network thread when the connection drops; dispatches to GUI thread.
+
+        :return: None
+        :rtype: None
+        """
         self._root.after(0, self.reset_to_offline)
 
-    def reset_to_offline(self):
-        """Reset all GUI components to the offline/disconnected state."""
+    def reset_to_offline(self) -> None:
+        """
+        Reset all GUI components to the offline/disconnected state.
+
+        :return: None
+        :rtype: None
+        """
         self._my_username = None
         self._active_target = Protocol.TARGET_BROADCAST
         self._history = {Protocol.TARGET_BROADCAST: []}
@@ -129,12 +159,26 @@ class AppGui:
 
     # Incoming message dispatch
 
-    def dispatch_incoming_message(self, payload: dict):
-        """Schedule GUI update for an incoming server message on the main thread."""
+    def dispatch_incoming_message(self, payload: dict) -> None:
+        """
+        Schedule GUI update for an incoming server message on the main thread.
+
+        :param payload: Decoded server message payload dict.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         self._root.after(0, self.handle_incoming_message, payload)
 
-    def handle_incoming_message(self, payload: dict):
-        """Route a server message payload to the appropriate handler."""
+    def handle_incoming_message(self, payload: dict) -> None:
+        """
+        Route a server message payload to the appropriate handler.
+
+        :param payload: Decoded server message payload dict.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         msg_type = payload.get("type")
         handlers = {
             Protocol.TYPE_LOGIN_OK: self.on_login_ok,
@@ -149,8 +193,15 @@ class AppGui:
 
     # Specific message handlers
 
-    def on_login_ok(self, payload: dict):
-        """Initialize the session after the server approves the login."""
+    def on_login_ok(self, payload: dict) -> None:
+        """
+        Initialize the session after the server approves the login.
+
+        :param payload: LOGIN_OK payload dict with 'users' and 'history' fields.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         users = payload.get("users", [])
         server_history = payload.get("history", {})
 
@@ -168,16 +219,30 @@ class AppGui:
         self._chat_view.input_enabled = True
         self.switch_chat(Protocol.TARGET_BROADCAST)
 
-    def on_login_err(self, payload: dict):
-        """Show an error dialog when the server rejects the login and clean up."""
+    def on_login_err(self, payload: dict) -> None:
+        """
+        Show an error dialog when the server rejects the login and clean up.
+
+        :param payload: LOGIN_ERR payload dict with a 'reason' field.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         reason = payload.get("reason", "Login rejected by server")
         messagebox.showerror("Login Failed", reason, parent=self._root)
         if self._chat_client:
             self._chat_client.disconnect()
         self._chat_client = None
 
-    def on_msg_received(self, payload: dict):
-        """Store an incoming MSG and render it or highlight the sidebar entry."""
+    def on_msg_received(self, payload: dict) -> None:
+        """
+        Store an incoming MSG and render it or highlight the sidebar entry.
+
+        :param payload: MSG payload dict with 'target', 'sender', 'text', and 'timestamp' fields.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         target = payload.get("target", "")
         sender = payload.get("sender", "")
         text = payload.get("text", "")
@@ -199,16 +264,30 @@ class AppGui:
         elif conv_key != Protocol.TARGET_BROADCAST:
             self._sidebar.highlight_user(conv_key)
 
-    def on_users_update(self, payload: dict):
-        """Refresh the sidebar user list when the server sends a USERS message."""
+    def on_users_update(self, payload: dict) -> None:
+        """
+        Refresh the sidebar user list when the server sends a USERS message.
+
+        :param payload: USERS payload dict with a 'users' list field.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         users = payload.get("users", [])
         peer_list = [u for u in users if u != self._my_username]
         self._sidebar.set_users(peer_list)
         if self._active_target != Protocol.TARGET_BROADCAST:
             self._sidebar.active_target = self._active_target
 
-    def on_sys_message(self, payload: dict):
-        """Display a system notification in the broadcast channel history."""
+    def on_sys_message(self, payload: dict) -> None:
+        """
+        Display a system notification in the broadcast channel history.
+
+        :param payload: SYS payload dict with 'text' and 'timestamp' fields.
+        :type payload: dict
+        :return: None
+        :rtype: None
+        """
         text = payload.get("text", "")
         timestamp = payload.get("timestamp", "")
         sys_entry = {"type": "SYS", "text": text, "timestamp": timestamp}
@@ -219,8 +298,15 @@ class AppGui:
 
     # Send message
 
-    def on_send_message(self, text: str):
-        """Process emoji shortcodes and send the message to the active target."""
+    def on_send_message(self, text: str) -> None:
+        """
+        Process emoji shortcodes and send the message to the active target.
+
+        :param text: Raw message text entered by the user.
+        :type text: str
+        :return: None
+        :rtype: None
+        """
         if not self._chat_client or not self._chat_client.is_connected:
             return
         processed_text = EmojiProcessor.process(text)
@@ -228,11 +314,14 @@ class AppGui:
 
     # Chat target switching
 
-    def switch_chat(self, target: str):
-        """Switch the main chat view to the given channel or DM target.
+    def switch_chat(self, target: str) -> None:
+        """
+        Switch the main chat view to the given channel or DM target.
 
-        Args:
-            target: 'BROADCAST' for the public channel, or a username for a DM.
+        :param target: 'BROADCAST' for the public channel, or a username for a DM.
+        :type target: str
+        :return: None
+        :rtype: None
         """
         self._active_target = target
 
@@ -249,6 +338,11 @@ class AppGui:
 
     # Main loop
 
-    def run(self):
-        """Enter the Tkinter event loop. Blocks until the window is closed."""
+    def run(self) -> None:
+        """
+        Enter the Tkinter event loop. Blocks until the window is closed.
+
+        :return: None
+        :rtype: None
+        """
         self._root.mainloop()
