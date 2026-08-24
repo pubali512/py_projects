@@ -2,7 +2,7 @@ import socket
 
 from common.protocol import Protocol
 from common.username_validator import UsernameValidator
-from server.chat_persistence import ChatPersistence
+from server.chat_logger import ChatLogger
 from server.message_router import MessageRouter
 from server.user_registry import UserRegistry
 
@@ -30,7 +30,7 @@ class ClientHandler:
         address: tuple,
         router: MessageRouter,
         registry: UserRegistry,
-        persistence: ChatPersistence,
+        persistence: ChatLogger,
         validator: UsernameValidator,
     ) -> None:
         """
@@ -43,7 +43,7 @@ class ClientHandler:
         :param registry: Shared user registry.
         :type registry: UserRegistry
         :param persistence: Shared chat persistence layer.
-        :type persistence: ChatPersistence
+        :type persistence: ChatLogger
         :param validator: Username validator.
         :type validator: UsernameValidator
         :return: None

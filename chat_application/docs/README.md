@@ -27,7 +27,7 @@ chat_application/
         client_handler.py     ClientHandler: per-client message loop (one thread each)
         message_router.py     MessageRouter: routes broadcast and DM messages
         user_registry.py      UserRegistry: thread-safe active-user map
-        chat_persistence.py   ChatPersistence: reads/writes JSON log files
+        chat_logger.py        ChatLogger: reads/writes JSON log files
         chat_logs/            Auto-created directory for broadcast.json and dm-*.json
     client/
         client_main.py        Entry point - reads config and launches AppGui
@@ -150,6 +150,6 @@ Only `MSG`-type messages are persisted; system notifications are ephemeral.
 ## Design Notes
 
 - **One class per file** throughout the project.
-- **Thread safety**: `UserRegistry` and `ChatPersistence` use `threading.Lock`. All GUI updates from the background `NetworkReceiver` thread are dispatched to the main thread via `root.after(0, ...)`.
+- **Thread safety**: `UserRegistry` and `ChatLogger` use `threading.Lock`. All GUI updates from the background `NetworkReceiver` thread are dispatched to the main thread via `root.after(0, ...)`.
 - **Separation of concerns**: the server has no GUI dependency; the client has no persistence dependency.
 - **DM log filenames** use `-` as the pair separator (not `_`) because `-` is not an allowed username character, making the filename unambiguous even for usernames that contain underscores.

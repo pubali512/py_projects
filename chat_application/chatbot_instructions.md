@@ -193,5 +193,7 @@ The comments in docstring are very verbose and mechanical. They need to be rewri
       - use same style in the same file, but can be inconsistent across files
       - *DO NOT OVERDO IT* -> Inconsistency only in a couple of files is enough. 
 
+---
+# TASKS (3) 
 
-
+- Rename the chat_persistence module to chat_logger. Rename the class ChatPersistence to ChatLogger. Update all references to the module and class in the codebase.

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from common.protocol import Protocol
-from server.chat_persistence import ChatPersistence
+from server.chat_logger import ChatLogger
 from server.user_registry import UserRegistry
 
 
@@ -14,12 +14,12 @@ class MessageRouter:
         - Presence announcements: send updated user list and system text to all clients.
     """
 
-    def __init__(self, registry: UserRegistry, persistence: ChatPersistence) -> None:
+    def __init__(self, registry: UserRegistry, persistence: ChatLogger) -> None:
         """
         :param registry: User registry used to find send targets.
         :type registry: UserRegistry
         :param persistence: Persistence layer for saving messages to disk.
-        :type persistence: ChatPersistence
+        :type persistence: ChatLogger
         :return: None
         :rtype: None
         """

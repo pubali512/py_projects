@@ -3,7 +3,7 @@ import socket
 import threading
 
 from common.username_validator import UsernameValidator
-from server.chat_persistence import ChatPersistence
+from server.chat_logger import ChatLogger
 from server.client_handler import ClientHandler
 from server.message_router import MessageRouter
 from server.user_registry import UserRegistry
@@ -37,7 +37,7 @@ class ChatServer:
         self._is_running = False
 
         server_dir = os.path.dirname(os.path.abspath(__file__))
-        self._persistence = ChatPersistence(server_dir)
+        self._persistence = ChatLogger(server_dir)
         self._registry = UserRegistry()
         self._router = MessageRouter(self._registry, self._persistence)
         self._validator = UsernameValidator()

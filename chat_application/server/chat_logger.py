@@ -3,20 +3,21 @@ import json
 import os
 
 
-class ChatPersistence:
+class ChatLogger:
     """Reads and writes chat history to JSON files inside a chat_logs directory.
 
     File layout:
         chat_logs/broadcast.json          All public broadcast messages.
-        chat_logs/dm-<a>-<b>.json         Direct-message thread between users a and b,
+        chat_logs/dm-<a>-<b>.json         Direct-messages between users a and b,
                                           where a and b are sorted alphabetically.
-                                           The dash (-) separator is safe because usernames
-                                           only allow letters, digits, and underscores.
+                                          The dash (-) separator is used because usernames
+                                          allow underscores.
 
     Each JSON file has a single top-level key 'messages' whose value is a list of
-    message dicts. Only MSG-type messages are persisted; system notifications are not.
+    message dicts. Only user-sent messages are logged; system notifications (e.g., 'X joined the chat') 
+    are discarded.
 
-    Message dict shape:
+    Message dict content:
         {"type": "MSG", "sender": str, "target": str, "text": str, "timestamp": str}
     """
 
@@ -42,7 +43,7 @@ class ChatPersistence:
 
     def dm_path(self, username1: str, username2: str) -> str:
         """
-        The file path for a DM thread between two users is returned.
+        The file path for a DM message between two users is returned.
         Names are sorted alphabetically.
 
         :param username1: First participant username.
