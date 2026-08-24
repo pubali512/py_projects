@@ -1,0 +1,359 @@
+<?xml version="1.0" ?>
+<mxfile host="Electron" modified="2024-01-01T00:00:00.000Z" agent="custom" version="21.0.0">
+  <diagram name="Server Flow" id="server_page">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="srv_lbl" value="Main Server Thread" style="text;html=1;align=center;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="60" y="10" width="200" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="srv_s" value="Start" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="100" y="50" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="srv_b" value="Bind socket&amp;#xa;to host:port" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="130" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="srv_l" value="Listen for&amp;#xa;connections" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="220" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="srv_a" value="Accept&amp;#xa;connection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="310" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="srv_d" value="Server&amp;#xa;running?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="95" y="400" width="130" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="srv_sp" value="Spawn ClientHandler&amp;#xa;in new thread" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="60" y="510" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="srv_c" value="Close server socket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="80" y="620" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="srv_e" value="Stop" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="100" y="710" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_s_b" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="srv_s" target="srv_b">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_b_l" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="srv_b" target="srv_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l_a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="srv_l" target="srv_a">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_a_d" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="srv_a" target="srv_d">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_d_sp" value="Yes" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="srv_d" target="srv_sp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sp_a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="srv_sp" target="srv_a">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30" y="535"/>
+              <mxPoint x="30" y="335"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_d_c" value="No" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="srv_d" target="srv_c">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_c_e" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="srv_c" target="srv_e">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_lbl" value="ClientHandler Thread" style="text;html=1;align=center;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="370" y="10" width="230" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_s" value="Thread Start" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="410" y="50" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_r" value="Read line&amp;#xa;from socket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="400" y="130" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_ca" value="Connection&amp;#xa;active?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="410" y="220" width="140" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_ce" value="Cleanup &amp;amp;&amp;#xa;close socket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="630" y="225" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_en" value="Thread End" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="640" y="315" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_p" value="Parse JSON message" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="400" y="330" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_t" value="Message&amp;#xa;type?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="410" y="420" width="140" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_v" value="Validate username" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="310" y="540" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_vd" value="Valid?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="315" y="630" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_ne" value="Send LOGIN_ERR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="200" y="730" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_ok" value="Register user&amp;#xa;Send LOGIN_OK + history" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="380" y="730" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_mg" value="Route to broadcast&amp;#xa;or direct target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="490" y="540" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_lo" value="Cleanup &amp;amp;&amp;#xa;close socket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="690" y="540" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_hs_r" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_s" target="h_r">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_r_ca" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_r" target="h_ca">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ca_ce" value="No" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_ca" target="h_ce">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ce_en" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_ce" target="h_en">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ca_p" value="Yes" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_ca" target="h_p">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p_t" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_p" target="h_t">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_t_v" value="LOGIN" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_t" target="h_v">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_v_vd" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_v" target="h_vd">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_vd_ne" value="No" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_vd" target="h_ne">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_vd_ok" value="Yes" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_vd" target="h_ok">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ne_r" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_ne" target="h_r">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="755"/>
+              <mxPoint x="340" y="155"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ok_r" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_ok" target="h_r">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="790"/>
+              <mxPoint x="560" y="155"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_t_mg" value="MSG" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_t" target="h_mg">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_mg_r" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_mg" target="h_r">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="565"/>
+              <mxPoint x="860" y="155"/>
+              <mxPoint x="560" y="155"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_t_lo" value="LOGOUT" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_t" target="h_lo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_lo_en" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="h_lo" target="h_en">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Client Flow" id="client_page">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="c_lbl" value="Main Client Thread" style="text;html=1;align=center;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="50" y="10" width="200" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_s" value="Start" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="100" y="50" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_cn" value="Open TCP&amp;#xa;connection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="130" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_cd" value="Connected?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="95" y="220" width="130" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_ce" value="Show error" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="300" y="228" width="120" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_ce2" value="Stop" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="310" y="315" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_sr" value="Start background&amp;#xa;receive thread" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="330" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_lg" value="Send LOGIN&amp;#xa;request" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="420" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_ld" value="Login result?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="90" y="510" width="140" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_le" value="Show error&amp;#xa;disconnect" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="300" y="518" width="130" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_le2" value="Stop" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="315" y="605" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_lh" value="Load history&amp;#xa;update sidebar" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="630" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_id" value="Idle: wait for&amp;#xa;user or server event" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="720" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_ud" value="User action?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="90" y="810" width="140" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_sm" value="Replace emoji codes&amp;#xa;Send MSG" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="270" y="810" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_dc" value="Send LOGOUT&amp;#xa;close socket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="80" y="930" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_en" value="Stop" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="100" y="1020" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_s_cn" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_s" target="c_cn">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_cn_cd" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_cn" target="c_cd">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_cd_ce" value="No" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_cd" target="c_ce">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_ce_2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_ce" target="c_ce2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_cd_sr" value="Yes" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_cd" target="c_sr">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_sr_lg" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_sr" target="c_lg">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_lg_ld" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_lg" target="c_ld">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_ld_le" value="LOGIN_ERR" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_ld" target="c_le">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_le_2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_le" target="c_le2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_ld_lh" value="LOGIN_OK" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_ld" target="c_lh">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_lh_id" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_lh" target="c_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_id_ud" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_id" target="c_ud">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_ud_sm" value="Send msg" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_ud" target="c_sm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_sm_id" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_sm" target="c_id">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="845"/>
+              <mxPoint x="480" y="745"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ec_ud_dc" value="Disconnect" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_ud" target="c_dc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec_dc_en" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="c_dc" target="c_en">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_lbl" value="Background Receive Thread" style="text;html=1;align=center;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="560" y="10" width="270" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_s" value="Thread Start" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="640" y="50" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_w" value="Read next message&amp;#xa;from server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="610" y="130" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_d" value="Message&amp;#xa;type?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="630" y="220" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_msg" value="Update chat view&amp;#xa;or highlight sidebar" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="490" y="340" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_usr" value="Update&amp;#xa;sidebar user list" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="700" y="340" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_sys" value="Show system&amp;#xa;notification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="900" y="340" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_die" value="Reset UI&amp;#xa;to offline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="630" y="470" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_en" value="Thread End" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="640" y="560" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="er_s_w" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_s" target="r_w">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="er_w_d" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_w" target="r_d">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="er_d_msg" value="MSG" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_d" target="r_msg">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="er_d_usr" value="USERS" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_d" target="r_usr">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="er_d_sys" value="SYS" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_d" target="r_sys">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="er_d_die" value="disconnect" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_d" target="r_die">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="er_msg_w" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_msg" target="r_w">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="365"/>
+              <mxPoint x="440" y="155"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="er_usr_w" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_usr" target="r_w">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="365"/>
+              <mxPoint x="1000" y="155"/>
+              <mxPoint x="810" y="155"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="er_sys_w" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_sys" target="r_w">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1110" y="365"/>
+              <mxPoint x="1110" y="155"/>
+              <mxPoint x="810" y="155"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="er_die_en" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" edge="1" source="r_die" target="r_en">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
