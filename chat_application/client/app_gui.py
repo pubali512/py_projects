@@ -35,9 +35,7 @@ class AppGui:
 
     def __init__(self, config: dict) -> None:
         """
-        Initialize the application window and build the GUI layout.
-
-        :param config: Dict with 'host' (str) and 'port' (int) keys read from config.json.
+        :param config: Dict with 'host' and 'port' keys from config.json.
         :type config: dict
         :return: None
         :rtype: None
@@ -57,7 +55,7 @@ class AppGui:
 
     def build_layout(self) -> None:
         """
-        Create and arrange top bar, sidebar, divider, and chat view.
+        Build and arrange the top bar, sidebar, and chat view.
 
         :return: None
         :rtype: None
@@ -91,7 +89,7 @@ class AppGui:
 
     def on_connect_clicked(self) -> None:
         """
-        Prompt for a username, validate locally, then attempt server connection.
+        Ask for a username and connect to the server.
 
         :return: None
         :rtype: None
@@ -122,7 +120,7 @@ class AppGui:
 
     def on_disconnect_clicked(self) -> None:
         """
-        Gracefully disconnect from the server.
+        Disconnect from the server.
 
         :return: None
         :rtype: None
@@ -132,7 +130,7 @@ class AppGui:
 
     def on_network_disconnect(self) -> None:
         """
-        Called from the network thread when the connection drops; dispatches to GUI thread.
+        Handle an unexpected connection drop from the network thread.
 
         :return: None
         :rtype: None
@@ -141,7 +139,7 @@ class AppGui:
 
     def reset_to_offline(self) -> None:
         """
-        Reset all GUI components to the offline/disconnected state.
+        Reset all GUI components to their offline state.
 
         :return: None
         :rtype: None
@@ -161,9 +159,9 @@ class AppGui:
 
     def dispatch_incoming_message(self, payload: dict) -> None:
         """
-        Schedule GUI update for an incoming server message on the main thread.
+        Schedule a GUI update for an incoming server message on the main thread.
 
-        :param payload: Decoded server message payload dict.
+        :param payload: Decoded server message payload.
         :type payload: dict
         :return: None
         :rtype: None
@@ -172,9 +170,9 @@ class AppGui:
 
     def handle_incoming_message(self, payload: dict) -> None:
         """
-        Route a server message payload to the appropriate handler.
+        Route a server message to the right handler based on its type.
 
-        :param payload: Decoded server message payload dict.
+        :param payload: Decoded server message payload.
         :type payload: dict
         :return: None
         :rtype: None
@@ -195,9 +193,9 @@ class AppGui:
 
     def on_login_ok(self, payload: dict) -> None:
         """
-        Initialize the session after the server approves the login.
+        Set up the session after a successful login.
 
-        :param payload: LOGIN_OK payload dict with 'users' and 'history' fields.
+        :param payload: LOGIN_OK payload with 'users' and 'history' fields.
         :type payload: dict
         :return: None
         :rtype: None
@@ -221,9 +219,9 @@ class AppGui:
 
     def on_login_err(self, payload: dict) -> None:
         """
-        Show an error dialog when the server rejects the login and clean up.
+        Show an error and clean up after a rejected login.
 
-        :param payload: LOGIN_ERR payload dict with a 'reason' field.
+        :param payload: LOGIN_ERR payload with a 'reason' field.
         :type payload: dict
         :return: None
         :rtype: None
@@ -236,9 +234,9 @@ class AppGui:
 
     def on_msg_received(self, payload: dict) -> None:
         """
-        Store an incoming MSG and render it or highlight the sidebar entry.
+        Store a new message and update the view or highlight the sender in the sidebar.
 
-        :param payload: MSG payload dict with 'target', 'sender', 'text', and 'timestamp' fields.
+        :param payload: MSG payload with 'target', 'sender', 'text', and 'timestamp'.
         :type payload: dict
         :return: None
         :rtype: None
@@ -266,9 +264,9 @@ class AppGui:
 
     def on_users_update(self, payload: dict) -> None:
         """
-        Refresh the sidebar user list when the server sends a USERS message.
+        Update the sidebar with the latest online user list.
 
-        :param payload: USERS payload dict with a 'users' list field.
+        :param payload: USERS payload with a 'users' list.
         :type payload: dict
         :return: None
         :rtype: None
@@ -281,9 +279,9 @@ class AppGui:
 
     def on_sys_message(self, payload: dict) -> None:
         """
-        Display a system notification in the broadcast channel history.
+        Add a system notification to the broadcast history.
 
-        :param payload: SYS payload dict with 'text' and 'timestamp' fields.
+        :param payload: SYS payload with 'text' and 'timestamp' fields.
         :type payload: dict
         :return: None
         :rtype: None
@@ -300,7 +298,7 @@ class AppGui:
 
     def on_send_message(self, text: str) -> None:
         """
-        Process emoji shortcodes and send the message to the active target.
+        Process emoji codes and send the text to the active target.
 
         :param text: Raw message text entered by the user.
         :type text: str
@@ -316,9 +314,9 @@ class AppGui:
 
     def switch_chat(self, target: str) -> None:
         """
-        Switch the main chat view to the given channel or DM target.
+        Switch the main view to a channel or DM target.
 
-        :param target: 'BROADCAST' for the public channel, or a username for a DM.
+        :param target: 'BROADCAST' or a username for a DM.
         :type target: str
         :return: None
         :rtype: None
@@ -340,7 +338,7 @@ class AppGui:
 
     def run(self) -> None:
         """
-        Enter the Tkinter event loop. Blocks until the window is closed.
+        Start the Tkinter event loop. Blocks until the window is closed.
 
         :return: None
         :rtype: None

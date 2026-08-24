@@ -25,9 +25,7 @@ class ChatPersistence:
 
     def __init__(self, base_dir: str) -> None:
         """
-        Set up the chat logs directory, creating it if it does not yet exist.
-
-        :param base_dir: Directory that contains (or will contain) the chat_logs folder.
+        :param base_dir: Parent directory of the chat_logs folder.
             Typically the server/ package directory.
         :type base_dir: str
         :return: None
@@ -44,13 +42,14 @@ class ChatPersistence:
 
     def dm_path(self, username1: str, username2: str) -> str:
         """
-        Return the canonical file path for a DM thread, with names sorted alphabetically.
+        The file path for a DM thread between two users is returned.
+        Names are sorted alphabetically.
 
         :param username1: First participant username.
         :type username1: str
         :param username2: Second participant username.
         :type username2: str
-        :return: Absolute path to the dm-<a>-<b>.json log file.
+        :return: Path to the dm-<a>-<b>.json file.
         :rtype: str
         """
         pair = sorted([username1, username2])
@@ -60,11 +59,12 @@ class ChatPersistence:
 
     def read_messages(self, filepath: str) -> list:
         """
-        Return the messages list from a log file, or an empty list if the file does not exist.
+        Messages are read from a log file and returned.
+        An empty list is returned if the file does not exist.
 
-        :param filepath: Absolute path to the JSON log file.
+        :param filepath: Path to the JSON log file.
         :type filepath: str
-        :return: List of message dicts read from the file.
+        :return: List of message dicts.
         :rtype: list
         """
         if not os.path.exists(filepath):
@@ -75,11 +75,11 @@ class ChatPersistence:
 
     def append_message(self, filepath: str, message: dict) -> None:
         """
-        Append a single message dict to a log file, creating it if needed.
+        A message is added to a log file. The file is created if it does not exist.
 
-        :param filepath: Absolute path to the JSON log file.
+        :param filepath: Path to the JSON log file.
         :type filepath: str
-        :param message: Message dict to append to the messages list.
+        :param message: Message dict to append.
         :type message: dict
         :return: None
         :rtype: None
@@ -93,13 +93,13 @@ class ChatPersistence:
 
     def save_broadcast_message(self, sender: str, text: str, timestamp: str) -> None:
         """
-        Persist a broadcast message to broadcast.json.
+        A broadcast message is saved to broadcast.json.
 
-        :param sender: Username of the message author.
+        :param sender: Username of the sender.
         :type sender: str
-        :param text: Message body.
+        :param text: Message text.
         :type text: str
-        :param timestamp: ISO-8601 timestamp string.
+        :param timestamp: ISO-8601 timestamp.
         :type timestamp: str
         :return: None
         :rtype: None
@@ -115,15 +115,15 @@ class ChatPersistence:
 
     def save_dm_message(self, sender: str, target: str, text: str, timestamp: str) -> None:
         """
-        Persist a direct message to the appropriate dm-<a>-<b>.json file.
+        A direct message is saved to the correct dm-<a>-<b>.json file.
 
-        :param sender: Username of the message author.
+        :param sender: Username of the sender.
         :type sender: str
         :param target: Username of the recipient.
         :type target: str
-        :param text: Message body.
+        :param text: Message text.
         :type text: str
-        :param timestamp: ISO-8601 timestamp string.
+        :param timestamp: ISO-8601 timestamp.
         :type timestamp: str
         :return: None
         :rtype: None
@@ -141,7 +141,7 @@ class ChatPersistence:
 
     def load_broadcast_history(self) -> list:
         """
-        Return all persisted broadcast messages, oldest first.
+        All saved broadcast messages are returned, oldest first.
 
         :return: List of broadcast message dicts.
         :rtype: list
@@ -150,28 +150,26 @@ class ChatPersistence:
 
     def load_dm_history(self, username1: str, username2: str) -> list:
         """
-        Return all persisted DM messages for the conversation between two users.
+        All saved DM messages between two users are returned.
 
         :param username1: First participant username.
         :type username1: str
         :param username2: Second participant username.
         :type username2: str
-        :return: List of DM message dicts for the conversation.
+        :return: List of DM message dicts.
         :rtype: list
         """
         return self.read_messages(self.dm_path(username1, username2))
 
     def load_all_history_for_user(self, username: str) -> dict:
         """
-        Build the complete chat history dict for a user who is logging in.
+        The full chat history for a logging-in user is built and returned.
+        All DM files involving the user are scanned and grouped by conversation partner.
 
-        Scans all DM files that involve the given username and groups the messages
-        by conversation partner.
-
-        :param username: The handle of the user who is logging in.
+        :param username: The username of the user who is logging in.
         :type username: str
-        :return: Dict with key 'BROADCAST' (list) and one key per DM partner (list),
-            e.g. {'BROADCAST': [...], 'Alice': [...], 'Charlie': [...]}.
+        :return: Dict with key 'BROADCAST' and one key per DM partner,
+            e.g. {'BROADCAST': [...], 'Alice': [...]}.
         :rtype: dict
         """
         history = {"BROADCAST": self.load_broadcast_history()}

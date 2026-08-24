@@ -155,10 +155,9 @@ Applied by both client input pre-checks and server handshake verification:
 --- 
 # TASKS (2)
 
-The comments are very verbose and mechanical. They need to be rewritten in a more human style. Rewrite 
-the docstrings in a more human style with the following guidelines: 
+The comments in docstring are very verbose and mechanical. They need to be rewritten in a more human style. Rewrite the docstrings in a more human style with the following guidelines: 
 
-- Avoid adding description even for obvious methods. For example, for the following method there is no need to add the `        Set up the server socket configuration and initialize all shared services.` description. (*DO NOT REMOVE THE parameter docstrings - only the obvious method descriptions*) 
+- *Avoid adding description even for obvious methods.* For example, for the following method there is no need to add the `        Set up the server socket configuration and initialize all shared services.` description. (*DO NOT REMOVE THE parameter docstrings - only the obvious method descriptions*) 
 
 ``` python 
     def __init__(self, host: str, port: int) -> None:
@@ -174,19 +173,25 @@ the docstrings in a more human style with the following guidelines:
         """
 ```
 
-- Avoid complex jargon and technical terms. 
+- Avoid complex jargon and technical terms. Some examples are given below: 
 
    - Instead of `Persist a broadcast message to broadcast.json.` use `Save a broadcast message to broadcast.json.` (e.g. save instead of persist, load instead of retrieve, etc.)
+   - Instead of `Return all persisted DM messages for the conversation between two users.` use `Get all saved DM messages for the conversation between two users.`
+   - Instead of `Route a broadcast or direct message from the authenticated client.` use `Send a received message to the correct recipient or broadcast forum.`
+   - Avoid using words like `daemon thread`, `thread safe`, `blocking`, `malformed`. For example `malformed` can be replaced with `incorrectly formatted`.
 
-
-- Simpler grammar and sentence structure.
+- Simpler grammar, breaks in sentences and simpler wording.
    - Instead of `Append a single message dict to a log file, creating it if needed` use `Add a message to a log file. Create the file if it doesn't exist.`
 
 - Use inconsistent and mixed styles in a couple of different files 
    - e.g. `Do X and return Y` can be written as 
       - `X is done and Y returned`. e.g, `Message is added to a log file. File is created if it doesn't exist.` 
       - `This method does X and returns Y` (`The method adds a message to a log file.` )
+   
 
    - *REMEMBER* 
       - use same style in the same file, but can be inconsistent across files
       - *DO NOT OVERDO IT* -> Inconsistency only in a couple of files is enough. 
+
+
+

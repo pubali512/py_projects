@@ -27,13 +27,11 @@ class SidebarPanel(tk.Frame):
 
     def __init__(self, parent: tk.Widget, on_broadcast_click: callable, on_user_click: callable) -> None:
         """
-        Initialize the sidebar with its parent widget and interaction callbacks.
-
         :param parent: Parent Tkinter widget.
         :type parent: tk.Widget
-        :param on_broadcast_click: Callback invoked when the Broadcast button is clicked.
+        :param on_broadcast_click: Called when the Broadcast button is clicked.
         :type on_broadcast_click: callable
-        :param on_user_click: Callback(username: str) invoked when a user button is clicked.
+        :param on_user_click: Called with a username when a user button is clicked.
         :type on_user_click: callable
         :return: None
         :rtype: None
@@ -49,7 +47,7 @@ class SidebarPanel(tk.Frame):
 
     def build_widgets(self) -> None:
         """
-        Construct the broadcast button, section header, and the user list container.
+        Build the broadcast button, section header, and user list container.
 
         :return: None
         :rtype: None
@@ -81,12 +79,12 @@ class SidebarPanel(tk.Frame):
 
     def set_users(self, usernames: list[str]) -> None:
         """
-        Rebuild the user button list with the supplied usernames.
+        Rebuild the user list from the given usernames.
 
-        Preserves existing unread highlighting for users who are still online.
-        Users who disconnected are removed from the unread set automatically.
+        Existing unread highlights are preserved for users still online.
+        Users who left are removed from the unread set.
 
-        :param usernames: List of currently online peer handles (own username excluded).
+        :param usernames: Online peer usernames (own username excluded).
         :type usernames: list[str]
         :return: None
         :rtype: None
@@ -120,7 +118,7 @@ class SidebarPanel(tk.Frame):
         """
         Mark a user as having an unread message (bold text).
 
-        :param username: The handle of the user with the new message.
+        :param username: The user with the new message.
         :type username: str
         :return: None
         :rtype: None
@@ -132,9 +130,9 @@ class SidebarPanel(tk.Frame):
 
     def clear_highlight(self, username: str) -> None:
         """
-        Remove the unread indicator from a user button.
+        Remove the unread indicator from a user's button.
 
-        :param username: The handle whose highlight should be cleared.
+        :param username: The user whose highlight to clear.
         :type username: str
         :return: None
         :rtype: None
@@ -147,16 +145,16 @@ class SidebarPanel(tk.Frame):
     @property
     def active_target(self) -> str:
         """
-        The username of the currently selected DM peer, or None for Broadcast.
+        The selected DM peer username, or None if Broadcast is active.
         """
         return self._active_target
 
     @active_target.setter
     def active_target(self, target: str) -> None:
         """
-        Visually distinguish the currently selected chat target.
+        Update the visual highlight to show the selected chat target.
 
-        :param target: Username of the active DM peer, or None when Broadcast is active.
+        :param target: Username of the active DM peer, or None for Broadcast.
         :type target: str
         :return: None
         :rtype: None

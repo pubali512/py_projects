@@ -34,11 +34,9 @@ class ClientHandler:
         validator: UsernameValidator,
     ) -> None:
         """
-        Initialize the handler with the accepted socket and shared server services.
-
         :param client_socket: The accepted TCP socket for this client.
         :type client_socket: socket.socket
-        :param address: (host, port) tuple of the remote peer.
+        :param address: (host, port) of the remote peer.
         :type address: tuple
         :param router: Shared message router.
         :type router: MessageRouter
@@ -46,7 +44,7 @@ class ClientHandler:
         :type registry: UserRegistry
         :param persistence: Shared chat persistence layer.
         :type persistence: ChatPersistence
-        :param validator: Username validator (stateless, shared safely).
+        :param validator: Username validator.
         :type validator: UsernameValidator
         :return: None
         :rtype: None
@@ -63,9 +61,9 @@ class ClientHandler:
 
     def send(self, data: bytes) -> None:
         """
-        Write bytes to this client's socket.
+        Send bytes to this client.
 
-        :param data: Encoded protocol message bytes to deliver.
+        :param data: Encoded message bytes.
         :type data: bytes
         :return: None
         :rtype: None
@@ -79,9 +77,9 @@ class ClientHandler:
 
     def handle_login(self, payload: dict) -> None:
         """
-        Process a LOGIN request: validate the username, register the user, and send history.
+        Validate and register the user, then send welcome data.
 
-        :param payload: Decoded LOGIN message dict containing the 'username' field.
+        :param payload: Decoded LOGIN message dict with the 'username' field.
         :type payload: dict
         :return: None
         :rtype: None
@@ -108,7 +106,7 @@ class ClientHandler:
 
     def handle_message(self, payload: dict) -> None:
         """
-        Route a broadcast or direct message from the authenticated client.
+        Forward a chat message from this client to the right target.
 
         :param payload: Decoded MSG message dict with 'target' and 'text' fields.
         :type payload: dict
@@ -130,7 +128,7 @@ class ClientHandler:
 
     def cleanup(self) -> None:
         """
-        Remove the user from the registry and notify remaining clients.
+        Unregister the user and notify the remaining clients.
 
         :return: None
         :rtype: None
@@ -148,15 +146,15 @@ class ClientHandler:
 
     # Main thread entry point
 
-    def run(self):
+    def run(self) -> None:
         """
-        Read and process protocol messages until the client disconnects.
+        Read incoming messages in a loop until the client disconnects or sends LOGOUT.
 
-        This method is intended to be called inside a daemon thread.
-        Malformed JSON lines are silently skipped; unexpected socket errors
-        and graceful LOGOUT both terminate the loop cleanly.
+        Incorrectly formatted JSON lines are skipped silently.
+
         :return: None
-        :rtype: None        """
+        :rtype: None
+        """
         socket_file = self._socket.makefile("r", encoding="utf-8")
         try:
             for line in socket_file:

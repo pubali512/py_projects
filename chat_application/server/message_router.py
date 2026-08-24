@@ -16,11 +16,9 @@ class MessageRouter:
 
     def __init__(self, registry: UserRegistry, persistence: ChatPersistence) -> None:
         """
-        Initialize the router with the shared registry and persistence services.
-
-        :param registry: The active user registry used to resolve send targets.
+        :param registry: User registry used to find send targets.
         :type registry: UserRegistry
-        :param persistence: The persistence layer used to save messages to disk.
+        :param persistence: Persistence layer for saving messages to disk.
         :type persistence: ChatPersistence
         :return: None
         :rtype: None
@@ -30,11 +28,11 @@ class MessageRouter:
 
     def route_broadcast(self, sender: str, text: str) -> None:
         """
-        Persist a broadcast message and deliver it to all connected clients.
+        Save and send a message to every connected client.
 
-        :param sender: Username of the originating client.
+        :param sender: Username of the sender.
         :type sender: str
-        :param text: Message body with emoji shortcodes already replaced by the client.
+        :param text: Message text.
         :type text: str
         :return: None
         :rtype: None
@@ -46,16 +44,15 @@ class MessageRouter:
 
     def route_direct(self, sender: str, target: str, text: str) -> None:
         """
-        Persist a direct message and deliver it to recipient and sender.
+        Save and send a private message to the recipient and a copy to the sender.
 
-        If the target is not currently connected the message is still persisted so
-        that the target will receive it as history on their next login.
+        If the recipient is offline the message is still saved for their next login.
 
-        :param sender: Username of the originating client.
+        :param sender: Username of the sender.
         :type sender: str
-        :param target: Username of the intended recipient.
+        :param target: Username of the recipient.
         :type target: str
-        :param text: Message body.
+        :param text: Message text.
         :type text: str
         :return: None
         :rtype: None
@@ -69,7 +66,7 @@ class MessageRouter:
 
     def broadcast_users_list(self) -> None:
         """
-        Send the current online user list to every connected client.
+        Send the current online user list to all clients.
 
         :return: None
         :rtype: None
@@ -80,7 +77,7 @@ class MessageRouter:
 
     def send_users_list_to(self, username: str) -> None:
         """
-        Send the current online user list to a single client.
+        Send the current online user list to one specific client.
 
         :param username: The recipient username.
         :type username: str
@@ -93,9 +90,9 @@ class MessageRouter:
 
     def broadcast_sys(self, text: str) -> None:
         """
-        Broadcast a system notification to all connected clients.
+        Send a system notification to all connected clients.
 
-        :param text: Human-readable system message (e.g., 'Alice joined the chat').
+        :param text: Notification text (e.g., 'Alice joined the chat').
         :type text: str
         :return: None
         :rtype: None

@@ -32,11 +32,9 @@ class ChatView(tk.Frame):
 
     def __init__(self, parent: tk.Widget, on_send_callback: callable) -> None:
         """
-        Initialize the chat view with its parent widget and send callback.
-
         :param parent: Parent Tkinter widget.
         :type parent: tk.Widget
-        :param on_send_callback: Callback(text: str) invoked with message text on send.
+        :param on_send_callback: Called with the message text when the user sends.
         :type on_send_callback: callable
         :return: None
         :rtype: None
@@ -48,7 +46,7 @@ class ChatView(tk.Frame):
 
     def build_widgets(self) -> None:
         """
-        Construct header, chat history Text widget with scrollbar, and input bar.
+        This method builds the header, message area, and input bar.
 
         :return: None
         :rtype: None
@@ -122,7 +120,7 @@ class ChatView(tk.Frame):
 
     def configure_tags(self) -> None:
         """
-        Set up Text widget tags for message styling.
+        This method sets up the styling tags for message bubbles.
 
         :return: None
         :rtype: None
@@ -177,16 +175,16 @@ class ChatView(tk.Frame):
     @property
     def header(self) -> str:
         """
-        The text currently shown in the channel/DM header label.
+        The text shown in the channel header label.
         """
         return self._header_label.cget("text")
 
     @header.setter
     def header(self, title: str) -> None:
         """
-        Update the channel/DM header label.
+        This method updates the channel header text.
 
-        :param title: New header text (e.g., '📢 BROADCAST CHANNEL' or '💬 Private Chat with @Bob').
+        :param title: New header text.
         :type title: str
         :return: None
         :rtype: None
@@ -196,14 +194,14 @@ class ChatView(tk.Frame):
     @property
     def own_username(self) -> str:
         """
-        The local user's handle used for message alignment.
+        The local user's handle used to align messages.
         """
         return self._own_username
 
     @own_username.setter
     def own_username(self, username: str) -> None:
         """
-        Set the local user's username for message alignment.
+        This method sets the local user's username for message alignment.
 
         :param username: The authenticated username of the local user.
         :type username: str
@@ -222,9 +220,9 @@ class ChatView(tk.Frame):
     @input_enabled.setter
     def input_enabled(self, enabled: bool) -> None:
         """
-        Enable or disable the message input entry and send button.
+        This method enables or disables the message input and send button.
 
-        :param enabled: True to allow sending, False to disable (e.g., when offline).
+        :param enabled: True to allow sending, False to disable.
         :type enabled: bool
         :return: None
         :rtype: None
@@ -237,15 +235,15 @@ class ChatView(tk.Frame):
 
     def add_message(self, sender: str, text: str, timestamp: str, is_system: bool = False) -> None:
         """
-        Append a single message entry to the history area.
+        This method appends a single message to the chat history area.
 
         :param sender: Username of the message author.
         :type sender: str
-        :param text: Message body.
+        :param text: Message text.
         :type text: str
-        :param timestamp: ISO-8601 timestamp string.
+        :param timestamp: ISO-8601 timestamp.
         :type timestamp: str
-        :param is_system: True for SYS-type notifications (centered, italic style).
+        :param is_system: True for system notifications (centered italic style).
         :type is_system: bool
         :return: None
         :rtype: None
@@ -270,7 +268,7 @@ class ChatView(tk.Frame):
 
     def clear(self) -> None:
         """
-        Remove all messages from the history display.
+        This method clears all messages from the history display.
 
         :return: None
         :rtype: None
@@ -281,9 +279,9 @@ class ChatView(tk.Frame):
 
     def load_history(self, messages: list) -> None:
         """
-        Clear the view and render a list of stored message dicts.
+        This method clears the view and renders the given list of messages.
 
-        :param messages: List of message payload dicts (MSG or SYS type).
+        :param messages: Message payload dicts to render (MSG or SYS type).
         :type messages: list
         :return: None
         :rtype: None

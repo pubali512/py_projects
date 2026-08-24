@@ -31,11 +31,11 @@ class Protocol:
     @staticmethod
     def encode(payload: dict) -> bytes:
         """
-        Serialize a payload dict to a newline-terminated UTF-8 JSON bytes message.
+        Serialize `payload` to a newline-terminated UTF-8 JSON message.
 
-        :param payload: The message data to serialize.
+        :param payload: Message data to serialize.
         :type payload: dict
-        :return: Newline-terminated UTF-8 encoded JSON bytes.
+        :return: Newline-terminated JSON bytes.
         :rtype: bytes
         """
         return (json.dumps(payload, ensure_ascii=False) + "\n").encode("utf-8")
@@ -43,11 +43,11 @@ class Protocol:
     @staticmethod
     def decode(line: str) -> dict:
         """
-        Deserialize a JSON string (one protocol line) to a payload dict.
+        Parse a JSON protocol line into a payload dict.
 
-        :param line: A single newline-delimited JSON string.
+        :param line: A single JSON string from the socket.
         :type line: str
-        :return: Parsed message payload.
+        :return: Parsed payload.
         :rtype: dict
         """
         return json.loads(line.strip())
@@ -57,11 +57,11 @@ class Protocol:
     @staticmethod
     def make_login(username: str) -> bytes:
         """
-        Build a LOGIN request packet to send to the server.
+        Build a LOGIN packet for the given username.
 
-        :param username: The handle to register on the server.
+        :param username: Username to register.
         :type username: str
-        :return: Encoded LOGIN message bytes.
+        :return: Encoded LOGIN bytes.
         :rtype: bytes
         """
         return Protocol.encode({"type": Protocol.TYPE_LOGIN, "username": username})
@@ -69,13 +69,13 @@ class Protocol:
     @staticmethod
     def make_client_msg(target: str, text: str) -> bytes:
         """
-        Build a chat message packet to send from client to server.
+        Build a MSG packet to send from client to server.
 
-        :param target: 'BROADCAST' for the public channel, or a username for a DM.
+        :param target: 'BROADCAST' or a username for a DM.
         :type target: str
-        :param text: Message body with emoji shortcodes already replaced.
+        :param text: Message text.
         :type text: str
-        :return: Encoded MSG message bytes.
+        :return: Encoded MSG bytes.
         :rtype: bytes
         """
         return Protocol.encode({"type": Protocol.TYPE_MSG, "target": target, "text": text})
@@ -83,9 +83,9 @@ class Protocol:
     @staticmethod
     def make_logout() -> bytes:
         """
-        Build a LOGOUT packet for a graceful client disconnect.
+        Build a LOGOUT packet.
 
-        :return: Encoded LOGOUT message bytes.
+        :return: Encoded LOGOUT bytes.
         :rtype: bytes
         """
         return Protocol.encode({"type": Protocol.TYPE_LOGOUT})
@@ -95,14 +95,14 @@ class Protocol:
     @staticmethod
     def make_login_ok(users: list, history: dict) -> bytes:
         """
-        Build a LOGIN_OK approval packet with the current user list and chat history.
+        Build a LOGIN_OK packet with the user list and full chat history.
 
-        :param users: List of currently connected usernames (including the new user).
+        :param users: Currently connected usernames, including the new user.
         :type users: list
-        :param history: Dict mapping conversation key to list of message dicts.
-            Keys: 'BROADCAST' for the public channel, or a username for DMs.
+        :param history: Dict mapping conversation key to list of messages.
+            'BROADCAST' for the public channel; a username for DMs.
         :type history: dict
-        :return: Encoded LOGIN_OK message bytes.
+        :return: Encoded LOGIN_OK bytes.
         :rtype: bytes
         """
         return Protocol.encode({
@@ -114,11 +114,11 @@ class Protocol:
     @staticmethod
     def make_login_err(reason: str) -> bytes:
         """
-        Build a LOGIN_ERR rejection packet with a human-readable reason.
+        Build a LOGIN_ERR packet with a reason string.
 
-        :param reason: Description of why the login was rejected.
+        :param reason: Why the login was rejected.
         :type reason: str
-        :return: Encoded LOGIN_ERR message bytes.
+        :return: Encoded LOGIN_ERR bytes.
         :rtype: bytes
         """
         return Protocol.encode({"type": Protocol.TYPE_LOGIN_ERR, "reason": reason})
@@ -126,17 +126,17 @@ class Protocol:
     @staticmethod
     def make_server_msg(target: str, sender: str, text: str, timestamp: str) -> bytes:
         """
-        Build a routed chat message packet sent from server to client(s).
+        Build a routed MSG packet to send from server to one or more clients.
 
         :param target: 'BROADCAST' or the recipient username for DMs.
         :type target: str
         :param sender: Username of the message author.
         :type sender: str
-        :param text: Message body with emoji shortcodes already replaced by the client.
+        :param text: Message text.
         :type text: str
-        :param timestamp: ISO-8601 timestamp string set by the server.
+        :param timestamp: ISO-8601 timestamp set by the server.
         :type timestamp: str
-        :return: Encoded MSG message bytes.
+        :return: Encoded MSG bytes.
         :rtype: bytes
         """
         return Protocol.encode({
@@ -150,11 +150,11 @@ class Protocol:
     @staticmethod
     def make_users(users: list) -> bytes:
         """
-        Build a USERS packet to broadcast the updated list of online usernames.
+        Build a USERS packet with the current online list.
 
-        :param users: List of currently online usernames.
+        :param users: Currently online usernames.
         :type users: list
-        :return: Encoded USERS message bytes.
+        :return: Encoded USERS bytes.
         :rtype: bytes
         """
         return Protocol.encode({"type": Protocol.TYPE_USERS, "users": users})
@@ -164,11 +164,11 @@ class Protocol:
         """
         Build a SYS notification packet (e.g., 'Alice joined the chat').
 
-        :param text: Human-readable notification text.
+        :param text: Notification text.
         :type text: str
-        :param timestamp: ISO-8601 timestamp string.
+        :param timestamp: ISO-8601 timestamp.
         :type timestamp: str
-        :return: Encoded SYS message bytes.
+        :return: Encoded SYS bytes.
         :rtype: bytes
         """
         return Protocol.encode({"type": Protocol.TYPE_SYS, "text": text, "timestamp": timestamp})

@@ -11,9 +11,9 @@ class UserRegistry:
 
     def add_user(self, username: str, send_fn: callable) -> None:
         """
-        Register an authenticated user with their thread-safe send function.
+        This method registers a user with the send function for their connection.
 
-        :param username: The validated, unique handle for this session.
+        :param username: The unique username for this session.
         :type username: str
         :param send_fn: Callable(bytes) that writes data to the user's socket.
         :type send_fn: callable
@@ -24,44 +24,44 @@ class UserRegistry:
 
     def remove_user(self, username: str) -> bool:
         """
-        Deregister a user.
+        This method removes a user from the registry.
 
-        :param username: The handle to remove.
+        :param username: The username to remove.
         :type username: str
-        :return: True if the user was present and removed, False if not found.
+        :return: True if the user was found and removed, False otherwise.
         :rtype: bool
         """
         return self._users.pop(username, None) is not None
 
     def is_active(self, username: str) -> bool:
         """
-        Return True if the username is currently registered.
+        This method checks if a user is currently connected.
 
-        :param username: The handle to check.
+        :param username: The username to check.
         :type username: str
-        :return: True if the user is currently connected.
+        :return: True if the user is online.
         :rtype: bool
         """
         return username in self._users
 
     def get_all_usernames(self) -> list[str]:
         """
-        Return a snapshot list of all currently connected usernames.
+        This method returns a list of all currently connected usernames.
 
-        :return: List of currently connected username strings.
+        :return: List of online usernames.
         :rtype: list[str]
         """
         return list(self._users.keys())
 
     def send_to_user(self, username: str, data: bytes) -> bool:
         """
-        Send raw bytes to a specific user.
+        This method sends bytes to a specific user.
 
-        :param username: Target handle.
+        :param username: Target username.
         :type username: str
-        :param data: Encoded protocol message bytes.
+        :param data: Encoded message bytes.
         :type data: bytes
-        :return: True if the user was found and data was sent successfully.
+        :return: True if the user was found and the data was sent.
         :rtype: bool
         """
         send_fn = self._users.get(username)
@@ -75,9 +75,9 @@ class UserRegistry:
 
     def broadcast(self, data: bytes, exclude: str = None) -> None:
         """
-        Send data to every registered user, optionally skipping one.
+        This method sends bytes to every connected user, skipping one if specified.
 
-        :param data: Encoded protocol message bytes.
+        :param data: Encoded message bytes.
         :type data: bytes
         :param exclude: Username to skip, or None to send to all.
         :type exclude: str

@@ -25,11 +25,11 @@ class EmojiProcessor:
     @staticmethod
     def process(text: str) -> str:
         """
-        Replace all recognized shortcodes in text with their emoji characters.
+        Replace emoji shortcodes in text with their Unicode characters.
 
-        :param text: Raw message text typed by the user.
+        :param text: Raw message text from the user.
         :type text: str
-        :return: Text with all recognized shortcodes substituted; unknown tokens are unchanged.
+        :return: Text with shortcodes substituted. Unknown tokens are left unchanged.
         :rtype: str
         """
         for shortcode, emoji in EmojiProcessor.SHORTCODE_MAP:

@@ -18,11 +18,9 @@ class NetworkReceiver:
 
     def __init__(self, client_socket: socket.socket, on_message_callback: callable, on_disconnect_callback: callable) -> None:
         """
-        Initialize the receiver with the connected socket and event callbacks.
-
         :param client_socket: The connected TCP socket to the server.
         :type client_socket: socket.socket
-        :param on_message_callback: Called with a parsed payload dict for each received message.
+        :param on_message_callback: Called with a parsed payload dict for each message.
         :type on_message_callback: callable
         :param on_disconnect_callback: Called with no arguments when the socket closes.
         :type on_disconnect_callback: callable
@@ -37,7 +35,7 @@ class NetworkReceiver:
 
     def start(self) -> None:
         """
-        Start the background receiving thread.
+        Start the background receive thread.
 
         :return: None
         :rtype: None
@@ -47,7 +45,7 @@ class NetworkReceiver:
 
     def stop(self) -> None:
         """
-        Signal the receiving loop to stop on its next iteration.
+        Signal the receive loop to stop.
 
         :return: None
         :rtype: None
@@ -57,16 +55,16 @@ class NetworkReceiver:
     @property
     def is_running(self) -> bool:
         """
-        True while the background receiver thread is active.
+        True while the receive thread is running.
         """
         return self._is_running
 
     def receive_loop(self) -> None:
         """
-        Continuously read newline-delimited JSON messages from the server socket.
+        Read incoming JSON messages from the server in a loop.
 
-        Malformed JSON lines are silently skipped. The loop exits on socket error,
-        EOF, or when stop() has been called.
+        Incorrectly formatted lines are skipped. The loop exits on a
+        socket error, end of stream, or when stop() is called.
 
         :return: None
         :rtype: None

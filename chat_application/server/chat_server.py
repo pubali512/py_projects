@@ -24,11 +24,9 @@ class ChatServer:
 
     def __init__(self, host: str, port: int) -> None:
         """
-        Set up the server socket configuration and initialize all shared services.
-
         :param host: Hostname or IP address to bind to (e.g., 'localhost').
         :type host: str
-        :param port: TCP port number to listen on (e.g., 5555).
+        :param port: TCP port number to listen on.
         :type port: int
         :return: None
         :rtype: None

@@ -23,16 +23,14 @@ class ChatClient:
 
     def __init__(self, host: str, port: int, on_message: callable, on_disconnect: callable) -> None:
         """
-        Initialize the client with server address and network event callbacks.
-
         :param host: Server hostname or IP address.
         :type host: str
         :param port: Server TCP port.
         :type port: int
-        :param on_message: Callback(payload: dict) invoked for every server message,
-            called from the background NetworkReceiver thread.
+        :param on_message: Called with each incoming server message payload.
+            Runs on the background receive thread.
         :type on_message: callable
-        :param on_disconnect: Callback() invoked when the connection is closed.
+        :param on_disconnect: Called with no arguments when the connection closes.
         :type on_disconnect: callable
         :return: None
         :rtype: None
@@ -48,16 +46,14 @@ class ChatClient:
 
     def connect(self, username: str) -> tuple[bool, str]:
         """
-        Open a TCP connection to the server and send the LOGIN message.
+        Open a TCP connection and send the login request.
 
-        The method returns as soon as the socket is established and the login
-        request is sent. The caller should wait for LOGIN_OK or LOGIN_ERR via
-        the on_message_callback to know whether authentication succeeded.
+        The server's response (LOGIN_OK or LOGIN_ERR) arrives via the message
+        callback, not directly from this method.
 
-        :param username: The handle to register on the server.
+        :param username: Username to register on the server.
         :type username: str
-        :return: (True, None) if the TCP connection was established;
-            (False, error_message) if the connection could not be opened.
+        :return: (True, None) on success; (False, error message) if connection failed.
         :rtype: tuple[bool, str]
         """
         try:
@@ -83,7 +79,7 @@ class ChatClient:
 
     def disconnect(self) -> None:
         """
-        Send LOGOUT and close the connection gracefully.
+        Send a LOGOUT message and close the socket.
 
         :return: None
         :rtype: None
@@ -102,11 +98,11 @@ class ChatClient:
 
     def send_message(self, target: str, text: str) -> None:
         """
-        Send a chat message to the given target.
+        Send a chat message to a target channel or user.
 
-        :param target: 'BROADCAST' for the public channel, or a username for a DM.
+        :param target: 'BROADCAST' or a username for a DM.
         :type target: str
-        :param text: Message body with emoji shortcodes already replaced.
+        :param text: Message text with emoji shortcodes already replaced.
         :type text: str
         :return: None
         :rtype: None
@@ -122,20 +118,20 @@ class ChatClient:
     @property
     def is_connected(self) -> bool:
         """
-        Return True if the client currently has an active server connection.
+        True if a server connection is active.
         """
         return self._connected
 
     @property
     def username(self) -> str:
         """
-        Return the username used for the current (or last) connection.
+        The username used for the current or last connection.
         """
         return self._username
 
     def handle_network_disconnect(self) -> None:
         """
-        Called by NetworkReceiver when the socket drops unexpectedly.
+        Called when the socket drops. Notifies the disconnect callback.
 
         :return: None
         :rtype: None

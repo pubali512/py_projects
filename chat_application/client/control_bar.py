@@ -19,13 +19,11 @@ class ControlBar(tk.Frame):
 
     def __init__(self, parent: tk.Widget, on_connect: callable, on_disconnect: callable) -> None:
         """
-        Initialize the control bar with its parent widget and action callbacks.
-
         :param parent: Parent Tkinter widget.
         :type parent: tk.Widget
-        :param on_connect: Zero-argument callback for the Connect button.
+        :param on_connect: Called when the Connect button is clicked.
         :type on_connect: callable
-        :param on_disconnect: Zero-argument callback for the Disconnect button.
+        :param on_disconnect: Called when the Disconnect button is clicked.
         :type on_disconnect: callable
         :return: None
         :rtype: None
@@ -38,7 +36,7 @@ class ControlBar(tk.Frame):
 
     def build_widgets(self) -> None:
         """
-        Construct and lay out all child widgets.
+        Build and arrange the Connect, Disconnect, and status widgets.
 
         :return: None
         :rtype: None
@@ -82,9 +80,9 @@ class ControlBar(tk.Frame):
 
     def set_online(self, username: str) -> None:
         """
-        Switch the bar to online state and display the active username.
+        Switch to online state and show the active username.
 
-        :param username: The authenticated handle shown in the status label.
+        :param username: The authenticated username to display.
         :type username: str
         :return: None
         :rtype: None
@@ -95,7 +93,7 @@ class ControlBar(tk.Frame):
 
     def set_offline(self) -> None:
         """
-        Switch the bar to offline state and reset all controls.
+        Switch to offline state and reset all controls.
 
         :return: None
         :rtype: None

@@ -19,11 +19,11 @@ class UsernameValidator:
     @staticmethod
     def validate(username: str) -> tuple[bool, str]:
         """
-        Check whether a username satisfies all naming rules.
+        Check if a username follows all naming rules.
 
-        :param username: The handle to validate.
+        :param username: The username to check.
         :type username: str
-        :return: Tuple (is_valid, reason) where reason is empty when is_valid is True.
+        :return: Tuple (is_valid, reason). reason is empty if the username is valid.
         :rtype: tuple[bool, str]
         """
         if not username or len(username) < UsernameValidator.MIN_LENGTH:
