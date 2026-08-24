@@ -57,7 +57,7 @@ class SidebarPanel(tk.Frame):
             text="📢 BROADCAST",
             command=self._on_broadcast_click,
             bg="#1976D2",
-            fg="white",
+            fg="blue",
             activebackground="#0D47A1",
             relief=tk.FLAT,
             pady=9,
