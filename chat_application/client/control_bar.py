@@ -13,6 +13,7 @@ class ControlBar(tk.Frame):
         set_offline()         -> enables Connect, disables Disconnect, resets label.
     """
 
+    DISABLED_FG_COLOR = "#968B8B"
     BG_COLOR = "#f5f5f5"
     CONNECT_COLOR = "#88D18A"
     DISCONNECT_COLOR = "#f08381"
@@ -47,6 +48,7 @@ class ControlBar(tk.Frame):
             command=self._on_connect,
             bg=self.CONNECT_COLOR,
             fg="black",
+            disabledforeground=self.DISABLED_FG_COLOR,
             activebackground="#388E3C",
             relief=tk.FLAT,
             padx=12,
@@ -61,6 +63,7 @@ class ControlBar(tk.Frame):
             command=self._on_disconnect,
             bg=self.DISCONNECT_COLOR,
             fg="black",
+            disabledforeground=self.DISABLED_FG_COLOR,
             activebackground="#b71c1c",
             relief=tk.FLAT,
             padx=12,
