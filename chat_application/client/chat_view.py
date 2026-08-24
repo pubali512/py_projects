@@ -80,7 +80,7 @@ class ChatView(tk.Frame):
             padx=10,
             pady=6,
             relief=tk.FLAT,
-            font=("Arial", 10),
+            font=("Arial", 12),
             cursor="arrow",
         )
         self._text_area.pack(fill=tk.BOTH, expand=True)
@@ -96,7 +96,7 @@ class ChatView(tk.Frame):
         self._input_entry = tk.Entry(
             input_frame,
             textvariable=self._message_var,
-            font=("Arial", 10),
+            font=("Arial", 12),
             relief=tk.SOLID,
             bd=1,
         )
@@ -113,7 +113,7 @@ class ChatView(tk.Frame):
             relief=tk.FLAT,
             padx=12,
             pady=5,
-            font=("Arial", 10),
+            font=("Arial", 12),
             cursor="hand2",
         )
         self._send_btn.pack(side=tk.RIGHT, padx=(0, 10))
@@ -126,13 +126,13 @@ class ChatView(tk.Frame):
         :rtype: None
         """
         self._text_area.tag_configure(
-            "name_own", font=("Arial", 9, "bold"), foreground=self.COLOR_NAME_OWN
+            "name_own", font=("Arial", 11, "bold"), foreground=self.COLOR_NAME_OWN
         )
         self._text_area.tag_configure(
-            "name_other", font=("Arial", 9, "bold"), foreground=self.COLOR_NAME_OTHER
+            "name_other", font=("Arial", 11, "bold"), foreground=self.COLOR_NAME_OTHER
         )
         self._text_area.tag_configure(
-            "timestamp_tag", font=("Arial", 8), foreground=self.COLOR_TIMESTAMP
+            "timestamp_tag", font=("Arial", 11), foreground=self.COLOR_TIMESTAMP
         )
         self._text_area.tag_configure(
             "own_bubble",
@@ -153,7 +153,7 @@ class ChatView(tk.Frame):
         self._text_area.tag_configure(
             "system_msg",
             foreground=self.COLOR_SYS,
-            font=("Arial", 9, "italic"),
+            font=("Arial", 11, "italic"),
             justify=tk.CENTER,
             spacing1=4,
             spacing3=4,

@@ -78,7 +78,7 @@ class ControlBar(tk.Frame):
             textvariable=self._status_text,
             bg=self.BG_COLOR,
             fg="#444444",
-            font=("Arial", 10),
+            font=("Arial", 12),
         ).pack(side=tk.RIGHT, padx=15)
 
     def set_online(self, username: str) -> None:

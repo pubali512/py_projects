@@ -22,8 +22,8 @@ class SidebarPanel(tk.Frame):
     BG_COLOR = "#eeeeee"
     ACTIVE_BG = "#b0c4de"
     INACTIVE_BG = "#eeeeee"
-    FONT_NORMAL = ("Arial", 10)
-    FONT_UNREAD = ("Arial", 10, "bold")
+    FONT_NORMAL = ("Arial", 11)
+    FONT_UNREAD = ("Arial", 11, "bold")
 
     def __init__(self, parent: tk.Widget, on_broadcast_click: callable, on_user_click: callable) -> None:
         """
@@ -61,7 +61,7 @@ class SidebarPanel(tk.Frame):
             activebackground="#0D47A1",
             relief=tk.FLAT,
             pady=9,
-            font=("Arial", 10, "bold"),
+            font=("Arial", 11, "bold"),
             cursor="hand2",
         )
         self._broadcast_btn.pack(fill=tk.X, padx=8, pady=(8, 4))
@@ -71,7 +71,7 @@ class SidebarPanel(tk.Frame):
             text="ONLINE MEMBERS",
             bg=self.BG_COLOR,
             fg="#757575",
-            font=("Arial", 8, "bold"),
+            font=("Arial", 11, "bold"),
         ).pack(anchor=tk.W, padx=10, pady=(6, 2))
 
         self._user_list_frame = tk.Frame(self, bg=self.BG_COLOR)
