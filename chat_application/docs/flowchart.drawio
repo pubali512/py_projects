@@ -234,7 +234,7 @@
             <mxPoint x="945" y="600" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uWtSlW25CTDxmwjOOE3I-77" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Meesage from&amp;nbsp;&lt;div&gt;Server&lt;/div&gt;" vertex="1">
+        <mxCell id="uWtSlW25CTDxmwjOOE3I-77" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Message from&amp;nbsp;&lt;div&gt;Server&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="140" x="890" y="1080" as="geometry" />
         </mxCell>
         <mxCell id="uWtSlW25CTDxmwjOOE3I-78" edge="1" parent="1" source="uWtSlW25CTDxmwjOOE3I-13" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.625;exitY=1.06;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitPerimeter=0;" target="uWtSlW25CTDxmwjOOE3I-77" value="">
