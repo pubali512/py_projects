@@ -8,11 +8,11 @@ from server.user_registry import UserRegistry
 
 
 class ClientHandler:
-    """Handles all communication with a single connected client in a dedicated thread.
+    """Handles all message exchanges with a single connected client.
 
     Lifecycle:
         1. ClientHandler is created by ChatServer for each accepted connection.
-        2. ChatServer starts the handler in a daemon thread via run().
+        2. ChatServer starts the handler in a new thread via run().
         3. The handler reads protocol lines from the socket until the client
            disconnects or sends LOGOUT.
         4. On exit the handler removes the user from the registry and notifies
@@ -59,7 +59,7 @@ class ClientHandler:
 
     # Used as the send callable stored in UserRegistry.
 
-    def send(self, data: bytes) -> None:
+    def _send(self, data: bytes) -> None:
         """
         Send bytes to this client.
 
@@ -75,7 +75,7 @@ class ClientHandler:
 
     # Message handlers
 
-    def handle_login(self, payload: dict) -> None:
+    def _handle_login(self, payload: dict) -> None:
         """
         Validate and register the user, then send welcome data.
 
@@ -87,24 +87,24 @@ class ClientHandler:
         username = payload.get("username", "")
         is_valid, reason = self._validator.validate(username)
         if not is_valid:
-            self.send(Protocol.make_login_err(reason))
+            self._send(Protocol.make_login_err(reason))
             return
 
         if self._registry.is_active(username):
-            self.send(Protocol.make_login_err("Username is already taken"))
+            self._send(Protocol.make_login_err("Username is already taken"))
             return
 
         self._username = username
-        self._registry.add_user(username, self.send)
+        self._registry.add_user(username, self._send)
 
         history = self._persistence.load_all_history_for_user(username)
         users = self._registry.get_all_usernames()
-        self.send(Protocol.make_login_ok(users, history))
+        self._send(Protocol.make_login_ok(users, history))
 
         self._router.broadcast_users_list()
         self._router.broadcast_sys(f"{username} joined the chat")
 
-    def handle_message(self, payload: dict) -> None:
+    def _handle_message(self, payload: dict) -> None:
         """
         Forward a chat message from this client to the right target.
 
@@ -126,7 +126,7 @@ class ClientHandler:
         else:
             self._router.route_direct(self._username, target, text)
 
-    def cleanup(self) -> None:
+    def _cleanup(self) -> None:
         """
         Unregister the user and notify the remaining clients.
 
@@ -168,13 +168,13 @@ class ClientHandler:
 
                 msg_type = payload.get("type")
                 if msg_type == Protocol.TYPE_LOGIN:
-                    self.handle_login(payload)
+                    self._handle_login(payload)
                 elif msg_type == Protocol.TYPE_MSG:
-                    self.handle_message(payload)
+                    self._handle_message(payload)
                 elif msg_type == Protocol.TYPE_LOGOUT:
                     break
         except (OSError, ConnectionError):
             pass
         finally:
             socket_file.close()
-            self.cleanup()
+            self._cleanup()

@@ -70,7 +70,7 @@ class ChatClient:
         self._receiver = NetworkReceiver(
             client_socket=self._socket,
             on_message_callback=self._on_message,
-            on_disconnect_callback=self.handle_network_disconnect,
+            on_disconnect_callback=self._handle_network_disconnect,
         )
         self._receiver.start()
 
@@ -129,7 +129,7 @@ class ChatClient:
         """
         return self._username
 
-    def handle_network_disconnect(self) -> None:
+    def _handle_network_disconnect(self) -> None:
         """
         Called when the socket drops. Notifies the disconnect callback.
 

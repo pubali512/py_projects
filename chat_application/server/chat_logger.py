@@ -38,10 +38,10 @@ class ChatLogger:
     # Path helpers
 
     @property
-    def broadcast_path(self) -> str:
+    def _broadcast_path(self) -> str:
         return os.path.join(self._logs_dir, self.BROADCAST_FILE)
 
-    def dm_path(self, username1: str, username2: str) -> str:
+    def _dm_path(self, username1: str, username2: str) -> str:
         """
         The file path for a DM message between two users is returned.
         Names are sorted alphabetically.
@@ -58,7 +58,7 @@ class ChatLogger:
 
     # Low-level read/write
 
-    def read_messages(self, filepath: str) -> list:
+    def _read_messages(self, filepath: str) -> list:
         """
         Messages are read from a log file and returned.
         An empty list is returned if the file does not exist.
@@ -74,7 +74,7 @@ class ChatLogger:
             data = json.load(file_handle)
         return data.get("messages", [])
 
-    def append_message(self, filepath: str, message: dict) -> None:
+    def _append_message(self, filepath: str, message: dict) -> None:
         """
         A message is added to a log file. The file is created if it does not exist.
 
@@ -85,7 +85,7 @@ class ChatLogger:
         :return: None
         :rtype: None
         """
-        messages = self.read_messages(filepath)
+        messages = self._read_messages(filepath)
         messages.append(message)
         with open(filepath, "w", encoding="utf-8") as file_handle:
             json.dump({"messages": messages}, file_handle, ensure_ascii=False, indent=2)
@@ -112,7 +112,7 @@ class ChatLogger:
             "text": text,
             "timestamp": timestamp
         }
-        self.append_message(self.broadcast_path, message)
+        self._append_message(self._broadcast_path, message)
 
     def save_dm_message(self, sender: str, target: str, text: str, timestamp: str) -> None:
         """
@@ -136,20 +136,20 @@ class ChatLogger:
             "text": text,
             "timestamp": timestamp
         }
-        self.append_message(self.dm_path(sender, target), message)
+        self._append_message(self._dm_path(sender, target), message)
 
     # Public read methods
 
-    def load_broadcast_history(self) -> list:
+    def _load_broadcast_history(self) -> list:
         """
         All saved broadcast messages are returned, oldest first.
 
         :return: List of broadcast message dicts.
         :rtype: list
         """
-        return self.read_messages(self.broadcast_path)
+        return self._read_messages(self._broadcast_path)
 
-    def load_dm_history(self, username1: str, username2: str) -> list:
+    def _load_dm_history(self, username1: str, username2: str) -> list:
         """
         All saved DM messages between two users are returned.
 
@@ -160,7 +160,7 @@ class ChatLogger:
         :return: List of DM message dicts.
         :rtype: list
         """
-        return self.read_messages(self.dm_path(username1, username2))
+        return self._read_messages(self._dm_path(username1, username2))
 
     def load_all_history_for_user(self, username: str) -> dict:
         """
@@ -173,7 +173,7 @@ class ChatLogger:
             e.g. {'BROADCAST': [...], 'Alice': [...]}.
         :rtype: dict
         """
-        history = {"BROADCAST": self.load_broadcast_history()}
+        history = {"BROADCAST": self._load_broadcast_history()}
 
         # dm-<a>-<b>.json where a and b are separated by a single dash.
         # Since usernames only contain [a-zA-Z0-9_], splitting on '-' is unambiguous.
@@ -186,8 +186,8 @@ class ChatLogger:
                 continue
             user_a, user_b = parts[0], parts[1]
             if user_a == username:
-                history[user_b] = self.read_messages(filepath)
+                history[user_b] = self._read_messages(filepath)
             elif user_b == username:
-                history[user_a] = self.read_messages(filepath)
+                history[user_a] = self._read_messages(filepath)
 
         return history

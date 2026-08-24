@@ -32,9 +32,9 @@ class ControlBar(tk.Frame):
         self._on_connect = on_connect
         self._on_disconnect = on_disconnect
         self._status_text = tk.StringVar(value="Status: Offline")
-        self.build_widgets()
+        self._build_ui()
 
-    def build_widgets(self) -> None:
+    def _build_ui(self) -> None:
         """
         Build and arrange the Connect, Disconnect, and status widgets.
 

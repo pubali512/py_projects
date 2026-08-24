@@ -2,17 +2,25 @@ import json
 
 
 class Protocol:
-    """Message type constants and encode/decode helpers for the chat protocol.
+    """This class implements the simple communicattion protocol the client and server use to communicate.
 
-    All messages are newline-terminated JSON objects transmitted over TCP.
-    Client-to-server and server-to-client message shapes differ; factory methods
-    document each direction explicitly.
+    
+    Each message exchanged between a client and the server has a special purpose 
+    (e.g., a login message from the client is different from a chat message). Therefore, 
+    additional information (e.g., the type of the message, the sender of the message 
+    etc.) are transmitted along with the actual message's payload. This entire 
+    message (payload + additional information) is represented as a Python dict, which is 
+    converted to a JSON string before transmitting it over the TCP socket. 
+    
+    On the receiving end, the JSON string is converted back to a Python dict, and the 
+    message type is used to determine how to handle the message (e.g., allow users to login, 
+    or forward a DM to another user etc.). 
 
     Message types:
         LOGIN       client -> server: login request
         LOGIN_OK    server -> client: login accepted, carries users list and history
         LOGIN_ERR   server -> client: login rejected, carries reason string
-        MSG         bidirectional: chat message (broadcast or direct)
+        MSG         bidirectional: chat message (broadcast or DM between two users)
         USERS       server -> client: updated list of online usernames
         SYS         server -> client: system notification text
         LOGOUT      client -> server: graceful disconnect
@@ -28,12 +36,13 @@ class Protocol:
 
     TARGET_BROADCAST = "BROADCAST"
 
+    # Common methods 
     @staticmethod
     def encode(payload: dict) -> bytes:
         """
-        Serialize `payload` to a newline-terminated UTF-8 JSON message.
+        Convert payload dict to a JSON message string for the communication socket.
 
-        :param payload: Message data to serialize.
+        :param payload: Message data to be sent over the TCP socket.
         :type payload: dict
         :return: Newline-terminated JSON bytes.
         :rtype: bytes
@@ -43,7 +52,7 @@ class Protocol:
     @staticmethod
     def decode(line: str) -> dict:
         """
-        Parse a JSON protocol line into a payload dict.
+        Parse a JSON protocol line received from a socket into a payload dict.
 
         :param line: A single JSON string from the socket.
         :type line: str
@@ -51,13 +60,15 @@ class Protocol:
         :rtype: dict
         """
         return json.loads(line.strip())
+    
 
-    # Client -> Server factories
-
+    # Creation of specific messages for communication between client and server
+    
+    # Client -> Server messages 
     @staticmethod
     def make_login(username: str) -> bytes:
         """
-        Build a LOGIN packet for the given username.
+        Build a LOGIN packet (client->server) for the given username.
 
         :param username: Username to register.
         :type username: str
@@ -90,7 +101,7 @@ class Protocol:
         """
         return Protocol.encode({"type": Protocol.TYPE_LOGOUT})
 
-    # Server -> Client factories
+    # Server -> Client messages 
 
     @staticmethod
     def make_login_ok(users: list, history: dict) -> bytes:
@@ -99,7 +110,7 @@ class Protocol:
 
         :param users: Currently connected usernames, including the new user.
         :type users: list
-        :param history: Dict mapping conversation key to list of messages.
+        :param history: Dict containing entire chat history (one list of messages per conversation).
             'BROADCAST' for the public channel; a username for DMs.
         :type history: dict
         :return: Encoded LOGIN_OK bytes.
@@ -126,7 +137,7 @@ class Protocol:
     @staticmethod
     def make_server_msg(target: str, sender: str, text: str, timestamp: str) -> bytes:
         """
-        Build a routed MSG packet to send from server to one or more clients.
+        Build a message packet to send from server to one or more clients.
 
         :param target: 'BROADCAST' or the recipient username for DMs.
         :type target: str
@@ -134,7 +145,7 @@ class Protocol:
         :type sender: str
         :param text: Message text.
         :type text: str
-        :param timestamp: ISO-8601 timestamp set by the server.
+        :param timestamp: Timestamp set by the server.
         :type timestamp: str
         :return: Encoded MSG bytes.
         :rtype: bytes
@@ -162,11 +173,11 @@ class Protocol:
     @staticmethod
     def make_sys(text: str, timestamp: str) -> bytes:
         """
-        Build a SYS notification packet (e.g., 'Alice joined the chat').
+        Build a SYS notification packet (e.g., 'X joined the chat').
 
         :param text: Notification text.
         :type text: str
-        :param timestamp: ISO-8601 timestamp.
+        :param timestamp: Timestamp of the message.
         :type timestamp: str
         :return: Encoded SYS bytes.
         :rtype: bytes

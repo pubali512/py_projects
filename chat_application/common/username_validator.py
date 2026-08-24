@@ -4,7 +4,7 @@ import re
 class UsernameValidator:
     """Validates chat usernames against the application naming rules.
 
-    Rules enforced:
+    Conventions:
         - Only uppercase letters, lowercase letters, digits, and underscores.
         - Length between 1 and 20 characters inclusive.
         - The reserved handles BROADCAST and SYSTEM are rejected.

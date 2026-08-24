@@ -31,7 +31,7 @@ class NetworkReceiver:
         self._on_message = on_message_callback
         self._on_disconnect = on_disconnect_callback
         self._is_running = False
-        self._thread = threading.Thread(target=self.receive_loop, daemon=True)
+        self._thread = threading.Thread(target=self._receive_loop, daemon=True)
 
     def start(self) -> None:
         """
@@ -59,7 +59,7 @@ class NetworkReceiver:
         """
         return self._is_running
 
-    def receive_loop(self) -> None:
+    def _receive_loop(self) -> None:
         """
         Read incoming JSON messages from the server in a loop.
 

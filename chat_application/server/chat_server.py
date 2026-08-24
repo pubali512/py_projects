@@ -10,7 +10,7 @@ from server.user_registry import UserRegistry
 
 
 class ChatServer:
-    """TCP chat server that accepts client connections and spawns handler threads.
+    """TCP chat server that accepts client connections and creates handler thread for each client.
 
     How it works:
         1. Start the server and bind the server socket to the configured host and port.

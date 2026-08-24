@@ -6,11 +6,11 @@ class ChatView(tk.Frame):
     """Right-hand panel displaying the active chat with a header, message history, and input bar.
 
     Layout:
-        3A  Header label   - shows active channel name.
-        3B  Text widget    - scrollable, read-only message history with styled bubbles.
-        3C  Input bar      - text entry + Send button, bound to the Enter key.
+        (TOP)    Header label   - shows active channel name.
+        (MID)    History frame  - scrollable message history (own and others' messages are shown in different styles).
+        (BOTTOM) Input bar      - text entry + Send button (also bound to the Enter key).
 
-    Message rendering uses tk.Text tags to align and color messages:
+    tk.Text tags are used to align and color messages:
         own_bubble     Light-gray background.
         other_bubble   Light-green background.
         system_msg     Centered, italic, muted gray - for SYS notifications.
@@ -42,9 +42,9 @@ class ChatView(tk.Frame):
         super().__init__(parent, bg=self.BG_CHAT)
         self._on_send = on_send_callback
         self._own_username: str = None
-        self.build_widgets()
+        self._build_ui()
 
-    def build_widgets(self) -> None:
+    def _build_ui(self) -> None:
         """
         This method builds the header, message area, and input bar.
 
@@ -86,7 +86,7 @@ class ChatView(tk.Frame):
         self._text_area.pack(fill=tk.BOTH, expand=True)
         scrollbar.config(command=self._text_area.yview)
 
-        self.configure_tags()
+        self._configure_tags()
 
         # 3C Input bar
         input_frame = tk.Frame(self, bg="#f5f5f5", pady=6)
@@ -101,12 +101,12 @@ class ChatView(tk.Frame):
             bd=1,
         )
         self._input_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(10, 6), ipady=5)
-        self._input_entry.bind("<Return>", self.on_enter_pressed)
+        self._input_entry.bind("<Return>", self._on_enter_pressed)
 
         self._send_btn = tk.Button(
             input_frame,
             text="Send 🚀",
-            command=self.on_send_clicked,
+            command=self._on_send_clicked,
             bg="#8DAFD2",
             fg="black",
             activebackground="#0D47A1",
@@ -118,9 +118,9 @@ class ChatView(tk.Frame):
         )
         self._send_btn.pack(side=tk.RIGHT, padx=(0, 10))
 
-    def configure_tags(self) -> None:
+    def _configure_tags(self) -> None:
         """
-        This method sets up the styling tags for message bubbles.
+        This method sets up the styling tags for messages from different users.
 
         :return: None
         :rtype: None
@@ -161,10 +161,10 @@ class ChatView(tk.Frame):
 
     # Event handlers
 
-    def on_enter_pressed(self, _event) -> None:
-        self.on_send_clicked()
+    def _on_enter_pressed(self, _event) -> None:
+        self._on_send_clicked()
 
-    def on_send_clicked(self) -> None:
+    def _on_send_clicked(self) -> None:
         text = self._message_var.get().strip()
         if text:
             self._on_send(text)
@@ -279,9 +279,9 @@ class ChatView(tk.Frame):
 
     def load_history(self, messages: list) -> None:
         """
-        This method clears the view and renders the given list of messages.
+        This method clears the view and shows the given list of messages.
 
-        :param messages: Message payload dicts to render (MSG or SYS type).
+        :param messages: Message payload dicts to show (MSG or SYS type).
         :type messages: list
         :return: None
         :rtype: None

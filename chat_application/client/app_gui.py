@@ -11,14 +11,13 @@ from common.username_validator import UsernameValidator
 
 
 class AppGui:
-    """Main application window. Orchestrates all GUI components and network logic.
+    """Main application window. Creates all GUI components and network logic.
 
     Responsibilities:
         - Create and lay out ControlBar, SidebarPanel, and ChatView.
-        - Instantiate ChatClient on connect and tear it down on disconnect.
-        - Maintain the in-memory chat history store for all conversations.
-        - Dispatch incoming network messages to the appropriate GUI action via
-          root.after() to ensure all widget updates happen on the main thread.
+        - Create a ChatClient on connect and destroy it on disconnect.
+        - Maintain the chat history for all conversations (See History store below).
+        - Execute appropriate GUI action for each incoming server message.
         - Route user actions (send, switch chat, connect/disconnect) to the
           correct component or network method.
 
@@ -51,9 +50,9 @@ class AppGui:
         self._root.geometry(self.WINDOW_START_SIZE)
         self._root.minsize(self.WINDOW_MIN_WIDTH, self.WINDOW_MIN_HEIGHT)
 
-        self.build_layout()
+        self._build_layout()
 
-    def build_layout(self) -> None:
+    def _build_layout(self) -> None:
         """
         Build and arrange the top bar, sidebar, and chat view.
 
@@ -62,8 +61,8 @@ class AppGui:
         """
         self._control_bar = ControlBar(
             self._root,
-            on_connect=self.on_connect_clicked,
-            on_disconnect=self.on_disconnect_clicked,
+            on_connect=self._on_connect_clicked,
+            on_disconnect=self._on_disconnect_clicked,
         )
         self._control_bar.pack(fill=tk.X, side=tk.TOP)
 
@@ -74,20 +73,20 @@ class AppGui:
 
         self._sidebar = SidebarPanel(
             main_frame,
-            on_broadcast_click=lambda: self.switch_chat(Protocol.TARGET_BROADCAST),
-            on_user_click=self.switch_chat,
+            on_broadcast_click=lambda: self._switch_chat(Protocol.TARGET_BROADCAST),
+            on_user_click=self._switch_chat,
         )
         self._sidebar.pack(side=tk.LEFT, fill=tk.Y)
 
         ttk.Separator(main_frame, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y)
 
-        self._chat_view = ChatView(main_frame, on_send_callback=self.on_send_message)
+        self._chat_view = ChatView(main_frame, on_send_callback=self._on_send_message)
         self._chat_view.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self._chat_view.input_enabled = False
 
     # Connect / disconnect
 
-    def on_connect_clicked(self) -> None:
+    def _on_connect_clicked(self) -> None:
         """
         Ask for a username and connect to the server.
 
@@ -109,8 +108,8 @@ class AppGui:
         self._chat_client = ChatClient(
             host=host,
             port=port,
-            on_message=self.dispatch_incoming_message,
-            on_disconnect=self.on_network_disconnect,
+            on_message=self._dispatch_incoming_message,
+            on_disconnect=self._on_network_disconnect,
         )
 
         success, error = self._chat_client.connect(username)
@@ -118,7 +117,7 @@ class AppGui:
             messagebox.showerror("Connection Failed", error, parent=self._root)
             self._chat_client = None
 
-    def on_disconnect_clicked(self) -> None:
+    def _on_disconnect_clicked(self) -> None:
         """
         Disconnect from the server.
 
@@ -128,16 +127,16 @@ class AppGui:
         if self._chat_client:
             self._chat_client.disconnect()
 
-    def on_network_disconnect(self) -> None:
+    def _on_network_disconnect(self) -> None:
         """
         Handle an unexpected connection drop from the network thread.
 
         :return: None
         :rtype: None
         """
-        self._root.after(0, self.reset_to_offline)
+        self._root.after(0, self._reset_to_offline)
 
-    def reset_to_offline(self) -> None:
+    def _reset_to_offline(self) -> None:
         """
         Reset all GUI components to their offline state.
 
@@ -157,7 +156,7 @@ class AppGui:
 
     # Incoming message dispatch
 
-    def dispatch_incoming_message(self, payload: dict) -> None:
+    def _dispatch_incoming_message(self, payload: dict) -> None:
         """
         Schedule a GUI update for an incoming server message on the main thread.
 
@@ -166,9 +165,9 @@ class AppGui:
         :return: None
         :rtype: None
         """
-        self._root.after(0, self.handle_incoming_message, payload)
+        self._root.after(0, self._handle_incoming_message, payload)
 
-    def handle_incoming_message(self, payload: dict) -> None:
+    def _handle_incoming_message(self, payload: dict) -> None:
         """
         Route a server message to the right handler based on its type.
 
@@ -179,11 +178,11 @@ class AppGui:
         """
         msg_type = payload.get("type")
         handlers = {
-            Protocol.TYPE_LOGIN_OK: self.on_login_ok,
-            Protocol.TYPE_LOGIN_ERR: self.on_login_err,
-            Protocol.TYPE_MSG: self.on_msg_received,
-            Protocol.TYPE_USERS: self.on_users_update,
-            Protocol.TYPE_SYS: self.on_sys_message,
+            Protocol.TYPE_LOGIN_OK: self._on_login_ok,
+            Protocol.TYPE_LOGIN_ERR: self._on_login_err,
+            Protocol.TYPE_MSG: self._on_msg_received,
+            Protocol.TYPE_USERS: self._on_users_update,
+            Protocol.TYPE_SYS: self._on_sys_message,
         }
         handler = handlers.get(msg_type)
         if handler:
@@ -191,7 +190,7 @@ class AppGui:
 
     # Specific message handlers
 
-    def on_login_ok(self, payload: dict) -> None:
+    def _on_login_ok(self, payload: dict) -> None:
         """
         Set up the session after a successful login.
 
@@ -215,9 +214,9 @@ class AppGui:
         peer_list = [u for u in users if u != self._my_username]
         self._sidebar.set_users(peer_list)
         self._chat_view.input_enabled = True
-        self.switch_chat(Protocol.TARGET_BROADCAST)
+        self._switch_chat(Protocol.TARGET_BROADCAST)
 
-    def on_login_err(self, payload: dict) -> None:
+    def _on_login_err(self, payload: dict) -> None:
         """
         Show an error and clean up after a rejected login.
 
@@ -232,7 +231,7 @@ class AppGui:
             self._chat_client.disconnect()
         self._chat_client = None
 
-    def on_msg_received(self, payload: dict) -> None:
+    def _on_msg_received(self, payload: dict) -> None:
         """
         Store a new message and update the view or highlight the sender in the sidebar.
 
@@ -262,7 +261,7 @@ class AppGui:
         elif conv_key != Protocol.TARGET_BROADCAST:
             self._sidebar.highlight_user(conv_key)
 
-    def on_users_update(self, payload: dict) -> None:
+    def _on_users_update(self, payload: dict) -> None:
         """
         Update the sidebar with the latest online user list.
 
@@ -277,7 +276,7 @@ class AppGui:
         if self._active_target != Protocol.TARGET_BROADCAST:
             self._sidebar.active_target = self._active_target
 
-    def on_sys_message(self, payload: dict) -> None:
+    def _on_sys_message(self, payload: dict) -> None:
         """
         Add a system notification to the broadcast history.
 
@@ -296,7 +295,7 @@ class AppGui:
 
     # Send message
 
-    def on_send_message(self, text: str) -> None:
+    def _on_send_message(self, text: str) -> None:
         """
         Process emoji codes and send the text to the active target.
 
@@ -312,7 +311,7 @@ class AppGui:
 
     # Chat target switching
 
-    def switch_chat(self, target: str) -> None:
+    def _switch_chat(self, target: str) -> None:
         """
         Switch the main view to a channel or DM target.
 

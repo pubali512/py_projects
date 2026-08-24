@@ -43,9 +43,9 @@ class SidebarPanel(tk.Frame):
         self._user_buttons: dict[str, tk.Button] = {}
         self._unread_users: set[str] = set()
         self._active_target: str = None
-        self.build_widgets()
+        self._build_ui()
 
-    def build_widgets(self) -> None:
+    def _build_ui(self) -> None:
         """
         Build the broadcast button, section header, and user list container.
 

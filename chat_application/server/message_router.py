@@ -75,7 +75,7 @@ class MessageRouter:
         data = Protocol.make_users(users)
         self._registry.broadcast(data)
 
-    def send_users_list_to(self, username: str) -> None:
+    def _send_users_list_to(self, username: str) -> None:
         """
         Send the current online user list to one specific client.
 
