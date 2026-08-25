@@ -1,0 +1,301 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="bsaz3OupOkbug07PMY8Z">
+    <mxGraphModel dx="1341" dy="929" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="main_container" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14;" value="CHAT_APPLICATION" vertex="1">
+          <mxGeometry height="770" width="1082" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="server_swimlane" parent="main_container" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" value="SERVER (server/)" vertex="1">
+          <mxGeometry height="645" width="480" x="30" y="50" as="geometry">
+            <mxRectangle height="30" width="140" x="30" y="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="card_server_main" parent="server_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="80" width="181" x="12" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_server_main" parent="card_server_main" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="server_main.py" vertex="1">
+          <mxGeometry height="25" width="182" x="-1" y="-6" as="geometry" />
+        </mxCell>
+        <mxCell id="text_server_main" parent="card_server_main" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="load_config()&lt;br&gt;&lt;div&gt;main()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="90" x="45" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-16" edge="1" parent="server_swimlane" source="card_chat_server" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.595;exitY=0.989;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;width=7;strokeColor=#EA6B66;fillColor=#FFCCCC;exitPerimeter=0;" target="tab_client_handler">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-56" edge="1" parent="server_swimlane" source="card_chat_server" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;width=7;strokeColor=#EA6B66;fillColor=#FFCCCC;" target="card_chat_logger">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="395" y="164" />
+              <mxPoint x="465" y="164" />
+              <mxPoint x="465" y="533" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-57" edge="1" parent="server_swimlane" source="card_chat_server" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;endWidth=22;endSize=3;width=7;strokeColor=#EA6B66;fillColor=#FFCCCC;" target="card_user_registry">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="285" y="169" />
+              <mxPoint x="185" y="169" />
+              <mxPoint x="185" y="364.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-58" edge="1" parent="server_swimlane" source="card_chat_server" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;width=7;strokeColor=#EA6B66;fillColor=#FFCCCC;" target="tab_msg_router">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="206.33" y="123.13" />
+              <mxPoint x="206.33" y="150.33" />
+              <mxPoint x="49.4" y="150.33" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="card_chat_server" parent="server_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="97.42105263157895" width="220" x="230" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_chat_server" parent="card_chat_server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="chat_server.py" vertex="1">
+          <mxGeometry height="25" width="221" x="-1" y="-8.97368421052632" as="geometry" />
+        </mxCell>
+        <mxCell id="text_chat_server" parent="card_chat_server" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="ChatServer&lt;div&gt;- start()&lt;br&gt;- stop()&lt;br&gt;- is_running()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="68" width="89" x="51" y="20.42105263157895" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-10" edge="1" parent="server_swimlane" source="card_client_handler" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;width=7;fillColor=#FFCCCC;strokeColor=#EA6B66;" target="tab_msg_router">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-22" edge="1" parent="server_swimlane" source="card_client_handler" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;width=7;fillColor=#FFCCCC;strokeColor=#EA6B66;" target="card_chat_logger">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="429" y="235" />
+              <mxPoint x="429" y="493" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="card_client_handler" parent="server_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="97.58181818181819" width="165" x="237" y="187" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_client_handler" parent="card_client_handler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="client_handler.py" vertex="1">
+          <mxGeometry height="25" width="165.7500000000001" x="-0.75" y="-5.236363636363635" as="geometry" />
+        </mxCell>
+        <mxCell id="text_client_handler" parent="card_client_handler" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="ClientHandler&lt;div&gt;- _send()&lt;br&gt;- _handle_login()&lt;br&gt;- _handle_message()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="82" width="131" x="30.000000000000046" y="15.581818181818193" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-23" edge="1" parent="server_swimlane" source="card_msg_router" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;width=7;fillColor=#FFCCCC;strokeColor=#EA6B66;" target="card_user_registry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-26" edge="1" parent="server_swimlane" source="card_msg_router" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;width=7;strokeColor=#EA6B66;fillColor=#FFCCCC;" target="card_chat_logger">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="card_msg_router" parent="server_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="100" width="160" x="10" y="339" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_msg_router" parent="card_msg_router" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="message_router.py" vertex="1">
+          <mxGeometry height="25" width="160.8000000000001" x="-0.7999999999999999" y="-5" as="geometry" />
+        </mxCell>
+        <mxCell id="text_msg_router" parent="card_msg_router" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="MessageRouter&lt;div&gt;- route_broadcast()&lt;br&gt;- route_direct()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="130" x="27.6" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="card_user_registry" parent="server_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="98" width="161" x="240" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_user_registry" parent="card_user_registry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="user_registry.py" vertex="1">
+          <mxGeometry height="25" width="161.76666666666665" x="-0.7666666666666668" y="-10.780000000000001" as="geometry" />
+        </mxCell>
+        <mxCell id="text_user_registry" parent="card_user_registry" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="UserRegistry&lt;div&gt;- add_user()&lt;br&gt;- remove_user()&lt;br&gt;- is_active()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="110" x="30.283333333333374" y="19.6" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-25" edge="1" parent="server_swimlane" source="card_chat_logger" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;width=7;fillColor=#FFCCCC;strokeColor=#EA6B66;entryPerimeter=0;" target="LQVXp2rTKdZE__eN6LUy-51">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="242" y="575" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="card_chat_logger" parent="server_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="80" width="199" x="143" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_chat_logger" parent="card_chat_logger" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="chat_logger.py" vertex="1">
+          <mxGeometry height="25" width="200" x="-0.85" y="-8.89" as="geometry" />
+        </mxCell>
+        <mxCell id="text_chat_logger" parent="card_chat_logger" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="ChatLogger&lt;div&gt;- _broadcast_path()&lt;br&gt;- _dm_path()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="130" x="34.825" y="13.777777777777782" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-15" edge="1" parent="server_swimlane" source="card_server_main" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;width=7;startSize=6;fillColor=#FFCCCC;strokeColor=#EA6B66;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="230" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-51" parent="server_swimlane" style="strokeWidth=1;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;" value="&lt;span style=&quot;font-weight: 700;&quot;&gt;chat_logs/*.json&lt;/span&gt;" vertex="1">
+          <mxGeometry height="39" width="147" x="169" y="594" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-18" edge="1" parent="server_swimlane" source="card_client_handler" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;width=7;endSize=4;strokeColor=#EA6B66;fillColor=#FFCCCC;" target="tab_user_registry">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="303" as="sourcePoint" />
+            <mxPoint x="340" y="329" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-54" edge="1" parent="main_container" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#006600;fillColor=#66CC00;" target="server_swimlane">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="372.5" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="client_swimlane" parent="main_container" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" value="CLIENT (client/)" vertex="1">
+          <mxGeometry height="575" width="505" x="570" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="card_client_main" parent="client_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="95" width="180" x="30" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_client_main" parent="card_client_main" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="client_main.py" vertex="1">
+          <mxGeometry height="29.687500000000007" width="181" x="-1" y="-10.6875" as="geometry" />
+        </mxCell>
+        <mxCell id="text_client_main" parent="card_client_main" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="load_config()&lt;div&gt;main()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="87" x="40" y="23.750000000000007" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-33" edge="1" parent="client_swimlane" source="card_app_gui" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;width=7;entryX=0.517;entryY=0.008;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#EA6B66;fillColor=#FFCCCC;" target="ui_components">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="170" />
+              <mxPoint x="240" y="170" />
+            </Array>
+            <mxPoint x="240" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-34" edge="1" parent="client_swimlane" source="card_app_gui" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;width=7;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#EA6B66;fillColor=#FFCCCC;" target="card_chat_client">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="155" />
+              <mxPoint x="10" y="155" />
+              <mxPoint x="10" y="413" />
+            </Array>
+            <mxPoint x="300" y="150" as="sourcePoint" />
+            <mxPoint x="30" y="530" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-35" edge="1" parent="client_swimlane" source="card_app_gui" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;width=7;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#FFCCCC;strokeColor=#EA6B66;" target="card_emoji">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="160.1" />
+              <mxPoint x="490.3" y="160.1" />
+              <mxPoint x="490.3" y="525" />
+            </Array>
+            <mxPoint x="520" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="card_app_gui" parent="client_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="95" width="200" x="250" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_app_gui" parent="card_app_gui" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="app_gui.py" vertex="1">
+          <mxGeometry height="23.750000000000007" width="200.99999999999997" x="-0.9999999999999999" y="-8.550000000000002" as="geometry" />
+        </mxCell>
+        <mxCell id="text_app_gui" parent="card_app_gui" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="AppGui&lt;div&gt;- _build_layout()&lt;br&gt;- _on_connect_clicked()&lt;br&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="150" x="40" y="14.000000000000014" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_components" parent="client_swimlane" style="swimlane;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#9673a6;fontStyle=1;" value="UI Components" vertex="1">
+          <mxGeometry height="125" width="410" x="29" y="200" as="geometry">
+            <mxRectangle height="30" width="120" x="30" y="180" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="card_control_bar" parent="ui_components" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="70" width="120" x="15" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_control_bar" parent="card_control_bar" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;fontSize=10;" value="control_bar.py" vertex="1">
+          <mxGeometry height="25" width="120" y="-4" as="geometry" />
+        </mxCell>
+        <mxCell id="text_control_bar" parent="card_control_bar" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=10;" value="ControlBar&lt;div&gt;- _build_ui()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="80" x="25" y="18" as="geometry" />
+        </mxCell>
+        <mxCell id="card_sidebar" parent="ui_components" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="70" width="125" x="145" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_sidebar" parent="card_sidebar" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;fontSize=10;" value="sidebar_panel.py" vertex="1">
+          <mxGeometry height="25" width="126" x="-1" y="-4" as="geometry" />
+        </mxCell>
+        <mxCell id="text_sidebar" parent="card_sidebar" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=10;" value="SidebarPanel&lt;div&gt;- _build_ui()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="80" x="25" y="18" as="geometry" />
+        </mxCell>
+        <mxCell id="card_chat_view" parent="ui_components" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="70" width="120" x="280" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_chat_view" parent="card_chat_view" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;fontSize=10;" value="chat_view.py" vertex="1">
+          <mxGeometry height="25" width="120" y="-4" as="geometry" />
+        </mxCell>
+        <mxCell id="text_chat_view" parent="card_chat_view" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=10;" value="ChatView&lt;div&gt;- _build_ui()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="80" x="25" y="18" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-36" edge="1" parent="client_swimlane" source="card_chat_client" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;width=7;fillColor=#FFCCCC;strokeColor=#EA6B66;" target="card_network_recv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="card_chat_client" parent="client_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="100" width="190" x="38" y="363" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_chat_client" parent="card_chat_client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="chat_client.py" vertex="1">
+          <mxGeometry height="25" width="191" x="-1" y="-12" as="geometry" />
+        </mxCell>
+        <mxCell id="text_chat_client" parent="card_chat_client" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="ChatClient&lt;div&gt;- connect()&lt;br&gt;- disconnect()&lt;/div&gt;&lt;div&gt;- send_msg()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="100" x="44" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="card_network_recv" parent="client_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="100" width="200" x="266" y="363" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_network_recv" parent="card_network_recv" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="network_receiver.py" vertex="1">
+          <mxGeometry height="25" width="201" x="-1" y="-12" as="geometry" />
+        </mxCell>
+        <mxCell id="text_network_recv" parent="card_network_recv" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="NetworkReceiver&lt;div&gt;- start()&lt;/div&gt;&lt;div&gt;- stop()&lt;br&gt;- is_running()&lt;br&gt;- _receive_loop()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="110" x="35" y="14" as="geometry" />
+        </mxCell>
+        <mxCell id="card_emoji" parent="client_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="76" width="145" x="176" y="487" as="geometry" />
+        </mxCell>
+        <mxCell id="tab_emoji" parent="card_emoji" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="emoji_processor.py" vertex="1">
+          <mxGeometry height="25" width="145.6904761904762" x="-0.6904761904761911" y="-8.550000000000004" as="geometry" />
+        </mxCell>
+        <mxCell id="text_emoji" parent="card_emoji" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="EmojiProcessor&lt;div&gt;- process()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="102" x="20.499048000000002" y="18" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-32" edge="1" parent="client_swimlane" source="card_client_main" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;width=7;fillColor=#FFCCCC;strokeColor=#EA6B66;" target="card_app_gui">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-37" parent="client_swimlane" style="swimlane;whiteSpace=wrap;html=1;fillColor=#CCFFFF;" value="common/" vertex="1">
+          <mxGeometry height="108" width="323" x="91" y="604" as="geometry">
+            <mxRectangle height="30" width="90" x="90" y="592" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-40" parent="client_swimlane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="65" width="131" x="260" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-41" parent="LQVXp2rTKdZE__eN6LUy-40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="protocol.py" vertex="1">
+          <mxGeometry height="19" width="131.62380952380943" x="-0.6238095238095245" y="-6.7903438455859115" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-42" parent="LQVXp2rTKdZE__eN6LUy-40" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="Protocol&lt;div&gt;- encode()&lt;/div&gt;&lt;div&gt;...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="80" x="24.95238095238098" y="6.58844003797068" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-48" edge="1" parent="client_swimlane" source="LQVXp2rTKdZE__eN6LUy-37" style="edgeStyle=none;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;width=7;strokeColor=#004C99;fillColor=#99CCFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="client_swimlane">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="259.99999999999994" y="617.45" as="sourcePoint" />
+            <mxPoint x="259.99999999999994" y="567.002" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_tcp" parent="main_container" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=11;" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;TCP Socket&lt;br&gt;(JSON)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="38" width="71" x="504" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-55" edge="1" parent="main_container" source="LQVXp2rTKdZE__eN6LUy-37" style="edgeStyle=orthogonalEdgeStyle;shape=flexArrow;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;width=7;strokeColor=#004C99;fillColor=#99CCFF;" target="server_swimlane">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="551" y="708" />
+              <mxPoint x="551" y="533.8" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-43" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1.5;" value="" vertex="1">
+          <mxGeometry height="59" width="141" x="716" y="731" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-44" parent="LQVXp2rTKdZE__eN6LUy-43" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rotation=0;" value="username_validator.py" vertex="1">
+          <mxGeometry height="19" width="141.67142857142858" x="-0.6714285714285719" y="-6.637500000000003" as="geometry" />
+        </mxCell>
+        <mxCell id="LQVXp2rTKdZE__eN6LUy-45" parent="LQVXp2rTKdZE__eN6LUy-43" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;" value="UsernameValidator&lt;div&gt;- validate()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="130" x="26.857142857142883" y="14.75" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
