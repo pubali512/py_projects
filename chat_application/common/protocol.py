@@ -20,10 +20,10 @@ class Protocol:
         LOGIN       client -> server: login request
         LOGIN_OK    server -> client: login accepted, carries users list and history
         LOGIN_ERR   server -> client: login rejected, carries reason string
-        MSG         bidirectional: chat message (broadcast or DM between two users)
+        MSG         client <-> server: chat message (broadcast or DM between two users)
         USERS       server -> client: updated list of online usernames
         SYS         server -> client: system notification text
-        LOGOUT      client -> server: graceful disconnect
+        LOGOUT      client -> server: disconnect
     """
 
     TYPE_LOGIN = "LOGIN"
@@ -161,7 +161,7 @@ class Protocol:
     @staticmethod
     def make_users(users: list) -> bytes:
         """
-        Build a USERS packet with the current online list.
+        Build a USERS packet with the currently online user list.
 
         :param users: Currently online usernames.
         :type users: list

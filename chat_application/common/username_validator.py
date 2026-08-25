@@ -8,7 +8,7 @@ class UsernameValidator:
         - Only uppercase letters, lowercase letters, digits, and underscores.
         - Length between 1 and 20 characters inclusive.
         - The reserved handles BROADCAST and SYSTEM are rejected.
-        - Applied by both the client (pre-send check) and the server (handshake).
+        - Applied by both the client (pre-send check) and the server (on login).
     """
 
     PATTERN = re.compile(r"^[a-zA-Z0-9_]{1,20}$")
