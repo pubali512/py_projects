@@ -30,7 +30,7 @@ class ClientHandler:
         address: tuple,
         router: MessageRouter,
         registry: UserRegistry,
-        persistence: ChatLogger,
+        logger: ChatLogger,
         validator: UsernameValidator,
     ) -> None:
         """
@@ -42,8 +42,8 @@ class ClientHandler:
         :type router: MessageRouter
         :param registry: Shared user registry.
         :type registry: UserRegistry
-        :param persistence: Shared chat persistence layer.
-        :type persistence: ChatLogger
+        :param logger: Shared chat logger.
+        :type logger: ChatLogger
         :param validator: Username validator.
         :type validator: UsernameValidator
         :return: None
@@ -53,7 +53,7 @@ class ClientHandler:
         self._address = address
         self._router = router
         self._registry = registry
-        self._persistence = persistence
+        self._logger = logger
         self._validator = validator
         self._username: str = None
 
@@ -97,7 +97,7 @@ class ClientHandler:
         self._username = username
         self._registry.add_user(username, self._send)
 
-        history = self._persistence.load_all_history_for_user(username)
+        history = self._logger.load_all_history_for_user(username)
         users = self._registry.get_all_usernames()
         self._send(Protocol.make_login_ok(users, history))
 

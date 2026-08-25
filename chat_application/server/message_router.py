@@ -6,25 +6,25 @@ from server.user_registry import UserRegistry
 
 
 class MessageRouter:
-    """Routes outgoing messages between connected clients and coordinates persistence.
+    """Routes outgoing messages between connected clients and coordinates chat logging.
 
     Responsibilities:
-        - Broadcast messages: persist then deliver to every connected client.
-        - Direct messages: persist then deliver to recipient and reflect to sender.
-        - Presence announcements: send updated user list and system text to all clients.
+        - Broadcast messages: log the message and deliver it to every connected client.
+        - Direct messages: log the message and deliver it to the recipient.
+        - Presence announcements: send the updated user list and system text to all clients.
     """
 
-    def __init__(self, registry: UserRegistry, persistence: ChatLogger) -> None:
+    def __init__(self, registry: UserRegistry, logger: ChatLogger) -> None:
         """
         :param registry: User registry used to find send targets.
         :type registry: UserRegistry
-        :param persistence: Persistence layer for saving messages to disk.
-        :type persistence: ChatLogger
+        :param logger: Logger for saving messages to disk.
+        :type logger: ChatLogger
         :return: None
         :rtype: None
         """
         self._registry = registry
-        self._persistence = persistence
+        self._logger = logger
 
     def route_broadcast(self, sender: str, text: str) -> None:
         """
@@ -38,7 +38,7 @@ class MessageRouter:
         :rtype: None
         """
         timestamp = datetime.now().isoformat(timespec="seconds")
-        self._persistence.save_broadcast_message(sender, text, timestamp)
+        self._logger.save_broadcast_message(sender, text, timestamp)
         data = Protocol.make_server_msg(Protocol.TARGET_BROADCAST, sender, text, timestamp)
         self._registry.broadcast(data)
 
@@ -58,7 +58,7 @@ class MessageRouter:
         :rtype: None
         """
         timestamp = datetime.now().isoformat(timespec="seconds")
-        self._persistence.save_dm_message(sender, target, text, timestamp)
+        self._logger.save_dm_message(sender, target, text, timestamp)
         data = Protocol.make_server_msg(target, sender, text, timestamp)
         self._registry.send_to_user(target, data)
         if sender != target:

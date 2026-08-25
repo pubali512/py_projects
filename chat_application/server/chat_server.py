@@ -37,9 +37,9 @@ class ChatServer:
         self._is_running = False
 
         server_dir = os.path.dirname(os.path.abspath(__file__))
-        self._persistence = ChatLogger(server_dir)
+        self._logger = ChatLogger(server_dir)
         self._registry = UserRegistry()
-        self._router = MessageRouter(self._registry, self._persistence)
+        self._router = MessageRouter(self._registry, self._logger)
         self._validator = UsernameValidator()
 
     def start(self) -> None:
@@ -68,7 +68,7 @@ class ChatServer:
                 address=address,
                 router=self._router,
                 registry=self._registry,
-                persistence=self._persistence,
+                logger=self._logger,
                 validator=self._validator,
             )
             thread = threading.Thread(target=handler.run, daemon=True)
