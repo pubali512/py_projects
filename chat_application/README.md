@@ -9,7 +9,7 @@ A desktop Python chat application demonstrating OOP design patterns, modular arc
 - **Chat History Reload** - broadcast and DM history is automatically restored on login
 - **Presence Indicators** - sidebar shows who is online in real time; users appear/disappear as they connect/disconnect
 - **Unread Highlighting** - sidebar entry turns bold when a new message arrives from an inactive conversation
-- **Emoji Shortcodes** - `:)` `:(` `<3` `:fire:` `:like:` `:check:` are replaced with Unicode emoji before sending
+- **Emoji Shortcodes** - `:birthday:`, `:haha:`, `:lol:`, `:fire:`, `:like:`, `:check:`, `:)`, `:(`, or `<3`are replaced with Unicode emoji before sending
 
 ---
 
@@ -45,9 +45,9 @@ chat_application/
 
 ---
 
-## Requirements
+## Packages 
 
-- Python 3.10+ (uses `tuple[bool, str]` PEP 585 type hints)
+- Python 3.11 
 - Standard library only: `tkinter`, `socket`, `threading`, `json`, `glob`, `re`, `datetime`, `os`, `sys`
 
 No third-party packages needed.
@@ -74,7 +74,7 @@ Open a separate terminal (or multiple terminals) in the same directory:
 python client/client_main.py
 ```
 
-Click **Connect 🟢**, enter a username, and start chatting.
+Click **Connect**, enter a username, and start chatting.
 
 ---
 
@@ -91,68 +91,3 @@ Edit `config.json` to change the server address:
 
 Both the server and client read the same file.
 
----
-
-## Username Rules
-
-| Rule | Detail |
-|------|--------|
-| Allowed characters | Letters (`A-Z`, `a-z`), digits (`0-9`), underscore (`_`) |
-| Length | 1 to 20 characters |
-| Reserved handles | `BROADCAST`, `SYSTEM` |
-| Uniqueness | Must not match any currently connected username |
-
----
-
-## Chat Protocol
-
-All messages are newline-terminated JSON objects sent over a plain TCP socket.
-
-| Direction | Type | Key fields |
-|-----------|------|------------|
-| Client → Server | `LOGIN` | `username` |
-| Server → Client | `LOGIN_OK` | `users`, `history` |
-| Server → Client | `LOGIN_ERR` | `reason` |
-| Client → Server | `MSG` | `target`, `text` |
-| Server → Client | `MSG` | `target`, `sender`, `text`, `timestamp` |
-| Server → Client | `USERS` | `users` |
-| Server → Client | `SYS` | `text`, `timestamp` |
-| Client → Server | `LOGOUT` | _(none)_ |
-
----
-
-## Persistence
-
-Chat logs are written to `server/chat_logs/`:
-
-| File | Contents |
-|------|----------|
-| `broadcast.json` | All public broadcast messages |
-| `dm-<a>-<b>.json` | DM thread between users `a` and `b` (names sorted alphabetically) |
-
-Only `MSG`-type messages are persisted; system notifications are ephemeral.
-
----
-
-## Emoji Shortcodes
-
-| Shortcode | Emoji |
-|-----------|-------|
-| `:birthday:` | 🎂 |
-| `:haha:` | 🤣 |
-| `:lol:` | 😂 |
-| `:fire:` | 🔥 |
-| `:like:` | 👍 |
-| `:check:` | ✅ |
-| `:)` | 😊 |
-| `:(` | 😢 |
-| `<3` | ❤️ |
-
----
-
-## Design Notes
-
-- **One class per file** throughout the project.
-- **Thread safety**: `UserRegistry` and `ChatLogger` use `threading.Lock`. All GUI updates from the background `NetworkReceiver` thread are dispatched to the main thread via `root.after(0, ...)`.
-- **Separation of concerns**: the server has no GUI dependency; the client has no persistence dependency.
-- **DM log filenames** use `-` as the pair separator (not `_`) because `-` is not an allowed username character, making the filename unambiguous even for usernames that contain underscores.
