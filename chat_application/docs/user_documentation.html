@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teams Lite Chat Application Documentation</title>
+<style>
+    :root {
+        --primary-color: #2b6cb0;
+        --primary-dark: #1a202c;
+        --secondary-color: #3182ce;
+        --accent-color: #805ad5;
+        --bg-color: #faf9f6;
+        --card-bg: #ffffff;
+        --text-color: #2d3748;
+        --text-muted: #718096;
+        --border-color: #e2e8f0;
+        --code-bg: #edf2f7;
+        --pre-bg: #1a202c;
+        --pre-text: #f7fafc;
+    }
+
+    @page {
+        size: A4;
+        margin: 20mm 15mm;
+        @bottom-right {
+            content: "Page " counter(page) " of " counter(pages);
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 8pt;
+            color: var(--text-muted);
+        }
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--bg-color);
+        margin: 0 auto;
+        padding: 40px 20px;
+        max-width: 860px;
+    }
+
+    .doc-header {
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 12px;
+        margin-bottom: 24px;
+    }
+
+    h1 {
+        font-size: 22pt;
+        color: var(--primary-dark);
+        margin: 0 0 10px 0;
+        page-break-after: avoid;
+    }
+
+    .meta-info {
+        font-size: 9.5pt;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    .meta-info strong {
+        color: var(--text-color);
+    }
+
+    h2 {
+        font-size: 14pt;
+        color: var(--primary-color);
+        margin-top: 28px;
+        margin-bottom: 12px;
+        border-left: 4px solid var(--secondary-color);
+        padding-left: 10px;
+        page-break-after: avoid;
+    }
+
+    h3 {
+        font-size: 11.5pt;
+        color: var(--primary-dark);
+        margin-top: 20px;
+        margin-bottom: 8px;
+        page-break-after: avoid;
+    }
+
+    p {
+        margin-top: 0;
+        margin-bottom: 12px;
+    }
+
+    a {
+        color: var(--secondary-color);
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: 24px 0;
+    }
+
+    ul, ol {
+        margin-top: 0;
+        margin-bottom: 14px;
+        padding-left: 22px;
+    }
+
+    li {
+        margin-bottom: 6px;
+    }
+
+    code {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        font-size: 9pt;
+        background-color: var(--code-bg);
+        color: var(--accent-color);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    pre {
+        background-color: var(--pre-bg);
+        color: var(--pre-text);
+        padding: 14px 16px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: 9pt;
+        line-height: 1.45;
+        margin: 16px 0;
+        page-break-inside: avoid;
+    }
+
+    pre code {
+        background-color: transparent;
+        color: inherit;
+        padding: 0;
+    }
+
+    .diagram-container {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 18px 0;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        page-break-inside: avoid;
+    }
+
+    .diagram-container img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .diagram-caption {
+        font-size: 9pt;
+        color: var(--text-muted);
+        margin-top: 8px;
+        font-style: italic;
+    }
+
+    @media print {
+        body {
+            background-color: #ffffff;
+            padding: 0;
+            max-width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+    <h1>Teams Lite Chat Application Documentation</h1>
+    <p class="meta-info">
+        <strong>Author:</strong> Pubali Mazumder &nbsp;|&nbsp; 
+        <strong>Date:</strong> August 25, 2026
+    </p>
+</div>
+
+<h2>Overview</h2>
+<p>Teams Lite Chat is a desktop Python chat application. Multiple users connect to a shared server and can exchange messages in a public channel or in private 1-on-1 conversations. The server runs as a background command-line process, and the client is a simple TkInter GUI which can connect with the server and exchange messages with other users. Basic structure of the client-server model is based on <a href="https://pandeyshikha075.medium.com/building-a-chat-server-and-client-in-python-with-socket-programming-c76de52cc1d5" target="_blank" rel="noopener">This example</a>.</p>
+
+<hr />
+
+<h2>Features</h2>
+<ul>
+    <li><strong>Broadcast channel</strong> - A public room where every connected user can read and post messages at the same time.</li>
+    <li><strong>Direct messages</strong> - Click any name in the sidebar to open a private conversation with that user.</li>
+    <li><strong>Chat history on login</strong> - When you connect, your full broadcast and DM history is loaded automatically from the server.</li>
+    <li><strong>Live presence list</strong> - The sidebar shows who is online and updates in real time as users join or leave. New messages from inactive chats are shown in bold until you open them.</li>
+    <li><strong>Emoji shortcodes</strong> - Type <code>:birthday:</code>, <code>:haha:</code>, <code>:lol:</code>, <code>:fire:</code>, <code>:like:</code>, <code>:check:</code>, <code>:)</code>, <code>:(</code>, or <code>&lt;3</code> and they are replaced with the matching emoji before the message is sent.</li>
+</ul>
+
+<hr />
+
+<h2>How the Server Works</h2>
+<p><code>server_main.py</code> starts by reading <code>config.json</code> and passing the host and port to <code>ChatServer</code>.</p>
+
+<ol>
+    <li><code>ChatServer</code> opens a TCP socket, starts listening, and waits for incoming connections.</li>
+    <li>Each new connection gets its own <code>ClientHandler</code> running in a background thread, so multiple users can connect at the same time.</li>
+    <li><code>ClientHandler</code> reads messages from the client one by one. The first message must be a login request. <code>UsernameValidator</code> checks the format, and <code>UserRegistry</code> verifies the name is not already taken. If everything is valid, <code>ChatLogger</code> loads the user's chat history and sends it back to the client.</li>
+    <li>After login, each incoming chat message is passed to <code>MessageRouter</code>. For a broadcast, it logs the message and sends it to every connected user via <code>UserRegistry</code>. For a direct message, it logs it and delivers it to the recipient with a copy back to the sender.</li>
+    <li>When a user disconnects, <code>ClientHandler</code> removes them from <code>UserRegistry</code> and notifies the remaining users.</li>
+</ol>
+
+<p>All messages are saved by <code>ChatLogger</code> as JSON files in <code>chat_logs/</code> - one file for the broadcast channel and one per DM pair.</p>
+
+<hr />
+
+<h2>How the Client Works</h2>
+<p><code>client_main.py</code> reads <code>config.json</code> and passes it to <code>AppGui</code>, which builds the Tkinter window.</p>
+
+<ol>
+    <li><code>AppGui</code> sets up three panels: <code>ControlBar</code> (the connect/disconnect bar at the top), <code>SidebarPanel</code> (the broadcast button and the online user list), and <code>ChatView</code> (the message history and input bar).</li>
+    <li>When the user clicks <strong>Connect</strong>, <code>AppGui</code> creates a <code>ChatClient</code> that opens a socket connection to the server and starts a <code>NetworkReceiver</code> thread in the background. That thread handles incoming messages so the GUI stays responsive.</li>
+    <li>After a successful login, <code>AppGui</code> loads the chat history and updates the view. <code>SidebarPanel</code> is updated with the current online user list.</li>
+    <li>When the user types a message and presses Enter, <code>EmojiProcessor</code> replaces any shortcodes and <code>ChatClient</code> sends the message to the server.</li>
+    <li>Every incoming server message is handed to the Tkinter main thread via <code>root.after</code> for a GUI update. Depending on the message type - a chat message, a user list update, or a system notification - it is routed to the correct part of the interface.</li>
+</ol>
+
+<hr />
+
+<h2>How to Run</h2>
+
+<h3>1. Start the server</h3>
+<p>Open a terminal in the <code>chat_application/</code> folder:</p>
+<pre><code class="language-bash">python server/server_main.py</code></pre>
+<p>The server prints <code>Server listening on localhost:5555</code> when ready.</p>
+
+<h3>2. Launch the client</h3>
+<p>Open a separate terminal for each user:</p>
+<pre><code class="language-bash">python client/client_main.py</code></pre>
+<p>Click <strong>Connect</strong>, enter a username, and start chatting. Click <strong>Disconnect</strong> when done.</p>
+<p><em>Host and port can be changed in <code>config.json</code>.</em></p>
+
+<hr />
+
+<h2>Flowchart</h2>
+<div class="diagram-container">
+    <img src="chat_flowchart.png" alt="Chat Application Flowchart">
+    <div class="diagram-caption">Chat Application Execution Flowchart</div>
+</div>
+
+<hr />
+
+<h2>File Structure</h2>
+<div class="diagram-container">
+    <img src="chat_filestructure.png" alt="Chat Application File Structure">
+    <div class="diagram-caption">Chat Application File and Component Structure</div>
+</div>
+
+<hr />
+
+<h2>Problems Faced</h2>
+
+<h3>Learning Tkinter</h3>
+<p>I hadn't used Tkinter before, so I had to read up on it before diving into the GUI code. The tricky parts were the layouting and most importantly, figuring out that one can't change GUI components from a background thread. Any update coming from off the main thread has to be done via <code>root.after(0, ...)</code>, otherwise Tkinter crashes or behaves unpredictably.</p>
+
+<h3>Threading</h3>
+<p>I hadn't worked much with threads before, so the concepts took a bit of time to learn. The main challenge was understanding what runs in parallel and what doesn't. In the server, each connected client runs in its own thread (See Single-Client bug below). On the client side, <code>NetworkReceiver</code> runs in a background thread so that the main thread running the GUI does not freeze (In the first version, I did not create a thread for the receiver and the GUI would freeze until a message was received).</p>
+
+<h3>Single-Client Server Bug</h3>
+<p>The first version of the server only handled one client at a time. It would accept a connection, enter the read loop, and not accept anyone else until that client disconnected. The fix was straightforward: move each <code>ClientHandler</code> into its own background thread. The server now spawns a thread per connection and immediately goes back to <code>accept()</code>, so multiple clients can be connected at once.</p>
+
+<h3>DM Log File Naming</h3>
+<p>When A sends to B, the server creates a log file for that conversation. But when B replies to A, I initially created a second file - so the same conversation ended up split across <code>dm-A-B.json</code> and <code>dm-B-A.json</code>, and history would load incorrectly. The fix was to always sort the two usernames alphabetically before building the filename. That way, any DM between A and B always maps to the same file regardless of who initiates the message.</p>
+
+</body>
+</html>
