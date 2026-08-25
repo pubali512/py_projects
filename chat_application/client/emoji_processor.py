@@ -5,15 +5,21 @@ class EmojiProcessor:
     specific patterns should appear first in SHORTCODE_MAP to avoid partial matches.
 
     Supported shortcodes:
-        :fire:   -> 🔥
-        :like:   -> 👍
-        :check:  -> ✅
-        :)       -> 😊
-        :(       -> 😢
-        <3       -> ❤️
+        :birthday: -> 🎂
+        :haha:     -> 🤣
+        :lol:      -> 😂
+        :fire:     -> 🔥
+        :like:     -> 👍
+        :check:    -> ✅
+        :)         -> 😊
+        :(         -> 😢
+        <3         -> ❤️
     """
 
     SHORTCODE_MAP: list[tuple[str, str]] = [
+        (":birthday:", "🎂"),
+        (":haha:", "🤣"),
+        (":lol:", "😂"),
         (":fire:", "🔥"),
         (":like:", "👍"),
         (":check:", "✅"),

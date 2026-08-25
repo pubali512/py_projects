@@ -5,7 +5,7 @@
 
 ## Overview
 
-Teams Lite Chat is a desktop Python chat application. Multiple users connect to a shared server and can exchange messages in a public channel or in private 1-on-1 conversations. The server runs as a background command-line process, and the client is a simple TkInter GUI which can connect with the server and exchange messages with other users.
+Teams Lite Chat is a desktop Python chat application. Multiple users connect to a shared server and can exchange messages in a public channel or in private 1-on-1 conversations. The server runs as a background command-line process, and the client is a simple TkInter GUI which can connect with the server and exchange messages with other users. Basic structure of the client-server model is is based on [This example](https://pandeyshikha075.medium.com/building-a-chat-server-and-client-in-python-with-socket-programming-c76de52cc1d5)
 
 ---
 
@@ -15,7 +15,7 @@ Teams Lite Chat is a desktop Python chat application. Multiple users connect to 
 * **Direct messages** — Click any name in the sidebar to open a private conversation with that user.
 * **Chat history on login** — When you connect, your full broadcast and DM history is loaded automatically from the server.
 * **Live presence list** — The sidebar shows who is online and updates in real time as users join or leave. New messages from inactive chats are shown in bold until you open them.
-* **Emoji shortcodes** — Type `:)`, `:(`, `<3`, `:fire:`, `:like:`, or `:check:` and they are replaced with the matching emoji before the message is sent.
+* **Emoji shortcodes** — Type `:birthday:`, `:haha:`, `:lol:`, `:fire:`, `:like:`, `:check:`, `:)`, `:(`, or `<3` and they are replaced with the matching emoji before the message is sent.
 
 ---
 

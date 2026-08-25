@@ -138,12 +138,15 @@ Only `MSG`-type messages are persisted; system notifications are ephemeral.
 
 | Shortcode | Emoji |
 |-----------|-------|
-| `:)` | 😊 |
-| `:(` | 😢 |
-| `<3` | ❤️ |
+| `:birthday:` | 🎂 |
+| `:haha:` | 🤣 |
+| `:lol:` | 😂 |
 | `:fire:` | 🔥 |
 | `:like:` | 👍 |
 | `:check:` | ✅ |
+| `:)` | 😊 |
+| `:(` | 😢 |
+| `<3` | ❤️ |
 
 ---
 
