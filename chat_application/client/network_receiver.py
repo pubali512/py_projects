@@ -5,15 +5,10 @@ from common.protocol import Protocol
 
 
 class NetworkReceiver:
-    """Reads incoming protocol messages from the server socket in a background thread.
+    """Reads incoming messages from the server socket in a background thread.
 
-    The receiver runs as a daemon thread so it is automatically terminated when
-    the main process exits. Incoming messages are delivered via on_message_callback
-    (called from the background thread). GUI code must dispatch these callbacks to
-    the main thread using root.after().
-
-    The on_disconnect_callback is called exactly once when the connection is lost,
-    either due to a network error or because stop() was called.
+    This class delivers each incoming message to the GUI via on_message_callback.
+    When the connection closes, on_disconnect_callback is called once.
     """
 
     def __init__(self, client_socket: socket.socket, on_message_callback: callable, on_disconnect_callback: callable) -> None:

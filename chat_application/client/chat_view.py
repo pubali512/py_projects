@@ -203,7 +203,7 @@ class ChatView(tk.Frame):
         """
         This method sets the local user's username for message alignment.
 
-        :param username: The authenticated username of the local user.
+        :param username: The validated username of the local user.
         :type username: str
         :return: None
         :rtype: None

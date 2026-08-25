@@ -1,9 +1,8 @@
 class UserRegistry:
-    """Tracks all currently connected and authenticated users.
+    """Tracks all currently connected and validated users.
 
-    Maps each username to a send callable supplied by the corresponding
-    ClientHandler. Using a callable keeps the registry decoupled from socket
-    details.
+    Maps each username to a send function supplied by the corresponding
+    ClientHandler. This keeps the registry separated from socket details.
     """
 
     def __init__(self) -> None:

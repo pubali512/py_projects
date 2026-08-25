@@ -14,9 +14,8 @@ class SidebarPanel(tk.Frame):
         highlight_user() makes that user's button bold. Clicking the button (which
         triggers on_user_click) should be paired with clear_highlight() by the caller.
 
-    Callbacks:
-        on_broadcast_click: Called with no arguments when the Broadcast button is clicked.
-        on_user_click:      Called with the username string when a user button is clicked.
+    on_broadcast_click: Called with no arguments when the Broadcast button is clicked.
+    on_user_click:      Called with the username string when a user button is clicked.
     """
 
     BG_COLOR = "#eeeeee"

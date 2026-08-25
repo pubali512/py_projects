@@ -4,9 +4,8 @@ import tkinter as tk
 class ControlBar(tk.Frame):
     """Top control bar containing Connect/Disconnect buttons and a status label.
 
-    Callbacks:
-        on_connect:    Called when the user clicks the Connect button.
-        on_disconnect: Called when the user clicks the Disconnect button.
+    on_connect:    Called when the user clicks the Connect button.
+    on_disconnect: Called when the user clicks the Disconnect button.
 
     State transitions:
         set_online(username)  -> disables Connect, enables Disconnect, updates label.
@@ -85,7 +84,7 @@ class ControlBar(tk.Frame):
         """
         Switch to online state and show the active username.
 
-        :param username: The authenticated username to display.
+        :param username: The validated username to display.
         :type username: str
         :return: None
         :rtype: None

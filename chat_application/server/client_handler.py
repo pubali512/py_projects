@@ -13,7 +13,7 @@ class ClientHandler:
     Lifecycle:
         1. ClientHandler is created by ChatServer for each accepted connection.
         2. ChatServer starts the handler in a new thread via run().
-        3. The handler reads protocol lines from the socket until the client
+        3. The handler reads messages from the socket until the client
            disconnects or sends LOGOUT.
         4. On exit the handler removes the user from the registry and notifies
            remaining clients.
@@ -21,7 +21,7 @@ class ClientHandler:
     Accepted message types (client -> server):
         LOGIN   Authenticate with a username. Must arrive before any MSG.
         MSG     Send a broadcast or direct message.
-        LOGOUT  Graceful disconnect.
+        LOGOUT  Disconnect.
     """
 
     def __init__(

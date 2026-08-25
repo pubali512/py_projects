@@ -9,14 +9,9 @@ class ChatClient:
 
     Connection lifecycle:
         1. connect(username) establishes the socket, starts NetworkReceiver, and
-           sends the LOGIN message. It returns immediately; the server's response
-           (LOGIN_OK or LOGIN_ERR) is delivered asynchronously via on_message_callback.
+           sends the LOGIN message. 
         2. send_message() can be called at any time after a successful connection.
         3. disconnect() sends LOGOUT, stops the receiver, and closes the socket.
-
-    Thread safety:
-        send_message() and disconnect() are safe to call from the GUI (main) thread
-        while the NetworkReceiver background thread is running.
     """
 
     CONNECTION_TIMEOUT_SECONDS = 5.0
