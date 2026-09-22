@@ -1,5 +1,5 @@
 """
-ETL_DimCustomer.py -- Dimension: dim_customer  (SCD Type 2)
+ETL_DimCustomer.py -- Dimension: DIM_Customer  (SCD Type 2)
 Reads customers from RAW_BusinessDB_Customer, derives PLZ region/zone,
 and applies SCD Type 2 logic:
   - New customer   -> INSERT (valid_from = customer_since, valid_to = NULL, is_current = 1)
@@ -49,14 +49,14 @@ def load_dim_customer(conn, rows: list[dict]) -> tuple[int, int]:
     for r in rows:
         cid = r["customer_id"]
         current = conn.execute(
-            "SELECT customer_sk, postal_code, street_address FROM dim_customer "
+            "SELECT customer_sk, postal_code, street_address FROM DIM_Customer "
             "WHERE customer_id=? AND is_current=1",
             (cid,),
         ).fetchone()
 
         if current is None:
             conn.execute(
-                f"INSERT INTO dim_customer "
+                f"INSERT INTO DIM_Customer "
                 f"(customer_id, first_name, last_name, email, street_address, postal_code, "
                 f"plz_region, plz_zone, city, federal_state, valid_from, valid_to, is_current) "
                 f"VALUES ({','.join([PLACEHOLDER]*13)})",
@@ -69,12 +69,12 @@ def load_dim_customer(conn, rows: list[dict]) -> tuple[int, int]:
         elif (current["postal_code"] != r["postal_code"] or
               current["street_address"] != r["street_address"]):
             conn.execute(
-                f"UPDATE dim_customer SET valid_to={PLACEHOLDER}, is_current=0 "
+                f"UPDATE DIM_Customer SET valid_to={PLACEHOLDER}, is_current=0 "
                 f"WHERE customer_sk={PLACEHOLDER}",
                 (etl_date, current["customer_sk"]),
             )
             conn.execute(
-                f"INSERT INTO dim_customer "
+                f"INSERT INTO DIM_Customer "
                 f"(customer_id, first_name, last_name, email, street_address, postal_code, "
                 f"plz_region, plz_zone, city, federal_state, valid_from, valid_to, is_current) "
                 f"VALUES ({','.join([PLACEHOLDER]*13)})",

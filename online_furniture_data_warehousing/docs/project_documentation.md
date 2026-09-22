@@ -8,18 +8,18 @@
 
 ```mermaid
 erDiagram
-    supplier {
+    Supplier {
         int supplier_id PK
         string supplier_name
         string city
         string country
     }
-    category {
+    Category {
         int category_id PK
         string category_name
         int parent_category_id FK
     }
-    product {
+    Product {
         int product_id PK
         string product_name
         float list_price
@@ -28,7 +28,7 @@ erDiagram
         int category_id FK
         int supplier_id FK
     }
-    customer {
+    Customer {
         int customer_id PK
         string first_name
         string last_name
@@ -39,14 +39,14 @@ erDiagram
         string federal_state
         date customer_since
     }
-    order_header {
+    OrderHeader {
         int order_id PK
         date order_date
         string payment_method
         float shipping_cost
         int customer_id FK
     }
-    order_line {
+    OrderLine {
         int order_line_id PK
         int quantity
         float unit_price
@@ -55,33 +55,33 @@ erDiagram
         int product_id FK
     }
 
-    supplier    ||--o{ product      : "supplies"
-    category    ||--o{ product      : "categorizes"
-    category    ||--o{ category     : "parent of"
-    customer    ||--o{ order_header : "places"
-    order_header ||--o{ order_line  : "contains"
-    product     ||--o{ order_line   : "ordered in"
+    Supplier    ||--o{ Product      : "supplies"
+    Category    ||--o{ Product      : "categorizes"
+    Category    ||--o{ Category     : "parent of"
+    Customer    ||--o{ OrderHeader : "places"
+    OrderHeader ||--o{ OrderLine  : "contains"
+    Product     ||--o{ OrderLine   : "ordered in"
 ```
 
 ### 1.2 Relational Schema
 
 ```
-supplier(supplier_id PK, supplier_name, city, country)
+Supplier(supplier_id PK, supplier_name, city, country)
 
-category(category_id PK, category_name,
-         parent_category_id FK → category)
+Category(category_id PK, category_name,
+         parent_category_id FK → Category)
 
-product(product_id PK, product_name, list_price, colour, material,
-        category_id FK → category, supplier_id FK → supplier)
+Product(product_id PK, product_name, list_price, colour, material,
+        category_id FK → Category, supplier_id FK → Supplier)
 
-customer(customer_id PK, first_name, last_name, email, street_address,
+Customer(customer_id PK, first_name, last_name, email, street_address,
          postal_code, city, federal_state, customer_since)
 
-order_header(order_id PK, order_date, payment_method, shipping_cost,
-             customer_id FK → customer)
+OrderHeader(order_id PK, order_date, payment_method, shipping_cost,
+             customer_id FK → Customer)
 
-order_line(order_line_id PK, quantity, unit_price, discount,
-           order_id FK → order_header, product_id FK → product)
+OrderLine(order_line_id PK, quantity, unit_price, discount,
+           order_id FK → OrderHeader, product_id FK → Product)
 ```
 
 ### 1.3 Normal Form Verification
@@ -98,12 +98,12 @@ All 6 tables in **3NF**.
 
 | Entity | Count | Method |
 |---|---|---|
-| supplier | 20 | Hardcoded (10 Germany, 10 neighboring countries) |
-| category | 15 | 5 top-level + 10 sub-categories (hardcoded tree) |
-| product | 120 | Templates × adjectives; price €50–€2,500 random |
-| customer | 5,000 | Faker `de_DE`; email derived from name; PLZ/city from curated CSV |
-| order_header | 30,000 | Random dates 2024-01-01 to 2025-12-31; weighted payment methods |
-| order_line | ~85,500 | 1–5 lines/order; unit_price = list_price ±10%; 80% zero discount |
+| Supplier | 20 | Hardcoded (10 Germany, 10 neighboring countries) |
+| Category | 15 | 5 top-level + 10 sub-categories (hardcoded tree) |
+| Product | 120 | Templates × adjectives; price €50–€2,500 random |
+| Customer | 5,000 | Faker `de_DE`; email derived from name; PLZ/city from curated CSV |
+| OrderHeader | 30,000 | Random dates 2024-01-01 to 2025-12-31; weighted payment methods |
+| OrderLine | ~85,500 | 1–5 lines/order; unit_price = list_price ±10%; 80% zero discount |
 
 PLZ accuracy: 1,150 real German postal codes for 75 cities from OpenPLZ API — stored in `data/plz_city_mapping.csv`. Faker's `de_DE` locale does NOT match PLZ ↔ city correctly; curated CSV solves this.
 
@@ -148,8 +148,8 @@ flowchart TB
 
     %% ── Product dimension ───────────────────────────────────────────────────
     PProduct[Product]
-    PSubCat[Sub-category]
-    PTopCat[Top-category]
+    PSubCat[Sub-Category]
+    PTopCat[Top-Category]
     PTop([Top]):::topLevel
 
     PProduct --> PSubCat --> PTopCat --> PTop
@@ -173,7 +173,7 @@ flowchart TB
 
 ```mermaid
 erDiagram
-    dim_date {
+    DIM_Date {
         int date_sk PK
         date full_date
         int day
@@ -185,7 +185,7 @@ erDiagram
         string weekday_name
         int calendar_week
     }
-    dim_customer {
+    DIM_Customer {
         int customer_sk PK
         int customer_id
         string first_name
@@ -200,7 +200,7 @@ erDiagram
         date valid_to
         int is_current
     }
-    dim_product {
+    DIM_Product {
         int product_sk PK
         int product_id
         string product_name
@@ -210,14 +210,14 @@ erDiagram
         string category_name
         string top_category_name
     }
-    dim_supplier {
+    DIM_Supplier {
         int supplier_sk PK
         int supplier_id
         string supplier_name
         string city
         string country
     }
-    fact_sales {
+    FACT_Sales {
         int sales_sk PK
         int date_sk FK
         int customer_sk FK
@@ -231,10 +231,10 @@ erDiagram
         float shipping_cost
     }
 
-    dim_date     ||--o{ fact_sales : "date_sk"
-    dim_customer ||--o{ fact_sales : "customer_sk"
-    dim_product  ||--o{ fact_sales : "product_sk"
-    dim_supplier ||--o{ fact_sales : "supplier_sk"
+    DIM_Date     ||--o{ FACT_Sales : "date_sk"
+    DIM_Customer ||--o{ FACT_Sales : "customer_sk"
+    DIM_Product  ||--o{ FACT_Sales : "product_sk"
+    DIM_Supplier ||--o{ FACT_Sales : "supplier_sk"
 ```
 
 ### 2.3 Grain and Row Counts
@@ -243,13 +243,13 @@ Grain: **one row per order line**.
 
 | Table | Rows |
 |---|---|
-| dim_date | 731 (every date in 2024–2025) |
-| dim_customer | 5,000 |
-| dim_product | 120 |
-| dim_supplier | 20 |
-| fact_sales | ~85,500 |
+| DIM_Date | 731 (every date in 2024–2025) |
+| DIM_Customer | 5,000 |
+| DIM_Product | 120 |
+| DIM_Supplier | 20 |
+| FACT_Sales | ~85,500 |
 
-### 2.4 PLZ Hierarchy in dim_customer
+### 2.4 PLZ Hierarchy in DIM_Customer
 
 | Column | Derivation | Cardinality | Used in |
 |---|---|---|---|
@@ -264,12 +264,12 @@ Grain: **one row per order line**.
 
 | Dimension | SCD Type | Changed attributes | Justification |
 |---|---|---|---|
-| dim_date | 0 | — | Dates immutable |
-| dim_supplier | 0 | — | Supplier identity stable |
-| dim_product | 1 (overwrite) | product_name, list_price, colour, material | Corrections tolerated; no historical query requires old values |
-| dim_customer | **2** (expire + insert) | postal_code, street_address, city, federal_state, plz_region, plz_zone | Relocation changes region → historical order assignment matters for Q2/Q6 |
+| DIM_Date | 0 | — | Dates immutable |
+| DIM_Supplier | 0 | — | Supplier identity stable |
+| DIM_Product | 1 (overwrite) | product_name, list_price, colour, material | Corrections tolerated; no historical query requires old values |
+| DIM_Customer | **2** (expire + insert) | postal_code, street_address, city, federal_state, plz_region, plz_zone | Relocation changes region → historical order assignment matters for Q2/Q6 |
 
-### SCD 2 tracking columns (dim_customer)
+### SCD 2 tracking columns (DIM_Customer)
 
 | Column | Type | Description |
 |---|---|---|
@@ -280,7 +280,7 @@ Grain: **one row per order line**.
 ### SCD 2 ETL logic
 
 ```
-IF customer not in dim_customer:
+IF Customer not in DIM_Customer:
     INSERT (valid_from=customer_since, valid_to=NULL, is_current=1)
 
 ELSE IF postal_code OR street_address changed:
@@ -294,9 +294,9 @@ ELSE:
 ### MSSQL ALTER equivalent (for schema migration reference)
 
 ```sql
-ALTER TABLE dim_customer ADD valid_from  DATE  NOT NULL DEFAULT GETDATE();
-ALTER TABLE dim_customer ADD valid_to    DATE  NULL;
-ALTER TABLE dim_customer ADD is_current  BIT   NOT NULL DEFAULT 1;
+ALTER TABLE DIM_Customer ADD valid_from  DATE  NOT NULL DEFAULT GETDATE();
+ALTER TABLE DIM_Customer ADD valid_to    DATE  NULL;
+ALTER TABLE DIM_Customer ADD is_current  BIT   NOT NULL DEFAULT 1;
 ```
 
 ---
@@ -318,12 +318,12 @@ Direct copy from source. No transformation.
 
 | Source | RAW_ table |
 |---|---|
-| customer | RAW_BusinessDB_Customer |
-| order_header | RAW_BusinessDB_OrderHeader |
-| order_line | RAW_BusinessDB_OrderLine |
-| product | RAW_BusinessDB_Product |
-| category | RAW_BusinessDB_Category |
-| supplier | RAW_BusinessDB_Supplier |
+| Customer | RAW_BusinessDB_Customer |
+| OrderHeader | RAW_BusinessDB_OrderHeader |
+| OrderLine | RAW_BusinessDB_OrderLine |
+| Product | RAW_BusinessDB_Product |
+| Category | RAW_BusinessDB_Category |
+| Supplier | RAW_BusinessDB_Supplier |
 
 ### 4.3 Stage 2 — Transform (FULL_)
 
@@ -332,33 +332,33 @@ SQL scripts in `sql/transform/`.
 | FULL_ table | SQL file | Key transformation |
 |---|---|---|
 | FULL_BusinessDB_DWH_Customer | 01_FULL_customer.sql | Derive plz_region, plz_zone from postal_code |
-| FULL_BusinessDB_DWH_Product | 02_FULL_product.sql | JOIN category → sub-category name + top-category name |
+| FULL_BusinessDB_DWH_Product | 02_FULL_product.sql | JOIN Category → sub-Category name + top-Category name |
 | FULL_BusinessDB_DWH_Sales | 03_FULL_sales.sql | Compute gross, discount_amount, net_amount |
 
 ### 4.4 Stage 3 — Load (DWH)
 
 | DWH table | Source | SCD | ETL module |
 |---|---|---|---|
-| dim_date | RAW_OrderHeader.order_date | 0 | etl_dim_date.py |
-| dim_supplier | RAW_Supplier | 0 | etl_dim_supplier.py |
-| dim_product | RAW_Product + category join | 1 | etl_dim_product.py |
-| dim_customer | RAW_Customer + PLZ derivation | 2 | etl_dim_customer.py |
-| fact_sales | RAW_OrderLine + header + product | — | etl_fact_sales.py |
+| DIM_Date | RAW_OrderHeader.order_date | 0 | etl_dim_date.py |
+| DIM_Supplier | RAW_Supplier | 0 | etl_dim_supplier.py |
+| DIM_Product | RAW_Product + Category join | 1 | etl_dim_product.py |
+| DIM_Customer | RAW_Customer + PLZ derivation | 2 | etl_dim_customer.py |
+| FACT_Sales | RAW_OrderLine + header + Product | — | etl_fact_sales.py |
 
-### 4.5 fact_sales Column Mapping
+### 4.5 FACT_Sales Column Mapping
 
 | Target | Source | Transform |
 |---|---|---|
-| date_sk | order_header.order_date | `int(date.replace('-',''))` |
-| customer_sk | dim_customer.customer_id (is_current=1) | SK lookup |
-| product_sk | dim_product.product_id | SK lookup |
-| supplier_sk | dim_supplier.supplier_id | SK lookup |
-| order_id | order_header.order_id | Degenerate dimension |
-| quantity | order_line.quantity | Direct |
+| date_sk | OrderHeader.order_date | `int(date.replace('-',''))` |
+| customer_sk | DIM_Customer.customer_id (is_current=1) | SK lookup |
+| product_sk | DIM_Product.product_id | SK lookup |
+| supplier_sk | DIM_Supplier.supplier_id | SK lookup |
+| order_id | OrderHeader.order_id | Degenerate dimension |
+| quantity | OrderLine.quantity | Direct |
 | gross_amount | quantity × unit_price | FULL_Sales |
 | discount_amount | gross × discount | FULL_Sales |
 | net_amount | gross − discount | FULL_Sales |
-| shipping_cost | order_header.shipping_cost | Direct |
+| shipping_cost | OrderHeader.shipping_cost | Direct |
 
 ---
 
@@ -368,12 +368,12 @@ SQL scripts in `sql/transform/`.
 
 | Table | Rows | Avg row (bytes) | Estimated |
 |---|---|---|---|
-| supplier | 20 | 80 | 1.6 KB |
-| category | 15 | 60 | 0.9 KB |
-| product | 120 | 120 | 14.4 KB |
-| customer | 5,000 | 250 | 1.2 MB |
-| order_header | 30,000 | 100 | 2.9 MB |
-| order_line | 85,500 | 60 | 4.9 MB |
+| Supplier | 20 | 80 | 1.6 KB |
+| Category | 15 | 60 | 0.9 KB |
+| Product | 120 | 120 | 14.4 KB |
+| Customer | 5,000 | 250 | 1.2 MB |
+| OrderHeader | 30,000 | 100 | 2.9 MB |
+| OrderLine | 85,500 | 60 | 4.9 MB |
 | **Subtotal** | | | **~9.0 MB** |
 
 With SQLite overhead (B-tree, indexes, pages): **~11–12 MB**.
@@ -382,7 +382,7 @@ With SQLite overhead (B-tree, indexes, pages): **~11–12 MB**.
 
 | Layer | Approx. |
 |---|---|
-| DWH dimensions + fact_sales | ~8 MB |
+| DWH dimensions + FACT_Sales | ~8 MB |
 | RAW_ + FULL_ staging | ~12 MB |
 | **Total combined DB** | **~30–35 MB** |
 
@@ -394,17 +394,17 @@ All SQL in `sql/analytics/`. Run via `python python/run.py` → option 4.
 
 | ID | Question | Dimensions |
 |---|---|---|
-| Q1 | Revenue and discount per category and quarter | dim_date, dim_product |
-| Q2a | Average order value by PLZ region | dim_customer |
-| Q2b | Category mix by PLZ region | dim_customer, dim_product |
-| Q3a | Peak order volume by weekday | dim_date |
-| Q3b | Top 10 peak calendar weeks | dim_date |
-| Q4 | Discount effectiveness vs. quantity and revenue | fact_sales |
-| Q5 | Revenue by price segment (Budget/Mid/Premium) | dim_product |
-| Q6 | Federal state revenue growth 2024→2025 | dim_customer, dim_date |
-| Q7 | Supplier revenue by quarter and share | dim_supplier, dim_date |
-| Q8 | Supplier discount rate vs. order volume | dim_supplier |
+| Q1 | Revenue and discount per Category and quarter | DIM_Date, DIM_Product |
+| Q2a | Average order value by PLZ region | DIM_Customer |
+| Q2b | Category mix by PLZ region | DIM_Customer, DIM_Product |
+| Q3a | Peak order volume by weekday | DIM_Date |
+| Q3b | Top 10 peak calendar weeks | DIM_Date |
+| Q4 | Discount effectiveness vs. quantity and revenue | FACT_Sales |
+| Q5 | Revenue by price segment (Budget/Mid/Premium) | DIM_Product |
+| Q6 | Federal state revenue growth 2024→2025 | DIM_Customer, DIM_Date |
+| Q7 | Supplier revenue by quarter and share | DIM_Supplier, DIM_Date |
+| Q8 | Supplier discount rate vs. order volume | DIM_Supplier |
 
 **Mandatory for submission:** Q1, Q2 (covers Q2a + Q2b).
 
-**Supplier-specific (extends dim_supplier):** Q7, Q8.
+**Supplier-specific (extends DIM_Supplier):** Q7, Q8.

@@ -1,7 +1,7 @@
 -- =============================================================================
 -- SCD ALTER statements  |  Online Furniture DWH
 --
--- Adds the SCD Type 2 tracking columns to dim_customer.
+-- Adds the SCD Type 2 tracking columns to DIM_Customer.
 -- Run ONCE after initial DWH creation (before the first ETL load).
 --
 -- Note: SQLite does not support ALTER TABLE ADD CONSTRAINT or DROP COLUMN
@@ -12,13 +12,13 @@
 
 -- For MSSQL / PostgreSQL, the equivalent statements would be:
 
--- ALTER TABLE dim_customer
+-- ALTER TABLE DIM_Customer
 --     ADD valid_from  DATE         NOT NULL DEFAULT GETDATE();   -- MSSQL
 --
--- ALTER TABLE dim_customer
+-- ALTER TABLE DIM_Customer
 --     ADD valid_to    DATE         NULL;
 --
--- ALTER TABLE dim_customer
+-- ALTER TABLE DIM_Customer
 --     ADD is_current  BIT          NOT NULL DEFAULT 1;
 
 -- =============================================================================
@@ -30,15 +30,15 @@
 -- Justification: natural keys and transaction timestamps are immutable.
 --
 -- SCD TYPE 1  (overwrite -- no history kept)
--- Columns: dim_product.product_name, dim_product.list_price,
---          dim_product.colour, dim_product.material
+-- Columns: DIM_Product.product_name, DIM_Product.list_price,
+--          DIM_Product.colour, DIM_Product.material
 -- Justification: corrections to product catalogue data (typos, price updates)
 --   do not require historical tracking for the defined analytical questions.
 --
 -- SCD TYPE 2  (add new row -- full history preserved)
--- Columns: dim_customer.street_address, dim_customer.postal_code,
---          dim_customer.city, dim_customer.federal_state,
---          dim_customer.plz_region, dim_customer.plz_zone
+-- Columns: DIM_Customer.street_address, DIM_Customer.postal_code,
+--          DIM_Customer.city, DIM_Customer.federal_state,
+--          DIM_Customer.plz_region, DIM_Customer.plz_zone
 -- Justification: a customer who relocates changes their PLZ region, which
 --   directly affects Q2 (regional order value analysis). Recording the old
 --   address ensures that historical orders are attributed to the correct region.
@@ -47,7 +47,7 @@
 -- =============================================================================
 -- ETL SCD 2 Logic (implemented in python/02_etl.py -> load_dim_customer):
 --
---  IF customer_id NOT IN dim_customer:
+--  IF customer_id NOT IN DIM_Customer:
 --      INSERT new row  (valid_from = customer_since, valid_to = NULL, is_current = 1)
 --
 --  ELSE IF postal_code OR street_address changed:

@@ -1,7 +1,7 @@
 """
-ETL_DimDate.py -- Dimension: dim_date
+ETL_DimDate.py -- Dimension: DIM_Date
 Reads distinct order dates from RAW_BusinessDB_OrderHeader,
-derives date attributes, and loads new rows into dim_date.
+derives date attributes, and loads new rows into DIM_Date.
 """
 
 import pathlib
@@ -32,7 +32,7 @@ def extract_dim_date(conn) -> list:
 
 
 def transform_dim_date(raw_rows: list, existing_sk: set) -> list[tuple]:
-    """Derive date dimension attributes; skip dates that already exist in dim_date."""
+    """Derive date dimension attributes; skip dates that already exist in DIM_Date."""
     rows = []
     for (order_date,) in raw_rows:
         sk = int(order_date.replace("-", ""))
@@ -55,10 +55,10 @@ def transform_dim_date(raw_rows: list, existing_sk: set) -> list[tuple]:
 
 
 def load_dim_date(conn, rows: list[tuple]) -> int:
-    """Insert new date rows into dim_date; returns count of inserted rows."""
+    """Insert new date rows into DIM_Date; returns count of inserted rows."""
     if rows:
         conn.executemany(
-            f"INSERT INTO dim_date VALUES ({','.join([PLACEHOLDER] * 10)})",
+            f"INSERT INTO DIM_Date VALUES ({','.join([PLACEHOLDER] * 10)})",
             rows,
         )
         conn.commit()
@@ -68,7 +68,7 @@ def load_dim_date(conn, rows: list[tuple]) -> int:
 def run_etl_dim_date() -> None:
     conn = connect()
     try:
-        existing_sk = {r[0] for r in conn.execute("SELECT date_sk FROM dim_date")}
+        existing_sk = {r[0] for r in conn.execute("SELECT date_sk FROM DIM_Date")}
         raw = extract_dim_date(conn)
         rows = transform_dim_date(raw, existing_sk)
         n = load_dim_date(conn, rows)

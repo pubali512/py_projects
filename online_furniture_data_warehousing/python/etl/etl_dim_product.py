@@ -1,7 +1,7 @@
 """
-ETL_DimProduct.py -- Dimension: dim_product  (SCD Type 1)
+ETL_DimProduct.py -- Dimension: DIM_Product  (SCD Type 1)
 Reads products and their category hierarchy from RAW staging tables,
-flattens sub-category -> top-category, and upserts into dim_product.
+flattens sub-category -> top-category, and upserts into DIM_Product.
 Changed attributes are overwritten (SCD 1 -- no history).
 """
 
@@ -46,14 +46,14 @@ def load_dim_product(conn, rows: list[tuple]) -> tuple[int, int]:
         r[0]: r
         for r in conn.execute(
             "SELECT product_id, product_name, colour, material, "
-            "list_price, category_name, top_category_name FROM dim_product"
+            "list_price, category_name, top_category_name FROM DIM_Product"
         )
     }
     inserted = updated = 0
     for (pid, name, colour, material, price, cat, top_cat) in rows:
         if pid not in existing:
             conn.execute(
-                f"INSERT INTO dim_product "
+                f"INSERT INTO DIM_Product "
                 f"(product_id, product_name, colour, material, list_price, "
                 f"category_name, top_category_name) VALUES ({','.join([PLACEHOLDER]*7)})",
                 (pid, name, colour, material, price, cat, top_cat),
@@ -63,7 +63,7 @@ def load_dim_product(conn, rows: list[tuple]) -> tuple[int, int]:
             ex = existing[pid]
             if (ex[1], ex[2], ex[3], ex[4], ex[5], ex[6]) != (name, colour, material, price, cat, top_cat):
                 conn.execute(
-                    f"UPDATE dim_product SET product_name={PLACEHOLDER}, colour={PLACEHOLDER}, "
+                    f"UPDATE DIM_Product SET product_name={PLACEHOLDER}, colour={PLACEHOLDER}, "
                     f"material={PLACEHOLDER}, list_price={PLACEHOLDER}, "
                     f"category_name={PLACEHOLDER}, top_category_name={PLACEHOLDER} "
                     f"WHERE product_id={PLACEHOLDER}",

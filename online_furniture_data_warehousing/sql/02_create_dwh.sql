@@ -1,6 +1,6 @@
 -- =============================================================================
 -- DWH DDL  |  Online Furniture Retailer -- Star Schema
--- Tables: dim_date, dim_customer (SCD 2), dim_product, dim_supplier, fact_sales
+-- Tables: DIM_Date, DIM_Customer (SCD 2), DIM_Product, DIM_Supplier, FACT_Sales
 -- Staging tables follow naming convention RAW_ / FULL_
 -- =============================================================================
 
@@ -11,9 +11,9 @@ PRAGMA foreign_keys = ON;
 -- =============================================================================
 
 -- -----------------------------------------------------------------------------
--- dim_date
+-- DIM_Date
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS dim_date (
+CREATE TABLE IF NOT EXISTS DIM_Date (
     date_sk         INTEGER PRIMARY KEY,   -- surrogate key: YYYYMMDD integer
     full_date       TEXT    NOT NULL UNIQUE,
     day             INTEGER NOT NULL,
@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS dim_date (
 );
 
 -- -----------------------------------------------------------------------------
--- dim_customer  (SCD Type 2 -- tracks address / postal_code changes)
+-- DIM_Customer  (SCD Type 2 -- tracks address / postal_code changes)
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS dim_customer (
+CREATE TABLE IF NOT EXISTS DIM_Customer (
     customer_sk     INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id     INTEGER NOT NULL,      -- natural key from Business DB
     first_name      TEXT    NOT NULL,
@@ -46,13 +46,13 @@ CREATE TABLE IF NOT EXISTS dim_customer (
     is_current      INTEGER NOT NULL DEFAULT 1 CHECK (is_current IN (0, 1))
 );
 
-CREATE INDEX IF NOT EXISTS idx_dim_customer_natural  ON dim_customer(customer_id);
-CREATE INDEX IF NOT EXISTS idx_dim_customer_current  ON dim_customer(customer_id, is_current);
+CREATE INDEX IF NOT EXISTS idx_dim_customer_natural  ON DIM_Customer(customer_id);
+CREATE INDEX IF NOT EXISTS idx_dim_customer_current  ON DIM_Customer(customer_id, is_current);
 
 -- -----------------------------------------------------------------------------
--- dim_product
+-- DIM_Product
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS dim_product (
+CREATE TABLE IF NOT EXISTS DIM_Product (
     product_sk      INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id      INTEGER NOT NULL UNIQUE,   -- natural key (SCD 1 -- overwrite)
     product_name    TEXT    NOT NULL,
@@ -64,9 +64,9 @@ CREATE TABLE IF NOT EXISTS dim_product (
 );
 
 -- -----------------------------------------------------------------------------
--- dim_supplier
+-- DIM_Supplier
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS dim_supplier (
+CREATE TABLE IF NOT EXISTS DIM_Supplier (
     supplier_sk     INTEGER PRIMARY KEY AUTOINCREMENT,
     supplier_id     INTEGER NOT NULL UNIQUE,   -- natural key
     supplier_name   TEXT    NOT NULL,
@@ -79,14 +79,14 @@ CREATE TABLE IF NOT EXISTS dim_supplier (
 -- =============================================================================
 
 -- -----------------------------------------------------------------------------
--- fact_sales  (grain: one row per order line)
+-- FACT_Sales  (grain: one row per order line)
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS fact_sales (
+CREATE TABLE IF NOT EXISTS FACT_Sales (
     sales_sk        INTEGER PRIMARY KEY AUTOINCREMENT,
-    date_sk         INTEGER NOT NULL REFERENCES dim_date(date_sk),
-    customer_sk     INTEGER NOT NULL REFERENCES dim_customer(customer_sk),
-    product_sk      INTEGER NOT NULL REFERENCES dim_product(product_sk),
-    supplier_sk     INTEGER NOT NULL REFERENCES dim_supplier(supplier_sk),
+    date_sk         INTEGER NOT NULL REFERENCES DIM_Date(date_sk),
+    customer_sk     INTEGER NOT NULL REFERENCES DIM_Customer(customer_sk),
+    product_sk      INTEGER NOT NULL REFERENCES DIM_Product(product_sk),
+    supplier_sk     INTEGER NOT NULL REFERENCES DIM_Supplier(supplier_sk),
     order_id        INTEGER NOT NULL,      -- degenerate dimension
     quantity        INTEGER NOT NULL,
     gross_amount    REAL    NOT NULL,      -- quantity * unit_price
@@ -95,10 +95,10 @@ CREATE TABLE IF NOT EXISTS fact_sales (
     shipping_cost   REAL    NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_fact_sales_date     ON fact_sales(date_sk);
-CREATE INDEX IF NOT EXISTS idx_fact_sales_customer ON fact_sales(customer_sk);
-CREATE INDEX IF NOT EXISTS idx_fact_sales_product  ON fact_sales(product_sk);
-CREATE INDEX IF NOT EXISTS idx_fact_sales_supplier ON fact_sales(supplier_sk);
+CREATE INDEX IF NOT EXISTS idx_fact_sales_date     ON FACT_Sales(date_sk);
+CREATE INDEX IF NOT EXISTS idx_fact_sales_customer ON FACT_Sales(customer_sk);
+CREATE INDEX IF NOT EXISTS idx_fact_sales_product  ON FACT_Sales(product_sk);
+CREATE INDEX IF NOT EXISTS idx_fact_sales_supplier ON FACT_Sales(supplier_sk);
 
 -- =============================================================================
 -- STAGING TABLES  (RAW layer -- direct copy from Business DB)

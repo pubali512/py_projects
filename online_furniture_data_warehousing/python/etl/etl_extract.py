@@ -14,12 +14,12 @@ ROOT    = pathlib.Path(__file__).parent.parent.parent
 DWH_DDL = ROOT / "sql" / "02_create_dwh.sql"
 
 _RAW_MAP = {
-    "customer":     "RAW_BusinessDB_Customer",
-    "order_header": "RAW_BusinessDB_OrderHeader",
-    "order_line":   "RAW_BusinessDB_OrderLine",
-    "product":      "RAW_BusinessDB_Product",
-    "category":     "RAW_BusinessDB_Category",
-    "supplier":     "RAW_BusinessDB_Supplier",
+    "Customer":     "RAW_BusinessDB_Customer",
+    "OrderHeader": "RAW_BusinessDB_OrderHeader",
+    "OrderLine":   "RAW_BusinessDB_OrderLine",
+    "Product":      "RAW_BusinessDB_Product",
+    "Category":     "RAW_BusinessDB_Category",
+    "Supplier":     "RAW_BusinessDB_Supplier",
 }
 
 

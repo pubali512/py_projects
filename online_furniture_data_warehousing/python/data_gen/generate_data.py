@@ -65,7 +65,7 @@ CATEGORY_TREE = {
     "Kinderzimmer": ["Kinderbetten", "Spielmoebel"],
 }
 
-# Product name templates per top-level category
+# Product name templates per top-level Category
 PRODUCT_TEMPLATES = {
     "Wohnzimmer":   ["Sofa {adj}", "Couch {adj}", "Couchtisch {adj}",
                      "Regal {adj}", "TV-Board {adj}"],
@@ -222,7 +222,7 @@ def insert_suppliers(conn: sqlite3.Connection) -> list[int]:
     ids = []
     for name, city, country in SUPPLIERS:
         cur = conn.execute(
-            f"INSERT INTO supplier (supplier_name, city, country) VALUES ({PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER})",
+            f"INSERT INTO Supplier (supplier_name, city, country) VALUES ({PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER})",
             (name, city, country),
         )
         ids.append(cur.lastrowid)
@@ -235,14 +235,14 @@ def insert_categories(conn: sqlite3.Connection) -> dict[str, int]:
     cat_ids: dict[str, int] = {}
     for top_name, sub_names in CATEGORY_TREE.items():
         cur = conn.execute(
-            f"INSERT INTO category (category_name, parent_category_id) VALUES ({PLACEHOLDER}, NULL)",
+            f"INSERT INTO Category (category_name, parent_category_id) VALUES ({PLACEHOLDER}, NULL)",
             (top_name,),
         )
         top_id = cur.lastrowid
         cat_ids[top_name] = top_id
         for sub_name in sub_names:
             cur = conn.execute(
-                f"INSERT INTO category (category_name, parent_category_id) VALUES ({PLACEHOLDER},{PLACEHOLDER})",
+                f"INSERT INTO Category (category_name, parent_category_id) VALUES ({PLACEHOLDER},{PLACEHOLDER})",
                 (sub_name, top_id),
             )
             cat_ids[sub_name] = cur.lastrowid
@@ -266,7 +266,7 @@ def insert_products(conn: sqlite3.Connection, cat_ids: dict[str, int],
             if name in used_names:
                 continue
             used_names.add(name)
-            # Assign to a sub-category (or the top-level if no sub exists)
+            # Assign to a sub-Category (or the top-level if no sub exists)
             cat_name = random.choice(all_subs) if all_subs else top_name
             cat_id   = cat_ids[cat_name]
             sup_id   = random.choice(supplier_ids)
@@ -274,7 +274,7 @@ def insert_products(conn: sqlite3.Connection, cat_ids: dict[str, int],
             colour   = random.choice(COLOURS)
             material = random.choice(MATERIALS)
             cur = conn.execute(
-                f"INSERT INTO product (product_name, list_price, colour, material, category_id, supplier_id) "
+                f"INSERT INTO Product (product_name, list_price, colour, material, category_id, supplier_id) "
                 f"VALUES ({PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER})",
                 (name, list_price, colour, material, cat_id, sup_id),
             )
@@ -303,7 +303,7 @@ def insert_customers(conn: sqlite3.Connection, plz_rows: list[dict],
         dummy_date = random_order_date()
         since = random_customer_since(dummy_date)
         cur = conn.execute(
-            f"INSERT INTO customer "
+            f"INSERT INTO Customer "
             f"(first_name, last_name, email, street_address, postal_code, city, federal_state, customer_since) "
             f"VALUES ({','.join([PLACEHOLDER]*8)})",
             (first, last, email, street, plz, city, state, since),
@@ -336,7 +336,7 @@ def insert_orders(conn: sqlite3.Connection,
         for prod_id in chosen_products:
             qty       = random.randint(1, 4)
             # unit_price is list_price +/- 10% (simulates dynamic pricing)
-            row = conn.execute("SELECT list_price FROM product WHERE product_id = ?", (prod_id,)).fetchone()
+            row = conn.execute("SELECT list_price FROM Product WHERE product_id = ?", (prod_id,)).fetchone()
             base_price = row[0]
             unit_price = round(base_price * random.uniform(0.90, 1.10), 2)
             # discount: 80% of lines have 0%, rest up to 25%
@@ -346,12 +346,12 @@ def insert_orders(conn: sqlite3.Connection,
             line_batch.append((qty, unit_price, discount, order_id_counter, prod_id))
 
     conn.executemany(
-        f"INSERT INTO order_header (order_date, payment_method, shipping_cost, customer_id) "
+        f"INSERT INTO OrderHeader (order_date, payment_method, shipping_cost, customer_id) "
         f"VALUES ({','.join([PLACEHOLDER]*4)})",
         order_batch,
     )
     conn.executemany(
-        f"INSERT INTO order_line (quantity, unit_price, discount, order_id, product_id) "
+        f"INSERT INTO OrderLine (quantity, unit_price, discount, order_id, product_id) "
         f"VALUES ({','.join([PLACEHOLDER]*5)})",
         line_batch,
     )
@@ -388,9 +388,9 @@ def main() -> None:
     insert_orders(conn, customer_records, product_ids, n_orders=30_000)
 
     # Summary
-    row = conn.execute("SELECT COUNT(*) FROM order_header").fetchone()
+    row = conn.execute("SELECT COUNT(*) FROM OrderHeader").fetchone()
     print(f"  {row[0]} orders")
-    row = conn.execute("SELECT COUNT(*) FROM order_line").fetchone()
+    row = conn.execute("SELECT COUNT(*) FROM OrderLine").fetchone()
     print(f"  {row[0]} order lines")
 
     conn.close()

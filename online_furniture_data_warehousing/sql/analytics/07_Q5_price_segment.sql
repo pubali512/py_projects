@@ -2,7 +2,7 @@
 -- Q5 -- Revenue and discount share by product price segment
 -- How does revenue and discount compare across Budget (<EUR 200) /
 -- Mid-range (EUR 200-799) / Premium (>=EUR 800) product segments?
--- Dimensions: dim_product
+-- Dimensions: DIM_Product
 -- =============================================================================
 
 SELECT
@@ -17,7 +17,7 @@ SELECT
     ROUND(
         100.0 * SUM(fs.discount_amount) / NULLIF(SUM(fs.gross_amount), 0),
     2)                                                                  AS discount_share_pct
-FROM fact_sales  fs
-JOIN dim_product dp ON fs.product_sk = dp.product_sk
+FROM FACT_Sales  fs
+JOIN DIM_Product dp ON fs.product_sk = dp.product_sk
 GROUP BY price_segment
 ORDER BY MIN(dp.list_price);

@@ -3,11 +3,11 @@ Run_All_ETL.py -- ETL Orchestrator
 Runs the complete ETL pipeline in dependency order:
   1. Extract   -> RAW_ staging tables
   2. Transform -> FULL_ staging tables (PLZ derivation, category flatten, measures)
-  3. DimDate   -> dim_date
-  4. DimSupplier -> dim_supplier
-  5. DimProduct  -> dim_product (SCD1)
-  6. DimCustomer -> dim_customer (SCD2)
-  7. FactSales   -> fact_sales
+  3. DimDate   -> DIM_Date
+  4. DimSupplier -> DIM_Supplier
+  5. DimProduct  -> DIM_Product (SCD1)
+  6. DimCustomer -> DIM_Customer (SCD2)
+  7. FactSales   -> FACT_Sales
 
 Usage:
     python python/etl/run_all_etl.py
@@ -49,7 +49,7 @@ def run_all_etl() -> None:
     conn = connect()
     try:
         print("\nRow counts:")
-        for tbl in ["dim_date", "dim_customer", "dim_product", "dim_supplier", "fact_sales"]:
+        for tbl in ["DIM_Date", "DIM_Customer", "DIM_Product", "DIM_Supplier", "FACT_Sales"]:
             n = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
             print(f"  {tbl:25s} {n:>8,}")
     finally:

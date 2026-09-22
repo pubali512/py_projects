@@ -2,7 +2,7 @@
 -- Q4 -- Discount effectiveness
 -- Does a higher discount rate correlate with higher quantity sold
 -- or net revenue per order line?
--- Dimensions: fact_sales
+-- Dimensions: FACT_Sales
 -- =============================================================================
 
 SELECT
@@ -18,6 +18,6 @@ SELECT
     ROUND(AVG(quantity), 2)                                             AS avg_quantity,
     ROUND(AVG(net_amount), 2)                                           AS avg_net_amount_per_line,
     ROUND(SUM(net_amount), 2)                                           AS total_net_revenue
-FROM fact_sales
+FROM FACT_Sales
 GROUP BY discount_bucket
 ORDER BY MIN(CAST(discount_amount AS REAL) / gross_amount);

@@ -1,7 +1,7 @@
 """
-ETL_FactSales.py -- Fact table: fact_sales
+ETL_FactSales.py -- Fact table: FACT_Sales
 Reads order lines from RAW staging tables, computes monetary measures,
-resolves surrogate keys, and appends new rows to fact_sales.
+resolves surrogate keys, and appends new rows to FACT_Sales.
 Grain: one row per order line.
 """
 
@@ -39,7 +39,7 @@ def transform_fact_sales(
     loaded_order_ids: set,
 ) -> list[tuple]:
     """Resolve surrogate keys and compute gross/discount/net amounts.
-    Skips rows for orders already present in fact_sales (idempotent re-run).
+    Skips rows for orders already present in FACT_Sales (idempotent re-run).
     """
     rows = []
     for r in raw_rows:
@@ -64,10 +64,10 @@ def transform_fact_sales(
 
 
 def load_fact_sales(conn, rows: list[tuple]) -> int:
-    """Append fact rows to fact_sales; returns count of inserted rows."""
+    """Append fact rows to FACT_Sales; returns count of inserted rows."""
     if rows:
         conn.executemany(
-            f"INSERT INTO fact_sales "
+            f"INSERT INTO FACT_Sales "
             f"(date_sk, customer_sk, product_sk, supplier_sk, order_id, quantity, "
             f"gross_amount, discount_amount, net_amount, shipping_cost) "
             f"VALUES ({','.join([PLACEHOLDER]*10)})",
@@ -80,12 +80,12 @@ def load_fact_sales(conn, rows: list[tuple]) -> int:
 def run_etl_fact_sales() -> None:
     conn = connect()
     try:
-        product_map  = {r[0]: r[1] for r in conn.execute("SELECT product_id,  product_sk  FROM dim_product")}
-        supplier_map = {r[0]: r[1] for r in conn.execute("SELECT supplier_id, supplier_sk FROM dim_supplier")}
+        product_map  = {r[0]: r[1] for r in conn.execute("SELECT product_id,  product_sk  FROM DIM_Product")}
+        supplier_map = {r[0]: r[1] for r in conn.execute("SELECT supplier_id, supplier_sk FROM DIM_Supplier")}
         customer_map = {r[0]: r[1] for r in conn.execute(
-            "SELECT customer_id, customer_sk FROM dim_customer WHERE is_current=1"
+            "SELECT customer_id, customer_sk FROM DIM_Customer WHERE is_current=1"
         )}
-        loaded_order_ids = {r[0] for r in conn.execute("SELECT DISTINCT order_id FROM fact_sales")}
+        loaded_order_ids = {r[0] for r in conn.execute("SELECT DISTINCT order_id FROM FACT_Sales")}
 
         raw  = extract_fact_sales(conn)
         rows = transform_fact_sales(raw, product_map, supplier_map, customer_map, loaded_order_ids)

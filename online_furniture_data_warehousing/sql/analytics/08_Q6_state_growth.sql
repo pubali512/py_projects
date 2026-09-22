@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Q6 -- Federal state revenue growth: Year 1 (2024) vs Year 2 (2025)
 -- Which federal states show the strongest revenue growth?
--- Dimensions: dim_customer, dim_date
+-- Dimensions: DIM_Customer, DIM_Date
 -- =============================================================================
 
 WITH yearly AS (
@@ -9,9 +9,9 @@ WITH yearly AS (
         dc.federal_state,
         dd.year,
         SUM(fs.net_amount)                  AS net_revenue
-    FROM fact_sales  fs
-    JOIN dim_customer dc ON fs.customer_sk = dc.customer_sk
-    JOIN dim_date     dd ON fs.date_sk     = dd.date_sk
+    FROM FACT_Sales  fs
+    JOIN DIM_Customer dc ON fs.customer_sk = dc.customer_sk
+    JOIN DIM_Date     dd ON fs.date_sk     = dd.date_sk
     WHERE dc.is_current = 1
     GROUP BY dc.federal_state, dd.year
 )
