@@ -5,7 +5,7 @@ Targets:
   - 20 suppliers
   - 10 categories (5 top-level, 5 sub-categories)
   - 120 products
-  - 5,000 customers  (PLZ-city-state from curated mapping)
+  - 5,000 customers  (PLZ-City-state from curated mapping)
   - 30,000 orders    (2024-01-01 - 2025-12-31)
   - ~69,000 order lines (~2.3 per order on average)
 
@@ -83,7 +83,7 @@ ADJECTIVES = ["Classic", "Modern", "Premium", "Comfort", "Slim", "XL",
               "Eco", "Vintage", "Urban", "Loft", "Compact", "Deluxe",
               "Essential", "Pro", "Soft"]
 
-# Each tuple: (supplier_name, city, country)
+# Each tuple: (SupplierName, City, Country)
 # ~50% Germany, remaining split across neighboring countries
 SUPPLIERS: list[tuple[str, str, str]] = [
     # Germany (10)
@@ -140,8 +140,8 @@ def _name_part(name: str) -> str:
     return ''.join(c for c in s if c.isalpha())
 
 
-def generate_email(first_name: str, last_name: str) -> str:
-    """Generate a realistic email address based on first and last name.
+def generate_email(FirstName: str, LastName: str) -> str:
+    """Generate a realistic Email address based on first and last name.
 
     Format options:
         <first>.<last>          ->  max.mustermann
@@ -151,8 +151,8 @@ def generate_email(first_name: str, last_name: str) -> str:
         <first[0]>_<last>       ->  m_mustermann
     In 1 out of 10 cases a random 2-4 digit number is appended.
     """
-    fn = _name_part(first_name)
-    ln = _name_part(last_name)
+    fn = _name_part(FirstName)
+    ln = _name_part(LastName)
     if not fn:
         fn = "user"
     if not ln:
@@ -171,12 +171,12 @@ def generate_email(first_name: str, last_name: str) -> str:
     return f"{local}@{random.choice(_EMAIL_DOMAINS)}"
 
 
-def _unique_email(first_name: str, last_name: str, used: set[str]) -> str:
-    """Generate an email from name; append counter suffix if already used."""
-    email = generate_email(first_name, last_name)
-    if email not in used:
-        return email
-    local, domain = email.rsplit("@", 1)
+def _unique_email(FirstName: str, LastName: str, used: set[str]) -> str:
+    """Generate an Email from name; append counter suffix if already used."""
+    Email = generate_email(FirstName, LastName)
+    if Email not in used:
+        return Email
+    local, domain = Email.rsplit("@", 1)
     counter = 1
     while True:
         candidate = f"{local}{counter}@{domain}"
@@ -201,10 +201,10 @@ def random_order_date() -> str:
 
 
 def random_customer_since(order_date_str: str) -> str:
-    """Customer registered between 5 years before and on the same day as first order."""
-    order_date = date.fromisoformat(order_date_str)
-    earliest   = order_date - timedelta(days=5 * 365)
-    delta      = (order_date - earliest).days
+    """Customer registered between 5 years before and on the same Day as first order."""
+    OrderDate = date.fromisoformat(order_date_str)
+    earliest   = OrderDate - timedelta(days=5 * 365)
+    delta      = (OrderDate - earliest).days
     return (earliest + timedelta(days=random.randint(0, delta))).isoformat()
 
 
@@ -220,10 +220,10 @@ def apply_ddl(conn: sqlite3.Connection) -> None:
 
 def insert_suppliers(conn: sqlite3.Connection) -> list[int]:
     ids = []
-    for name, city, country in SUPPLIERS:
+    for name, City, Country in SUPPLIERS:
         cur = conn.execute(
-            f"INSERT INTO Supplier (supplier_name, city, country) VALUES ({PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER})",
-            (name, city, country),
+            f"INSERT INTO Supplier (SupplierName, City, Country) VALUES ({PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER})",
+            (name, City, Country),
         )
         ids.append(cur.lastrowid)
     conn.commit()
@@ -231,18 +231,18 @@ def insert_suppliers(conn: sqlite3.Connection) -> list[int]:
 
 
 def insert_categories(conn: sqlite3.Connection) -> dict[str, int]:
-    """Returns mapping: category_name -> category_id (all levels)."""
+    """Returns mapping: CategoryName -> CategoryId (all levels)."""
     cat_ids: dict[str, int] = {}
     for top_name, sub_names in CATEGORY_TREE.items():
         cur = conn.execute(
-            f"INSERT INTO Category (category_name, parent_category_id) VALUES ({PLACEHOLDER}, NULL)",
+            f"INSERT INTO Category (CategoryName, ParentCategoryId) VALUES ({PLACEHOLDER}, NULL)",
             (top_name,),
         )
         top_id = cur.lastrowid
         cat_ids[top_name] = top_id
         for sub_name in sub_names:
             cur = conn.execute(
-                f"INSERT INTO Category (category_name, parent_category_id) VALUES ({PLACEHOLDER},{PLACEHOLDER})",
+                f"INSERT INTO Category (CategoryName, ParentCategoryId) VALUES ({PLACEHOLDER},{PLACEHOLDER})",
                 (sub_name, top_id),
             )
             cat_ids[sub_name] = cur.lastrowid
@@ -270,13 +270,13 @@ def insert_products(conn: sqlite3.Connection, cat_ids: dict[str, int],
             cat_name = random.choice(all_subs) if all_subs else top_name
             cat_id   = cat_ids[cat_name]
             sup_id   = random.choice(supplier_ids)
-            list_price = round(random.uniform(49.99, 2499.99), 2)
-            colour   = random.choice(COLOURS)
-            material = random.choice(MATERIALS)
+            ListPrice = round(random.uniform(49.99, 2499.99), 2)
+            Colour   = random.choice(COLOURS)
+            Material = random.choice(MATERIALS)
             cur = conn.execute(
-                f"INSERT INTO Product (product_name, list_price, colour, material, category_id, supplier_id) "
+                f"INSERT INTO Product (ProductName, ListPrice, Colour, Material, CategoryId, SupplierId) "
                 f"VALUES ({PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER})",
-                (name, list_price, colour, material, cat_id, sup_id),
+                (name, ListPrice, Colour, Material, cat_id, sup_id),
             )
             ids.append(cur.lastrowid)
             generated += 1
@@ -286,27 +286,27 @@ def insert_products(conn: sqlite3.Connection, cat_ids: dict[str, int],
 
 def insert_customers(conn: sqlite3.Connection, plz_rows: list[dict],
                      n: int = 5_000) -> list[tuple[int, str]]:
-    """Returns list of (customer_id, customer_since) for order generation."""
+    """Returns list of (CustomerId, CustomerSince) for order generation."""
     result = []
     used_emails: set[str] = set()
     inserted = 0
     while inserted < n:
         plz_row   = random.choice(plz_rows)
-        plz       = plz_row["postal_code"]
-        city      = plz_row["city"]
-        state     = plz_row["federal_state"]
+        plz       = plz_row["PostalCode"]
+        City      = plz_row["City"]
+        state     = plz_row["FederalState"]
         first     = fake.first_name()
         last      = fake.last_name()
-        email     = _unique_email(first, last, used_emails)
-        used_emails.add(email)
+        Email     = _unique_email(first, last, used_emails)
+        used_emails.add(Email)
         street    = fake.street_address()
         dummy_date = random_order_date()
         since = random_customer_since(dummy_date)
         cur = conn.execute(
             f"INSERT INTO Customer "
-            f"(first_name, last_name, email, street_address, postal_code, city, federal_state, customer_since) "
+            f"(FirstName, LastName, Email, StreetAddress, PostalCode, City, FederalState, CustomerSince) "
             f"VALUES ({','.join([PLACEHOLDER]*8)})",
-            (first, last, email, street, plz, city, state, since),
+            (first, last, Email, street, plz, City, state, since),
         )
         result.append((cur.lastrowid, since))
         inserted += 1
@@ -324,10 +324,10 @@ def insert_orders(conn: sqlite3.Connection,
 
     for _ in range(n_orders):
         cust_id, _ = random.choice(customer_records)
-        order_date  = random_order_date()
+        OrderDate  = random_order_date()
         payment     = random.choices(PAYMENT_METHODS, weights=PAYMENT_WEIGHTS, k=1)[0]
         shipping    = round(random.choice([0.0, 4.99, 6.99, 9.99]), 2)
-        order_batch.append((order_date, payment, shipping, cust_id))
+        order_batch.append((OrderDate, payment, shipping, cust_id))
         order_id_counter += 1
 
         # 1-5 lines per order; weighted toward 2-3
@@ -335,23 +335,23 @@ def insert_orders(conn: sqlite3.Connection,
         chosen_products = random.sample(product_ids, min(n_lines, len(product_ids)))
         for prod_id in chosen_products:
             qty       = random.randint(1, 4)
-            # unit_price is list_price +/- 10% (simulates dynamic pricing)
-            row = conn.execute("SELECT list_price FROM Product WHERE product_id = ?", (prod_id,)).fetchone()
+            # UnitPrice is ListPrice +/- 10% (simulates dynamic pricing)
+            row = conn.execute("SELECT ListPrice FROM Product WHERE ProductId = ?", (prod_id,)).fetchone()
             base_price = row[0]
-            unit_price = round(base_price * random.uniform(0.90, 1.10), 2)
-            # discount: 80% of lines have 0%, rest up to 25%
-            discount = round(random.choices(
+            UnitPrice = round(base_price * random.uniform(0.90, 1.10), 2)
+            # Discount: 80% of lines have 0%, rest up to 25%
+            Discount = round(random.choices(
                 [0.0, random.uniform(0.05, 0.25)],
                 weights=[80, 20], k=1)[0], 2)
-            line_batch.append((qty, unit_price, discount, order_id_counter, prod_id))
+            line_batch.append((qty, UnitPrice, Discount, order_id_counter, prod_id))
 
     conn.executemany(
-        f"INSERT INTO OrderHeader (order_date, payment_method, shipping_cost, customer_id) "
+        f"INSERT INTO OrderHeader (OrderDate, PaymentMethod, ShippingCost, CustomerId) "
         f"VALUES ({','.join([PLACEHOLDER]*4)})",
         order_batch,
     )
     conn.executemany(
-        f"INSERT INTO OrderLine (quantity, unit_price, discount, order_id, product_id) "
+        f"INSERT INTO OrderLine (Quantity, UnitPrice, Discount, OrderId, ProductId) "
         f"VALUES ({','.join([PLACEHOLDER]*5)})",
         line_batch,
     )

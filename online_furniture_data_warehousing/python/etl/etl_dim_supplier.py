@@ -19,9 +19,9 @@ def extract_dim_supplier(conn) -> list:
 def transform_dim_supplier(raw_rows: list, existing_ids: set) -> list[tuple]:
     """Filter out suppliers already present in DIM_Supplier."""
     return [
-        (r["supplier_id"], r["supplier_name"], r["city"], r["country"])
+        (r["SupplierId"], r["SupplierName"], r["City"], r["Country"])
         for r in raw_rows
-        if r["supplier_id"] not in existing_ids
+        if r["SupplierId"] not in existing_ids
     ]
 
 
@@ -29,7 +29,7 @@ def load_dim_supplier(conn, rows: list[tuple]) -> int:
     """Insert new supplier rows into DIM_Supplier; returns count of inserted rows."""
     if rows:
         conn.executemany(
-            f"INSERT INTO DIM_Supplier (supplier_id, supplier_name, city, country) "
+            f"INSERT INTO DIM_Supplier (SupplierId, SupplierName, City, Country) "
             f"VALUES ({','.join([PLACEHOLDER] * 4)})",
             rows,
         )
@@ -40,7 +40,7 @@ def load_dim_supplier(conn, rows: list[tuple]) -> int:
 def run_etl_dim_supplier() -> None:
     conn = connect()
     try:
-        existing_ids = {r[0] for r in conn.execute("SELECT supplier_id FROM DIM_Supplier")}
+        existing_ids = {r[0] for r in conn.execute("SELECT SupplierId FROM DIM_Supplier")}
         raw = extract_dim_supplier(conn)
         rows = transform_dim_supplier(raw, existing_ids)
         n = load_dim_supplier(conn, rows)

@@ -10,79 +10,79 @@ PRAGMA foreign_keys = ON;
 -- Supplier
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS Supplier (
-    supplier_id   INTEGER PRIMARY KEY AUTOINCREMENT,
-    supplier_name TEXT    NOT NULL,
-    city          TEXT    NOT NULL,
-    country       TEXT    NOT NULL DEFAULT 'Germany'
+    SupplierId   INTEGER PRIMARY KEY AUTOINCREMENT,
+    SupplierName TEXT    NOT NULL,
+    City          TEXT    NOT NULL,
+    Country       TEXT    NOT NULL DEFAULT 'Germany'
 );
 
 -- -----------------------------------------------------------------------------
 -- Category  (two-level hierarchy via self-referencing FK)
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS Category (
-    category_id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_name      TEXT    NOT NULL UNIQUE,
-    parent_category_id INTEGER REFERENCES Category(category_id)
+    CategoryId        INTEGER PRIMARY KEY AUTOINCREMENT,
+    CategoryName      TEXT    NOT NULL UNIQUE,
+    ParentCategoryId INTEGER REFERENCES Category(CategoryId)
 );
 
 -- -----------------------------------------------------------------------------
 -- Product
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS Product (
-    product_id    INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_name  TEXT    NOT NULL,
-    list_price    REAL    NOT NULL CHECK (list_price > 0),
-    colour        TEXT,
-    material      TEXT,
-    category_id   INTEGER NOT NULL REFERENCES Category(category_id),
-    supplier_id   INTEGER NOT NULL REFERENCES Supplier(supplier_id)
+    ProductId    INTEGER PRIMARY KEY AUTOINCREMENT,
+    ProductName  TEXT    NOT NULL,
+    ListPrice    REAL    NOT NULL CHECK (ListPrice > 0),
+    Colour        TEXT,
+    Material      TEXT,
+    CategoryId   INTEGER NOT NULL REFERENCES Category(CategoryId),
+    SupplierId   INTEGER NOT NULL REFERENCES Supplier(SupplierId)
 );
 
 -- -----------------------------------------------------------------------------
 -- Customer
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS Customer (
-    customer_id     INTEGER PRIMARY KEY AUTOINCREMENT,
-    first_name      TEXT    NOT NULL,
-    last_name       TEXT    NOT NULL,
-    email           TEXT    NOT NULL UNIQUE,
-    street_address  TEXT    NOT NULL,
-    postal_code     TEXT    NOT NULL,
-    city            TEXT    NOT NULL,
-    federal_state   TEXT    NOT NULL,
-    customer_since  TEXT    NOT NULL   -- ISO date string YYYY-MM-DD
+    CustomerId     INTEGER PRIMARY KEY AUTOINCREMENT,
+    FirstName      TEXT    NOT NULL,
+    LastName       TEXT    NOT NULL,
+    Email           TEXT    NOT NULL UNIQUE,
+    StreetAddress  TEXT    NOT NULL,
+    PostalCode     TEXT    NOT NULL,
+    City            TEXT    NOT NULL,
+    FederalState   TEXT    NOT NULL,
+    CustomerSince  TEXT    NOT NULL   -- ISO date string YYYY-MM-DD
 );
 
 -- -----------------------------------------------------------------------------
 -- OrderHeader
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS OrderHeader (
-    order_id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_date      TEXT    NOT NULL,  -- ISO date string YYYY-MM-DD
-    payment_method  TEXT    NOT NULL CHECK (payment_method IN (
+    OrderId        INTEGER PRIMARY KEY AUTOINCREMENT,
+    OrderDate      TEXT    NOT NULL,  -- ISO date string YYYY-MM-DD
+    PaymentMethod  TEXT    NOT NULL CHECK (PaymentMethod IN (
                         'credit_card', 'paypal', 'bank_transfer', 'invoice')),
-    shipping_cost   REAL    NOT NULL CHECK (shipping_cost >= 0),
-    customer_id     INTEGER NOT NULL REFERENCES Customer(customer_id)
+    ShippingCost   REAL    NOT NULL CHECK (ShippingCost >= 0),
+    CustomerId     INTEGER NOT NULL REFERENCES Customer(CustomerId)
 );
 
 -- -----------------------------------------------------------------------------
 -- OrderLine
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS OrderLine (
-    order_line_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    quantity      INTEGER NOT NULL CHECK (quantity > 0),
-    unit_price    REAL    NOT NULL CHECK (unit_price > 0),
-    discount      REAL    NOT NULL CHECK (discount >= 0 AND discount < 1),
-    order_id      INTEGER NOT NULL REFERENCES OrderHeader(order_id),
-    product_id    INTEGER NOT NULL REFERENCES Product(product_id)
+    OrderLineId INTEGER PRIMARY KEY AUTOINCREMENT,
+    Quantity      INTEGER NOT NULL CHECK (Quantity > 0),
+    UnitPrice    REAL    NOT NULL CHECK (UnitPrice > 0),
+    Discount      REAL    NOT NULL CHECK (Discount >= 0 AND Discount < 1),
+    OrderId      INTEGER NOT NULL REFERENCES OrderHeader(OrderId),
+    ProductId    INTEGER NOT NULL REFERENCES Product(ProductId)
 );
 
 -- -----------------------------------------------------------------------------
 -- Indexes for common join / filter columns
 -- -----------------------------------------------------------------------------
-CREATE INDEX IF NOT EXISTS idx_order_header_customer ON OrderHeader(customer_id);
-CREATE INDEX IF NOT EXISTS idx_order_header_date     ON OrderHeader(order_date);
-CREATE INDEX IF NOT EXISTS idx_order_line_order      ON OrderLine(order_id);
-CREATE INDEX IF NOT EXISTS idx_order_line_product    ON OrderLine(product_id);
-CREATE INDEX IF NOT EXISTS idx_product_category      ON Product(category_id);
-CREATE INDEX IF NOT EXISTS idx_product_supplier      ON Product(supplier_id);
+CREATE INDEX IF NOT EXISTS idx_order_header_customer ON OrderHeader(CustomerId);
+CREATE INDEX IF NOT EXISTS idx_order_header_date     ON OrderHeader(OrderDate);
+CREATE INDEX IF NOT EXISTS idx_order_line_order      ON OrderLine(OrderId);
+CREATE INDEX IF NOT EXISTS idx_order_line_product    ON OrderLine(ProductId);
+CREATE INDEX IF NOT EXISTS idx_product_category      ON Product(CategoryId);
+CREATE INDEX IF NOT EXISTS idx_product_supplier      ON Product(SupplierId);

@@ -6,17 +6,17 @@
 
 WITH yearly AS (
     SELECT
-        dc.federal_state,
-        dd.year,
-        SUM(fs.net_amount)                  AS net_revenue
+        dc.FederalState,
+        dd.Year,
+        SUM(fs.NetAmount)                  AS net_revenue
     FROM FACT_Sales  fs
-    JOIN DIM_Customer dc ON fs.customer_sk = dc.customer_sk
-    JOIN DIM_Date     dd ON fs.date_sk     = dd.date_sk
-    WHERE dc.is_current = 1
-    GROUP BY dc.federal_state, dd.year
+    JOIN DIM_Customer dc ON fs.CustomerSk = dc.CustomerSk
+    JOIN DIM_Date     dd ON fs.DateSk     = dd.DateSk
+    WHERE dc.IsCurrent = 1
+    GROUP BY dc.FederalState, dd.Year
 )
 SELECT
-    y1.federal_state,
+    y1.FederalState,
     ROUND(y1.net_revenue, 2)                AS revenue_2024,
     ROUND(y2.net_revenue, 2)                AS revenue_2025,
     ROUND(
@@ -24,7 +24,7 @@ SELECT
     2)                                      AS growth_pct
 FROM yearly y1
 JOIN yearly y2
-    ON  y1.federal_state = y2.federal_state
-    AND y1.year = 2024
-    AND y2.year = 2025
+    ON  y1.FederalState = y2.FederalState
+    AND y1.Year = 2024
+    AND y2.Year = 2025
 ORDER BY growth_pct DESC;

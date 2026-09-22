@@ -5,12 +5,12 @@
 -- =============================================================================
 
 SELECT
-    dd.year,
-    dd.calendar_week,
-    COUNT(DISTINCT fs.order_id)             AS order_count,
-    ROUND(SUM(fs.net_amount), 2)            AS net_revenue
+    dd.Year,
+    dd.CalendarWeek,
+    COUNT(DISTINCT fs.OrderId)             AS order_count,
+    ROUND(SUM(fs.NetAmount), 2)            AS net_revenue
 FROM FACT_Sales  fs
-JOIN DIM_Date    dd ON fs.date_sk = dd.date_sk
-GROUP BY dd.year, dd.calendar_week
+JOIN DIM_Date    dd ON fs.DateSk = dd.DateSk
+GROUP BY dd.Year, dd.CalendarWeek
 ORDER BY order_count DESC
 LIMIT 10;

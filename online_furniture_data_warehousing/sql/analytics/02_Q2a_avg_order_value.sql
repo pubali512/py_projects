@@ -7,19 +7,19 @@
 
 WITH order_totals AS (
     SELECT
-        dc.plz_region,
-        fs.order_id,
-        SUM(fs.net_amount) + MAX(fs.shipping_cost) AS order_value
+        dc.PlzRegion,
+        fs.OrderId,
+        SUM(fs.NetAmount) + MAX(fs.ShippingCost) AS order_value
     FROM FACT_Sales  fs
-    JOIN DIM_Customer dc ON fs.customer_sk = dc.customer_sk
-    WHERE dc.is_current = 1
-    GROUP BY dc.plz_region, fs.order_id
+    JOIN DIM_Customer dc ON fs.CustomerSk = dc.CustomerSk
+    WHERE dc.IsCurrent = 1
+    GROUP BY dc.PlzRegion, fs.OrderId
 )
 SELECT
-    plz_region,
-    COUNT(DISTINCT order_id)        AS order_count,
+    PlzRegion,
+    COUNT(DISTINCT OrderId)        AS order_count,
     ROUND(AVG(order_value), 2)      AS avg_order_value,
     ROUND(SUM(order_value), 2)      AS total_revenue
 FROM order_totals
-GROUP BY plz_region
+GROUP BY PlzRegion
 ORDER BY avg_order_value DESC;

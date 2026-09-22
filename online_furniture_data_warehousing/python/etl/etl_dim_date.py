@@ -27,21 +27,21 @@ _WEEKDAY_NAMES = [
 def extract_dim_date(conn) -> list:
     """Return all distinct order dates from the RAW staging table."""
     return conn.execute(
-        "SELECT DISTINCT order_date FROM RAW_BusinessDB_OrderHeader"
+        "SELECT DISTINCT OrderDate FROM RAW_BusinessDB_OrderHeader"
     ).fetchall()
 
 
 def transform_dim_date(raw_rows: list, existing_sk: set) -> list[tuple]:
     """Derive date dimension attributes; skip dates that already exist in DIM_Date."""
     rows = []
-    for (order_date,) in raw_rows:
-        sk = int(order_date.replace("-", ""))
+    for (OrderDate,) in raw_rows:
+        sk = int(OrderDate.replace("-", ""))
         if sk in existing_sk:
             continue
-        d = date.fromisoformat(order_date)
+        d = date.fromisoformat(OrderDate)
         rows.append((
             sk,
-            order_date,
+            OrderDate,
             d.day,
             d.month,
             _MONTH_NAMES[d.month - 1],
@@ -68,7 +68,7 @@ def load_dim_date(conn, rows: list[tuple]) -> int:
 def run_etl_dim_date() -> None:
     conn = connect()
     try:
-        existing_sk = {r[0] for r in conn.execute("SELECT date_sk FROM DIM_Date")}
+        existing_sk = {r[0] for r in conn.execute("SELECT DateSk FROM DIM_Date")}
         raw = extract_dim_date(conn)
         rows = transform_dim_date(raw, existing_sk)
         n = load_dim_date(conn, rows)

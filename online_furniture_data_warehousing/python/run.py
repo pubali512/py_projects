@@ -31,9 +31,9 @@ SQL_DIR   = ROOT / "sql" / "analytics"
 
 QUESTIONS: dict[str, tuple[str, pathlib.Path]] = {
     "Q1": (
-        "Revenue and discount by category over time\n"
-        "  How does net revenue develop per top-level product category and quarter,\n"
-        "  and which category carries the highest discount share?",
+        "Revenue and Discount by category over time\n"
+        "  How does net revenue develop per top-level product category and Quarter,\n"
+        "  and which category carries the highest Discount share?",
         SQL_DIR / "01_Q1_revenue_category.sql",
     ),
     "Q2A": (
@@ -48,8 +48,8 @@ QUESTIONS: dict[str, tuple[str, pathlib.Path]] = {
         SQL_DIR / "03_Q2b_category_mix_region.sql",
     ),
     "Q3A": (
-        "Peak order volume by weekday\n"
-        "  Which weekdays see the highest order volume across the two-year period?",
+        "Peak order volume by Weekday\n"
+        "  Which weekdays see the highest order volume across the two-Year period?",
         SQL_DIR / "04_Q3a_peak_weekday.sql",
     ),
     "Q3B": (
@@ -59,13 +59,13 @@ QUESTIONS: dict[str, tuple[str, pathlib.Path]] = {
     ),
     "Q4": (
         "Discount effectiveness\n"
-        "  Does a higher discount rate correlate with higher quantity sold\n"
+        "  Does a higher Discount rate correlate with higher Quantity sold\n"
         "  or net revenue per order line?",
         SQL_DIR / "06_Q4_discount_effectiveness.sql",
     ),
     "Q5": (
-        "Revenue and discount share by price segment\n"
-        "  How does revenue and discount compare across Budget (<EUR 200) /\n"
+        "Revenue and Discount share by price segment\n"
+        "  How does revenue and Discount compare across Budget (<EUR 200) /\n"
         "  Mid-range (EUR 200-799) / Premium (>=EUR 800) product segments?",
         SQL_DIR / "07_Q5_price_segment.sql",
     ),
@@ -75,14 +75,14 @@ QUESTIONS: dict[str, tuple[str, pathlib.Path]] = {
         SQL_DIR / "08_Q6_state_growth.sql",
     ),
     "Q7": (
-        "Supplier revenue by quarter\n"
-        "  Which suppliers generate the most net revenue per quarter,\n"
-        "  and how has their share shifted over the two-year period?",
+        "Supplier revenue by Quarter\n"
+        "  Which suppliers generate the most net revenue per Quarter,\n"
+        "  and how has their share shifted over the two-Year period?",
         SQL_DIR / "09_Q7_supplier_revenue_quarter.sql",
     ),
     "Q8": (
-        "Supplier discount behaviour vs. order volume\n"
-        "  Which suppliers' products carry the highest average discount rate,\n"
+        "Supplier Discount behaviour vs. order volume\n"
+        "  Which suppliers' products carry the highest average Discount rate,\n"
         "  and does that correlate with order volume?",
         SQL_DIR / "10_Q8_supplier_discount_volume.sql",
     ),

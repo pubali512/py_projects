@@ -5,7 +5,7 @@ from the OpenPLZ API and writes data/plz_city_mapping.csv.
 Run once before data generation:
     python python/00_prepare_plz_data.py
 
-Output columns: postal_code, city, federal_state
+Output columns: PostalCode, City, FederalState
 """
 
 import csv
@@ -15,7 +15,7 @@ import urllib.parse
 import json
 import pathlib
 # 75 German cities distributed across all 16 federal states.
-# Tuple: (city name as used in OpenPLZ API, federal_state)
+# Tuple: (City name as used in OpenPLZ API, FederalState)
 CITIES = [
     # Baden-Wuerttemberg (5)
     ("Stuttgart",               "Baden-Wuerttemberg"),
@@ -126,7 +126,7 @@ FALLBACK_PLZ: dict[str, tuple[str, str, list[str]]] = {
 
 
 def fetch_plz_for_city(city_name: str) -> list[dict]:
-    """Return list of {postal_code, city, federal_state} dicts for a city."""
+    """Return list of {PostalCode, City, FederalState} dicts for a City."""
     params = urllib.parse.urlencode({"name": city_name, "pageSize": PAGE_SIZE})
     url = f"{API_BASE}?{params}"
     try:
@@ -146,7 +146,7 @@ def fetch_plz_for_city(city_name: str) -> list[dict]:
             else item.get("federalState", "")
         )
         if plz:
-            rows.append({"postal_code": plz, "city": name, "federal_state": state})
+            rows.append({"PostalCode": plz, "City": name, "FederalState": state})
     return rows
 
 
@@ -157,38 +157,38 @@ def main():
     all_rows: list[dict] = []
     seen: set[str] = set()
 
-    for city, state in CITIES:
-        print(f"Fetching PLZ for {city} ({state}) ...", end=" ")
+    for City, state in CITIES:
+        print(f"Fetching PLZ for {City} ({state}) ...", end=" ")
 
         # Use fallback if known to fail via API
-        if city in FALLBACK_PLZ:
-            canon_city, canon_state, plz_list = FALLBACK_PLZ[city]
+        if City in FALLBACK_PLZ:
+            canon_city, canon_state, plz_list = FALLBACK_PLZ[City]
             added = 0
             for plz in plz_list:
                 if plz not in seen:
                     seen.add(plz)
-                    all_rows.append({"postal_code": plz, "city": canon_city, "federal_state": canon_state})
+                    all_rows.append({"PostalCode": plz, "City": canon_city, "FederalState": canon_state})
                     added += 1
             print(f"{added} PLZ codes added (fallback)")
             continue
 
-        rows = fetch_plz_for_city(city)
+        rows = fetch_plz_for_city(City)
         added = 0
         for row in rows:
-            key = row["postal_code"]
+            key = row["PostalCode"]
             if key not in seen:
                 seen.add(key)
                 # Use the supplied state as ground truth (API may differ slightly)
-                row["federal_state"] = state
+                row["FederalState"] = state
                 all_rows.append(row)
                 added += 1
         print(f"{added} PLZ codes added")
         time.sleep(DELAY_SECONDS)
 
     with open(out_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["postal_code", "city", "federal_state"])
+        writer = csv.DictWriter(f, fieldnames=["PostalCode", "City", "FederalState"])
         writer.writeheader()
-        writer.writerows(sorted(all_rows, key=lambda r: r["postal_code"]))
+        writer.writerows(sorted(all_rows, key=lambda r: r["PostalCode"]))
 
     print(f"\nDone. {len(all_rows)} PLZ rows written to {out_path}")
 

@@ -15,25 +15,25 @@ from db import connect, PLACEHOLDER
 def extract_dim_product(conn) -> list:
     """Join RAW products with category hierarchy to resolve top-category name."""
     return conn.execute("""
-        SELECT p.product_id,
-               p.product_name,
-               p.colour,
-               p.material,
-               p.list_price,
-               c.category_name,
-               COALESCE(top.category_name, c.category_name) AS top_category_name
+        SELECT p.ProductId,
+               p.ProductName,
+               p.Colour,
+               p.Material,
+               p.ListPrice,
+               c.CategoryName,
+               COALESCE(top.CategoryName, c.CategoryName) AS TopCategoryName
         FROM RAW_BusinessDB_Product   p
-        JOIN RAW_BusinessDB_Category  c   ON p.category_id    = c.category_id
+        JOIN RAW_BusinessDB_Category  c   ON p.CategoryId    = c.CategoryId
         LEFT JOIN RAW_BusinessDB_Category top
-                                          ON c.parent_category_id = top.category_id
+                                          ON c.ParentCategoryId = top.CategoryId
     """).fetchall()
 
 
 def transform_dim_product(raw_rows: list) -> list[tuple]:
     """Return product tuples ready for upsert (no filtering needed -- handled in load)."""
     return [
-        (r["product_id"], r["product_name"], r["colour"], r["material"],
-         r["list_price"], r["category_name"], r["top_category_name"])
+        (r["ProductId"], r["ProductName"], r["Colour"], r["Material"],
+         r["ListPrice"], r["CategoryName"], r["TopCategoryName"])
         for r in raw_rows
     ]
 
@@ -45,29 +45,29 @@ def load_dim_product(conn, rows: list[tuple]) -> tuple[int, int]:
     existing = {
         r[0]: r
         for r in conn.execute(
-            "SELECT product_id, product_name, colour, material, "
-            "list_price, category_name, top_category_name FROM DIM_Product"
+            "SELECT ProductId, ProductName, Colour, Material, "
+            "ListPrice, CategoryName, TopCategoryName FROM DIM_Product"
         )
     }
     inserted = updated = 0
-    for (pid, name, colour, material, price, cat, top_cat) in rows:
+    for (pid, name, Colour, Material, price, cat, top_cat) in rows:
         if pid not in existing:
             conn.execute(
                 f"INSERT INTO DIM_Product "
-                f"(product_id, product_name, colour, material, list_price, "
-                f"category_name, top_category_name) VALUES ({','.join([PLACEHOLDER]*7)})",
-                (pid, name, colour, material, price, cat, top_cat),
+                f"(ProductId, ProductName, Colour, Material, ListPrice, "
+                f"CategoryName, TopCategoryName) VALUES ({','.join([PLACEHOLDER]*7)})",
+                (pid, name, Colour, Material, price, cat, top_cat),
             )
             inserted += 1
         else:
             ex = existing[pid]
-            if (ex[1], ex[2], ex[3], ex[4], ex[5], ex[6]) != (name, colour, material, price, cat, top_cat):
+            if (ex[1], ex[2], ex[3], ex[4], ex[5], ex[6]) != (name, Colour, Material, price, cat, top_cat):
                 conn.execute(
-                    f"UPDATE DIM_Product SET product_name={PLACEHOLDER}, colour={PLACEHOLDER}, "
-                    f"material={PLACEHOLDER}, list_price={PLACEHOLDER}, "
-                    f"category_name={PLACEHOLDER}, top_category_name={PLACEHOLDER} "
-                    f"WHERE product_id={PLACEHOLDER}",
-                    (name, colour, material, price, cat, top_cat, pid),
+                    f"UPDATE DIM_Product SET ProductName={PLACEHOLDER}, Colour={PLACEHOLDER}, "
+                    f"Material={PLACEHOLDER}, ListPrice={PLACEHOLDER}, "
+                    f"CategoryName={PLACEHOLDER}, TopCategoryName={PLACEHOLDER} "
+                    f"WHERE ProductId={PLACEHOLDER}",
+                    (name, Colour, Material, price, cat, top_cat, pid),
                 )
                 updated += 1
     conn.commit()

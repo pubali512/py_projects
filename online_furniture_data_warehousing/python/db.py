@@ -20,6 +20,6 @@ PLACEHOLDER = "?"
 def connect() -> sqlite3.Connection:
     """Return an open database connection with FK enforcement enabled."""
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row   # access columns by name: row["customer_id"]
+    conn.row_factory = sqlite3.Row   # access columns by name: row["CustomerId"]
     conn.execute("PRAGMA foreign_keys = ON")
     return conn

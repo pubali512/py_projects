@@ -5,16 +5,16 @@
 -- =============================================================================
 
 SELECT
-    dc.plz_region,
-    dp.top_category_name,
-    ROUND(SUM(fs.net_amount), 2)                                        AS net_revenue,
+    dc.PlzRegion,
+    dp.TopCategoryName,
+    ROUND(SUM(fs.NetAmount), 2)                                        AS net_revenue,
     ROUND(
-        100.0 * SUM(fs.net_amount)
-            / SUM(SUM(fs.net_amount)) OVER (PARTITION BY dc.plz_region),
+        100.0 * SUM(fs.NetAmount)
+            / SUM(SUM(fs.NetAmount)) OVER (PARTITION BY dc.PlzRegion),
     1)                                                                  AS category_share_pct
 FROM FACT_Sales  fs
-JOIN DIM_Customer dc ON fs.customer_sk = dc.customer_sk
-JOIN DIM_Product  dp ON fs.product_sk  = dp.product_sk
-WHERE dc.is_current = 1
-GROUP BY dc.plz_region, dp.top_category_name
-ORDER BY dc.plz_region, net_revenue DESC;
+JOIN DIM_Customer dc ON fs.CustomerSk = dc.CustomerSk
+JOIN DIM_Product  dp ON fs.ProductSk  = dp.ProductSk
+WHERE dc.IsCurrent = 1
+GROUP BY dc.PlzRegion, dp.TopCategoryName
+ORDER BY dc.PlzRegion, net_revenue DESC;

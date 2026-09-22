@@ -13,46 +13,46 @@
 -- For MSSQL / PostgreSQL, the equivalent statements would be:
 
 -- ALTER TABLE DIM_Customer
---     ADD valid_from  DATE         NOT NULL DEFAULT GETDATE();   -- MSSQL
+--     ADD ValidFrom  DATE         NOT NULL DEFAULT GETDATE();   -- MSSQL
 --
 -- ALTER TABLE DIM_Customer
---     ADD valid_to    DATE         NULL;
+--     ADD ValidTo    DATE         NULL;
 --
 -- ALTER TABLE DIM_Customer
---     ADD is_current  BIT          NOT NULL DEFAULT 1;
+--     ADD IsCurrent  BIT          NOT NULL DEFAULT 1;
 
 -- =============================================================================
 -- SCD Analysis Summary
 -- =============================================================================
 --
 -- SCD TYPE 0  (keep original value -- never overwrite)
--- Columns: customer_id, order_id, order_date
+-- Columns: CustomerId, OrderId, OrderDate
 -- Justification: natural keys and transaction timestamps are immutable.
 --
 -- SCD TYPE 1  (overwrite -- no history kept)
--- Columns: DIM_Product.product_name, DIM_Product.list_price,
---          DIM_Product.colour, DIM_Product.material
+-- Columns: DIM_Product.ProductName, DIM_Product.ListPrice,
+--          DIM_Product.Colour, DIM_Product.Material
 -- Justification: corrections to product catalogue data (typos, price updates)
 --   do not require historical tracking for the defined analytical questions.
 --
 -- SCD TYPE 2  (add new row -- full history preserved)
--- Columns: DIM_Customer.street_address, DIM_Customer.postal_code,
---          DIM_Customer.city, DIM_Customer.federal_state,
---          DIM_Customer.plz_region, DIM_Customer.plz_zone
+-- Columns: DIM_Customer.StreetAddress, DIM_Customer.PostalCode,
+--          DIM_Customer.City, DIM_Customer.FederalState,
+--          DIM_Customer.PlzRegion, DIM_Customer.PlzZone
 -- Justification: a customer who relocates changes their PLZ region, which
 --   directly affects Q2 (regional order value analysis). Recording the old
 --   address ensures that historical orders are attributed to the correct region.
--- Tracking columns: valid_from DATE, valid_to DATE (NULL = active), is_current BIT
+-- Tracking columns: ValidFrom DATE, ValidTo DATE (NULL = active), IsCurrent BIT
 --
 -- =============================================================================
 -- ETL SCD 2 Logic (implemented in python/02_etl.py -> load_dim_customer):
 --
---  IF customer_id NOT IN DIM_Customer:
---      INSERT new row  (valid_from = customer_since, valid_to = NULL, is_current = 1)
+--  IF CustomerId NOT IN DIM_Customer:
+--      INSERT new row  (ValidFrom = CustomerSince, ValidTo = NULL, IsCurrent = 1)
 --
---  ELSE IF postal_code OR street_address changed:
---      UPDATE current row  SET valid_to = etl_date, is_current = 0
---      INSERT new row      (valid_from = etl_date, valid_to = NULL, is_current = 1)
+--  ELSE IF PostalCode OR StreetAddress changed:
+--      UPDATE current row  SET ValidTo = etl_date, IsCurrent = 0
+--      INSERT new row      (ValidFrom = etl_date, ValidTo = NULL, IsCurrent = 1)
 --
 --  ELSE:
 --      No action (SCD 0/1 attributes handled in load_dim_product)

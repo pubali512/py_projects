@@ -9,50 +9,50 @@
 ```mermaid
 erDiagram
     Supplier {
-        int supplier_id PK
-        string supplier_name
-        string city
-        string country
+        int SupplierId PK
+        string SupplierName
+        string City
+        string Country
     }
     Category {
-        int category_id PK
-        string category_name
-        int parent_category_id FK
+        int CategoryId PK
+        string CategoryName
+        int ParentCategoryId FK
     }
     Product {
-        int product_id PK
-        string product_name
-        float list_price
-        string colour
-        string material
-        int category_id FK
-        int supplier_id FK
+        int ProductId PK
+        string ProductName
+        float ListPrice
+        string Colour
+        string Material
+        int CategoryId FK
+        int SupplierId FK
     }
     Customer {
-        int customer_id PK
-        string first_name
-        string last_name
-        string email
-        string street_address
-        string postal_code
-        string city
-        string federal_state
-        date customer_since
+        int CustomerId PK
+        string FirstName
+        string LastName
+        string Email
+        string StreetAddress
+        string PostalCode
+        string City
+        string FederalState
+        date CustomerSince
     }
     OrderHeader {
-        int order_id PK
-        date order_date
-        string payment_method
-        float shipping_cost
-        int customer_id FK
+        int OrderId PK
+        date OrderDate
+        string PaymentMethod
+        float ShippingCost
+        int CustomerId FK
     }
     OrderLine {
-        int order_line_id PK
-        int quantity
-        float unit_price
-        float discount
-        int order_id FK
-        int product_id FK
+        int OrderLineId PK
+        int Quantity
+        float UnitPrice
+        float Discount
+        int OrderId FK
+        int ProductId FK
     }
 
     Supplier    ||--o{ Product      : "supplies"
@@ -66,22 +66,22 @@ erDiagram
 ### 1.2 Relational Schema
 
 ```
-Supplier(supplier_id PK, supplier_name, city, country)
+Supplier(SupplierId PK, SupplierName, City, Country)
 
-Category(category_id PK, category_name,
-         parent_category_id FK → Category)
+Category(CategoryId PK, CategoryName,
+         ParentCategoryId FK → Category)
 
-Product(product_id PK, product_name, list_price, colour, material,
-        category_id FK → Category, supplier_id FK → Supplier)
+Product(ProductId PK, ProductName, ListPrice, Colour, Material,
+        CategoryId FK → Category, SupplierId FK → Supplier)
 
-Customer(customer_id PK, first_name, last_name, email, street_address,
-         postal_code, city, federal_state, customer_since)
+Customer(CustomerId PK, FirstName, LastName, Email, StreetAddress,
+         PostalCode, City, FederalState, CustomerSince)
 
-OrderHeader(order_id PK, order_date, payment_method, shipping_cost,
-             customer_id FK → Customer)
+OrderHeader(OrderId PK, OrderDate, PaymentMethod, ShippingCost,
+             CustomerId FK → Customer)
 
-OrderLine(order_line_id PK, quantity, unit_price, discount,
-           order_id FK → OrderHeader, product_id FK → Product)
+OrderLine(OrderLineId PK, Quantity, UnitPrice, Discount,
+           OrderId FK → OrderHeader, ProductId FK → Product)
 ```
 
 ### 1.3 Normal Form Verification
@@ -90,7 +90,7 @@ OrderLine(order_line_id PK, quantity, unit_price, discount,
 |---|---|---|
 | **1NF** | Atomic attributes, no repeating groups, single-column PKs | ✅ |
 | **2NF** | No partial dependencies (all PKs are surrogates — no composite PK) | ✅ |
-| **3NF** | `postal_code → city`? No — city stored independently. `unit_price ≠ list_price` (dynamic pricing). Category attributes separated. | ✅ |
+| **3NF** | `PostalCode → City`? No — City stored independently. `UnitPrice ≠ ListPrice` (dynamic pricing). Category attributes separated. | ✅ |
 
 All 6 tables in **3NF**.
 
@@ -101,11 +101,11 @@ All 6 tables in **3NF**.
 | Supplier | 20 | Hardcoded (10 Germany, 10 neighboring countries) |
 | Category | 15 | 5 top-level + 10 sub-categories (hardcoded tree) |
 | Product | 120 | Templates × adjectives; price €50–€2,500 random |
-| Customer | 5,000 | Faker `de_DE`; email derived from name; PLZ/city from curated CSV |
+| Customer | 5,000 | Faker `de_DE`; Email derived from name; PLZ/City from curated CSV |
 | OrderHeader | 30,000 | Random dates 2024-01-01 to 2025-12-31; weighted payment methods |
-| OrderLine | ~85,500 | 1–5 lines/order; unit_price = list_price ±10%; 80% zero discount |
+| OrderLine | ~85,500 | 1–5 lines/order; UnitPrice = ListPrice ±10%; 80% zero Discount |
 
-PLZ accuracy: 1,150 real German postal codes for 75 cities from OpenPLZ API — stored in `data/plz_city_mapping.csv`. Faker's `de_DE` locale does NOT match PLZ ↔ city correctly; curated CSV solves this.
+PLZ accuracy: 1,150 real German postal codes for 75 cities from OpenPLZ API — stored in `data/plz_city_mapping.csv`. Faker's `de_DE` locale does NOT match PLZ ↔ City correctly; curated CSV solves this.
 
 ---
 
@@ -174,67 +174,67 @@ flowchart TB
 ```mermaid
 erDiagram
     DIM_Date {
-        int date_sk PK
-        date full_date
-        int day
-        int month
-        string month_name
-        int quarter
-        int year
-        int weekday
-        string weekday_name
-        int calendar_week
+        int DateSk PK
+        date FullDate
+        int Day
+        int Month
+        string MonthName
+        int Quarter
+        int Year
+        int Weekday
+        string WeekdayName
+        int CalendarWeek
     }
     DIM_Customer {
-        int customer_sk PK
-        int customer_id
-        string first_name
-        string last_name
-        string email
-        string postal_code
-        string plz_region
-        string plz_zone
-        string city
-        string federal_state
-        date valid_from
-        date valid_to
-        int is_current
+        int CustomerSk PK
+        int CustomerId
+        string FirstName
+        string LastName
+        string Email
+        string PostalCode
+        string PlzRegion
+        string PlzZone
+        string City
+        string FederalState
+        date ValidFrom
+        date ValidTo
+        int IsCurrent
     }
     DIM_Product {
-        int product_sk PK
-        int product_id
-        string product_name
-        string colour
-        string material
-        float list_price
-        string category_name
-        string top_category_name
+        int ProductSk PK
+        int ProductId
+        string ProductName
+        string Colour
+        string Material
+        float ListPrice
+        string CategoryName
+        string TopCategoryName
     }
     DIM_Supplier {
-        int supplier_sk PK
-        int supplier_id
-        string supplier_name
-        string city
-        string country
+        int SupplierSk PK
+        int SupplierId
+        string SupplierName
+        string City
+        string Country
     }
     FACT_Sales {
-        int sales_sk PK
-        int date_sk FK
-        int customer_sk FK
-        int product_sk FK
-        int supplier_sk FK
-        int order_id
-        int quantity
-        float gross_amount
-        float discount_amount
-        float net_amount
-        float shipping_cost
+        int SalesSk PK
+        int DateSk FK
+        int CustomerSk FK
+        int ProductSk FK
+        int SupplierSk FK
+        int OrderId
+        int Quantity
+        float GrossAmount
+        float DiscountAmount
+        float NetAmount
+        float ShippingCost
     }
 
-    DIM_Date     ||--o{ FACT_Sales : "date_sk"
-    DIM_Customer ||--o{ FACT_Sales : "customer_sk"
-    DIM_Product  ||--o{ FACT_Sales : "product_sk"
-    DIM_Supplier ||--o{ FACT_Sales : "supplier_sk"
+    DIM_Date     ||--o{ FACT_Sales : "DateSk"
+    DIM_Customer ||--o{ FACT_Sales : "CustomerSk"
+    DIM_Product  ||--o{ FACT_Sales : "ProductSk"
+    DIM_Supplier ||--o{ FACT_Sales : "SupplierSk"
 ```
 
 ### 2.3 Grain and Row Counts
@@ -253,10 +253,10 @@ Grain: **one row per order line**.
 
 | Column | Derivation | Cardinality | Used in |
 |---|---|---|---|
-| plz_region | `postal_code[0]` | 10 (0–9) | Q2, Q6 |
-| plz_zone | `postal_code[:2]` | ~83 | drill-down |
-| city | from PLZ mapping CSV | 75 | display |
-| federal_state | from PLZ mapping CSV | 16 | Q6 |
+| PlzRegion | `PostalCode[0]` | 10 (0–9) | Q2, Q6 |
+| PlzZone | `PostalCode[:2]` | ~83 | drill-down |
+| City | from PLZ mapping CSV | 75 | display |
+| FederalState | from PLZ mapping CSV | 16 | Q6 |
 
 ---
 
@@ -266,26 +266,26 @@ Grain: **one row per order line**.
 |---|---|---|---|
 | DIM_Date | 0 | — | Dates immutable |
 | DIM_Supplier | 0 | — | Supplier identity stable |
-| DIM_Product | 1 (overwrite) | product_name, list_price, colour, material | Corrections tolerated; no historical query requires old values |
-| DIM_Customer | **2** (expire + insert) | postal_code, street_address, city, federal_state, plz_region, plz_zone | Relocation changes region → historical order assignment matters for Q2/Q6 |
+| DIM_Product | 1 (overwrite) | ProductName, ListPrice, Colour, Material | Corrections tolerated; no historical query requires old values |
+| DIM_Customer | **2** (expire + insert) | PostalCode, StreetAddress, City, FederalState, PlzRegion, PlzZone | Relocation changes region → historical order assignment matters for Q2/Q6 |
 
 ### SCD 2 tracking columns (DIM_Customer)
 
 | Column | Type | Description |
 |---|---|---|
-| valid_from | DATE | Row start date (customer_since for first load; ETL date on change) |
-| valid_to | DATE | Row end date (NULL = active) |
-| is_current | INTEGER | 1 = active; 0 = historical |
+| ValidFrom | DATE | Row start date (CustomerSince for first load; ETL date on change) |
+| ValidTo | DATE | Row end date (NULL = active) |
+| IsCurrent | INTEGER | 1 = active; 0 = historical |
 
 ### SCD 2 ETL logic
 
 ```
 IF Customer not in DIM_Customer:
-    INSERT (valid_from=customer_since, valid_to=NULL, is_current=1)
+    INSERT (ValidFrom=CustomerSince, ValidTo=NULL, IsCurrent=1)
 
-ELSE IF postal_code OR street_address changed:
-    UPDATE current row: valid_to=today, is_current=0
-    INSERT new row: valid_from=today, valid_to=NULL, is_current=1
+ELSE IF PostalCode OR StreetAddress changed:
+    UPDATE current row: ValidTo=today, IsCurrent=0
+    INSERT new row: ValidFrom=today, ValidTo=NULL, IsCurrent=1
 
 ELSE:
     skip
@@ -294,9 +294,9 @@ ELSE:
 ### MSSQL ALTER equivalent (for schema migration reference)
 
 ```sql
-ALTER TABLE DIM_Customer ADD valid_from  DATE  NOT NULL DEFAULT GETDATE();
-ALTER TABLE DIM_Customer ADD valid_to    DATE  NULL;
-ALTER TABLE DIM_Customer ADD is_current  BIT   NOT NULL DEFAULT 1;
+ALTER TABLE DIM_Customer ADD ValidFrom  DATE  NOT NULL DEFAULT GETDATE();
+ALTER TABLE DIM_Customer ADD ValidTo    DATE  NULL;
+ALTER TABLE DIM_Customer ADD IsCurrent  BIT   NOT NULL DEFAULT 1;
 ```
 
 ---
@@ -331,15 +331,15 @@ SQL scripts in `sql/transform/`.
 
 | FULL_ table | SQL file | Key transformation |
 |---|---|---|
-| FULL_BusinessDB_DWH_Customer | 01_FULL_customer.sql | Derive plz_region, plz_zone from postal_code |
+| FULL_BusinessDB_DWH_Customer | 01_FULL_customer.sql | Derive PlzRegion, PlzZone from PostalCode |
 | FULL_BusinessDB_DWH_Product | 02_FULL_product.sql | JOIN Category → sub-Category name + top-Category name |
-| FULL_BusinessDB_DWH_Sales | 03_FULL_sales.sql | Compute gross, discount_amount, net_amount |
+| FULL_BusinessDB_DWH_Sales | 03_FULL_sales.sql | Compute gross, DiscountAmount, NetAmount |
 
 ### 4.4 Stage 3 — Load (DWH)
 
 | DWH table | Source | SCD | ETL module |
 |---|---|---|---|
-| DIM_Date | RAW_OrderHeader.order_date | 0 | etl_dim_date.py |
+| DIM_Date | RAW_OrderHeader.OrderDate | 0 | etl_dim_date.py |
 | DIM_Supplier | RAW_Supplier | 0 | etl_dim_supplier.py |
 | DIM_Product | RAW_Product + Category join | 1 | etl_dim_product.py |
 | DIM_Customer | RAW_Customer + PLZ derivation | 2 | etl_dim_customer.py |
@@ -349,16 +349,16 @@ SQL scripts in `sql/transform/`.
 
 | Target | Source | Transform |
 |---|---|---|
-| date_sk | OrderHeader.order_date | `int(date.replace('-',''))` |
-| customer_sk | DIM_Customer.customer_id (is_current=1) | SK lookup |
-| product_sk | DIM_Product.product_id | SK lookup |
-| supplier_sk | DIM_Supplier.supplier_id | SK lookup |
-| order_id | OrderHeader.order_id | Degenerate dimension |
-| quantity | OrderLine.quantity | Direct |
-| gross_amount | quantity × unit_price | FULL_Sales |
-| discount_amount | gross × discount | FULL_Sales |
-| net_amount | gross − discount | FULL_Sales |
-| shipping_cost | OrderHeader.shipping_cost | Direct |
+| DateSk | OrderHeader.OrderDate | `int(date.replace('-',''))` |
+| CustomerSk | DIM_Customer.CustomerId (IsCurrent=1) | SK lookup |
+| ProductSk | DIM_Product.ProductId | SK lookup |
+| SupplierSk | DIM_Supplier.SupplierId | SK lookup |
+| OrderId | OrderHeader.OrderId | Degenerate dimension |
+| Quantity | OrderLine.Quantity | Direct |
+| GrossAmount | Quantity × UnitPrice | FULL_Sales |
+| DiscountAmount | gross × Discount | FULL_Sales |
+| NetAmount | gross − Discount | FULL_Sales |
+| ShippingCost | OrderHeader.ShippingCost | Direct |
 
 ---
 
@@ -394,16 +394,16 @@ All SQL in `sql/analytics/`. Run via `python python/run.py` → option 4.
 
 | ID | Question | Dimensions |
 |---|---|---|
-| Q1 | Revenue and discount per Category and quarter | DIM_Date, DIM_Product |
+| Q1 | Revenue and Discount per Category and Quarter | DIM_Date, DIM_Product |
 | Q2a | Average order value by PLZ region | DIM_Customer |
 | Q2b | Category mix by PLZ region | DIM_Customer, DIM_Product |
-| Q3a | Peak order volume by weekday | DIM_Date |
+| Q3a | Peak order volume by Weekday | DIM_Date |
 | Q3b | Top 10 peak calendar weeks | DIM_Date |
-| Q4 | Discount effectiveness vs. quantity and revenue | FACT_Sales |
+| Q4 | Discount effectiveness vs. Quantity and revenue | FACT_Sales |
 | Q5 | Revenue by price segment (Budget/Mid/Premium) | DIM_Product |
 | Q6 | Federal state revenue growth 2024→2025 | DIM_Customer, DIM_Date |
-| Q7 | Supplier revenue by quarter and share | DIM_Supplier, DIM_Date |
-| Q8 | Supplier discount rate vs. order volume | DIM_Supplier |
+| Q7 | Supplier revenue by Quarter and share | DIM_Supplier, DIM_Date |
+| Q8 | Supplier Discount rate vs. order volume | DIM_Supplier |
 
 **Mandatory for submission:** Q1, Q2 (covers Q2a + Q2b).
 
