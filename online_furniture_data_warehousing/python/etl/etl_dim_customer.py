@@ -1,10 +1,10 @@
 """
-ETL_DimCustomer.py — Dimension: dim_customer  (SCD Type 2)
+ETL_DimCustomer.py -- Dimension: dim_customer  (SCD Type 2)
 Reads customers from RAW_BusinessDB_Customer, derives PLZ region/zone,
 and applies SCD Type 2 logic:
-  - New customer   → INSERT (valid_from = customer_since, valid_to = NULL, is_current = 1)
-  - Address change → expire old row (valid_to = today), INSERT new row
-  - No change      → skip
+  - New customer   -> INSERT (valid_from = customer_since, valid_to = NULL, is_current = 1)
+  - Address change -> expire old row (valid_to = today), INSERT new row
+  - No change      -> skip
 """
 
 import pathlib

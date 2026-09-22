@@ -1,5 +1,5 @@
 """
-ETL_DimDate.py — Dimension: dim_date
+ETL_DimDate.py -- Dimension: dim_date
 Reads distinct order dates from RAW_BusinessDB_OrderHeader,
 derives date attributes, and loads new rows into dim_date.
 """
@@ -12,10 +12,10 @@ sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 from db import connect, PLACEHOLDER
 
 
-# ── Static lookup helpers ─────────────────────────────────────────────────────
+# -- Static lookup helpers -----------------------------------------------------
 
 _MONTH_NAMES = [
-    "Januar", "Februar", "März", "April", "Mai", "Juni",
+    "Januar", "Februar", "Maerz", "April", "Mai", "Juni",
     "Juli", "August", "September", "Oktober", "November", "Dezember",
 ]
 _WEEKDAY_NAMES = [

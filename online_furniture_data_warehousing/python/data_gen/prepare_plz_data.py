@@ -17,18 +17,18 @@ import pathlib
 # 75 German cities distributed across all 16 federal states.
 # Tuple: (city name as used in OpenPLZ API, federal_state)
 CITIES = [
-    # Baden-Württemberg (5)
-    ("Stuttgart",               "Baden-Württemberg"),
-    ("Karlsruhe",               "Baden-Württemberg"),
-    ("Freiburg im Breisgau",    "Baden-Württemberg"),
-    ("Heidelberg",              "Baden-Württemberg"),
-    ("Ulm",                     "Baden-Württemberg"),
+    # Baden-Wuerttemberg (5)
+    ("Stuttgart",               "Baden-Wuerttemberg"),
+    ("Karlsruhe",               "Baden-Wuerttemberg"),
+    ("Freiburg im Breisgau",    "Baden-Wuerttemberg"),
+    ("Heidelberg",              "Baden-Wuerttemberg"),
+    ("Ulm",                     "Baden-Wuerttemberg"),
     # Bayern (6)
-    ("München",                 "Bayern"),
-    ("Nürnberg",                "Bayern"),
+    ("Muenchen",                 "Bayern"),
+    ("Nuernberg",                "Bayern"),
     ("Augsburg",                "Bayern"),
     ("Regensburg",              "Bayern"),
-    ("Würzburg",                "Bayern"),
+    ("Wuerzburg",                "Bayern"),
     ("Ingolstadt",              "Bayern"),
     # Berlin (3)
     ("Berlin",                  "Berlin"),
@@ -57,14 +57,14 @@ CITIES = [
     # Niedersachsen (7)
     ("Hannover",                "Niedersachsen"),
     ("Braunschweig",            "Niedersachsen"),
-    ("Osnabrück",               "Niedersachsen"),
+    ("Osnabrueck",               "Niedersachsen"),
     ("Oldenburg",               "Niedersachsen"),
-    ("Göttingen",               "Niedersachsen"),
+    ("Goettingen",               "Niedersachsen"),
     ("Wolfsburg",               "Niedersachsen"),
     ("Hildesheim",              "Niedersachsen"),
     # Nordrhein-Westfalen (11)
-    ("Köln",                    "Nordrhein-Westfalen"),
-    ("Düsseldorf",              "Nordrhein-Westfalen"),
+    ("Koeln",                    "Nordrhein-Westfalen"),
+    ("Duesseldorf",              "Nordrhein-Westfalen"),
     ("Dortmund",                "Nordrhein-Westfalen"),
     ("Essen",                   "Nordrhein-Westfalen"),
     ("Duisburg",                "Nordrhein-Westfalen"),
@@ -72,7 +72,7 @@ CITIES = [
     ("Wuppertal",               "Nordrhein-Westfalen"),
     ("Bielefeld",               "Nordrhein-Westfalen"),
     ("Bonn",                    "Nordrhein-Westfalen"),
-    ("Münster",                 "Nordrhein-Westfalen"),
+    ("Muenster",                 "Nordrhein-Westfalen"),
     ("Aachen",                  "Nordrhein-Westfalen"),
     # Rheinland-Pfalz (4)
     ("Mainz",                   "Rheinland-Pfalz"),
@@ -80,7 +80,7 @@ CITIES = [
     ("Koblenz",                 "Rheinland-Pfalz"),
     ("Trier",                   "Rheinland-Pfalz"),
     # Saarland (3)
-    ("Saarbrücken",             "Saarland"),
+    ("Saarbruecken",             "Saarland"),
     ("Neunkirchen",             "Saarland"),
     ("Homburg",                 "Saarland"),
     # Sachsen (5)
@@ -92,18 +92,18 @@ CITIES = [
     # Sachsen-Anhalt (4)
     ("Halle (Saale)",           "Sachsen-Anhalt"),
     ("Magdeburg",               "Sachsen-Anhalt"),
-    ("Dessau-Roßlau",           "Sachsen-Anhalt"),
+    ("Dessau-Rosslau",           "Sachsen-Anhalt"),
     ("Lutherstadt Wittenberg",  "Sachsen-Anhalt"),
     # Schleswig-Holstein (4)
     ("Kiel",                    "Schleswig-Holstein"),
-    ("Lübeck",                  "Schleswig-Holstein"),
+    ("Luebeck",                  "Schleswig-Holstein"),
     ("Flensburg",               "Schleswig-Holstein"),
-    ("Neumünster",              "Schleswig-Holstein"),
-    # Thüringen (4)
-    ("Erfurt",                  "Thüringen"),
-    ("Jena",                    "Thüringen"),
-    ("Gera",                    "Thüringen"),
-    ("Weimar",                  "Thüringen"),
+    ("Neumuenster",              "Schleswig-Holstein"),
+    # Thueringen (4)
+    ("Erfurt",                  "Thueringen"),
+    ("Jena",                    "Thueringen"),
+    ("Gera",                    "Thueringen"),
+    ("Weimar",                  "Thueringen"),
 ]
 
 API_BASE = "https://openplzapi.org/de/Localities"
@@ -120,7 +120,7 @@ FALLBACK_PLZ: dict[str, tuple[str, str, list[str]]] = {
                           "06128", "06130", "06132"]),
     "Lutherstadt Wittenberg": ("Lutherstadt Wittenberg", "Sachsen-Anhalt",
                                ["06886", "06888", "06889"]),
-    "Neumünster":       ("Neumünster", "Schleswig-Holstein",
+    "Neumuenster":       ("Neumuenster", "Schleswig-Holstein",
                          ["24534", "24536", "24537", "24539"]),
 }
 

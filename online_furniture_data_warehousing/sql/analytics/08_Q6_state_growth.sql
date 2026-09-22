@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q6 — Federal state revenue growth: Year 1 (2024) vs Year 2 (2025)
+-- Q6 -- Federal state revenue growth: Year 1 (2024) vs Year 2 (2025)
 -- Which federal states show the strongest revenue growth?
 -- Dimensions: dim_customer, dim_date
 -- =============================================================================

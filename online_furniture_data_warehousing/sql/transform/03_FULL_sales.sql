@@ -1,11 +1,11 @@
 -- =============================================================================
--- FULL_Sales — Transform: RAW_ → FULL_BusinessDB_DWH_Sales
+-- FULL_Sales -- Transform: RAW_ -> FULL_BusinessDB_DWH_Sales
 -- Joins order lines, order headers, and products.
 -- Pre-computes gross_amount, discount_amount, and net_amount for each line.
 --
---   gross_amount    = quantity × unit_price
---   discount_amount = gross_amount × discount
---   net_amount      = gross_amount − discount_amount
+--   gross_amount    = quantity * unit_price
+--   discount_amount = gross_amount * discount
+--   net_amount      = gross_amount - discount_amount
 -- =============================================================================
 
 DELETE FROM FULL_BusinessDB_DWH_Sales;

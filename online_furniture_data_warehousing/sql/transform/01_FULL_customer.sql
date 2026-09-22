@@ -1,5 +1,5 @@
 -- =============================================================================
--- FULL_Customer — Transform: RAW_BusinessDB_Customer → FULL_BusinessDB_DWH_Customer
+-- FULL_Customer -- Transform: RAW_BusinessDB_Customer -> FULL_BusinessDB_DWH_Customer
 -- Derives plz_region (first digit of postal_code) and
 -- plz_zone (first two digits of postal_code) for regional analysis.
 -- =============================================================================

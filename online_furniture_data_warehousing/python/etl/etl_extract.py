@@ -1,5 +1,5 @@
 """
-ETL_Extract.py — Step 1: Extract
+ETL_Extract.py -- Step 1: Extract
 Applies the DWH DDL (idempotent) and copies all Business DB tables into
 the RAW_ staging tables for downstream dimension and fact ETL modules.
 """
@@ -41,9 +41,9 @@ def extract_to_raw(conn) -> None:
 def run_etl_extract() -> None:
     conn = connect()
     try:
-        print("  [Extract] Applying DWH DDL …")
+        print("  [Extract] Applying DWH DDL ...")
         apply_dwh_ddl(conn)
-        print("  [Extract] Copying source tables → RAW_ staging …")
+        print("  [Extract] Copying source tables -> RAW_ staging ...")
         extract_to_raw(conn)
         for raw in _RAW_MAP.values():
             n = conn.execute(f"SELECT COUNT(*) FROM {raw}").fetchone()[0]

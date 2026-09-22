@@ -1,6 +1,6 @@
 """
 Database connection abstraction.
-All scripts import from here — to switch databases, change only this file.
+All scripts import from here -- to switch databases, change only this file.
 
 Current backend: SQLite
 To migrate to MSSQL: replace connect() body with pyodbc.connect() and update
@@ -13,7 +13,7 @@ import pathlib
 # SQLite: single-file database stored alongside the data assets
 DB_PATH = pathlib.Path(__file__).parent.parent / "data" / "furniture.db"
 
-# SQL parameter placeholder — "?" for sqlite3, "%s" for pyodbc/psycopg2
+# SQL parameter placeholder -- "?" for sqlite3, "%s" for pyodbc/psycopg2
 PLACEHOLDER = "?"
 
 

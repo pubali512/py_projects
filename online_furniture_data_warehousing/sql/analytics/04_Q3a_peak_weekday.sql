@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q3a — Peak order volume by weekday
+-- Q3a -- Peak order volume by weekday
 -- Which weekdays see the highest order volume across the two-year period?
 -- Dimensions: dim_date
 -- =============================================================================

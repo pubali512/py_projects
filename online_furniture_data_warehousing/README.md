@@ -21,10 +21,14 @@ Built with Python 3.10+ and SQLite.
 
 All commands are run from the **project root** directory.
 
-### Step 0 — Install dependencies (once)
+### Step 0 — Install dependencies (optional)
+
+`generate_data.py` **auto-installs Faker** at startup if it is not present in the running Python environment. No manual step required.
+
+To install manually (or to create a virtual environment):
 
 ```bash
-pip install faker
+pip install -r requirements.txt
 ```
 
 ### Step 1 — Prepare the PLZ-city mapping (once)

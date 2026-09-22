@@ -1,1 +1,9 @@
-faker==37.1.0
+# Dependencies for the Online Furniture Data Warehouse project.
+# All other dependencies (sqlite3, csv, pathlib, etc.) are Python stdlib.
+#
+# Auto-install: generate_data.py installs 'faker' automatically at startup
+# if not present in the running Python environment.
+#
+# Manual install: pip install -r requirements.txt
+
+faker>=37.0.0

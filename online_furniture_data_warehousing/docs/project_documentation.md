@@ -111,7 +111,65 @@ PLZ accuracy: 1,150 real German postal codes for 75 cities from OpenPLZ API — 
 
 ## 2. Data Warehouse (Star Schema)
 
-### 2.1 Schema Diagram
+### 2.1 Conceptual Design (mER Diagram)
+
+The mER (multidimensional ER) diagram shows the **conceptual DWH schema**: the central fact table with its measures and the four classification hierarchies. Arrows indicate the roll-up direction (fine → coarse); each chain ends at an implicit **Top** level.
+
+```mermaid
+flowchart TB
+    classDef topLevel fill:#fff,stroke:#555,stroke-dasharray:5 5,font-style:italic
+    classDef factNode  fill:#e8e8e8,stroke:#000,stroke-width:3px
+
+    %% ── Fact table ──────────────────────────────────────────────────────────
+    FACT["Sales\n────────────────────────\nQuantity\nGross Amount\nDiscount Amount\nNet Amount\nShipping Cost"]:::factNode
+
+    %% ── Date dimension ──────────────────────────────────────────────────────
+    ZDay[Day]
+    ZWeek[Week]
+    ZMonth[Month]
+    ZQuarter[Quarter]
+    ZYear[Year]
+    ZTop([Top]):::topLevel
+
+    ZDay --> ZWeek --> ZYear
+    ZDay --> ZMonth --> ZQuarter --> ZYear --> ZTop
+
+    %% ── Customer dimension ──────────────────────────────────────────────────
+    KCustomer[Customer]
+    KPostalCode[Postal Code]
+    KPLZZone[PLZ Zone]
+    KPLZReg[PLZ Region]
+    KCity[City]
+    KState[Federal State]
+    KTop([Top]):::topLevel
+
+    KCustomer --> KPostalCode --> KPLZZone --> KPLZReg --> KTop
+    KPostalCode --> KCity --> KState --> KTop
+
+    %% ── Product dimension ───────────────────────────────────────────────────
+    PProduct[Product]
+    PSubCat[Sub-category]
+    PTopCat[Top-category]
+    PTop([Top]):::topLevel
+
+    PProduct --> PSubCat --> PTopCat --> PTop
+
+    %% ── Supplier dimension ──────────────────────────────────────────────────
+    LSupplier[Supplier]
+    LCity[City]
+    LCountry[Country]
+    LTop([Top]):::topLevel
+
+    LSupplier --> LCity --> LCountry --> LTop
+
+    %% ── Connections: fact → base dimension levels ────────────────────────────
+    FACT --- ZDay
+    FACT --- KCustomer
+    FACT --- PProduct
+    FACT --- LSupplier
+```
+
+### 2.2 Star Schema Diagram
 
 ```mermaid
 erDiagram
@@ -179,7 +237,7 @@ erDiagram
     dim_supplier ||--o{ fact_sales : "supplier_sk"
 ```
 
-### 2.2 Grain and Row Counts
+### 2.3 Grain and Row Counts
 
 Grain: **one row per order line**.
 
@@ -191,7 +249,7 @@ Grain: **one row per order line**.
 | dim_supplier | 20 |
 | fact_sales | ~85,500 |
 
-### 2.3 PLZ Hierarchy in dim_customer
+### 2.4 PLZ Hierarchy in dim_customer
 
 | Column | Derivation | Cardinality | Used in |
 |---|---|---|---|

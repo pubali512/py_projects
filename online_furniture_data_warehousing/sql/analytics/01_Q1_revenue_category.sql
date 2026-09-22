@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q1 — Revenue and discount by category over time
+-- Q1 -- Revenue and discount by category over time
 -- How does net revenue develop per top-level product category and quarter,
 -- and which category carries the highest discount share?
 -- Dimensions: dim_date, dim_product

@@ -1,8 +1,8 @@
 """
-ETL_DimProduct.py — Dimension: dim_product  (SCD Type 1)
+ETL_DimProduct.py -- Dimension: dim_product  (SCD Type 1)
 Reads products and their category hierarchy from RAW staging tables,
-flattens sub-category → top-category, and upserts into dim_product.
-Changed attributes are overwritten (SCD 1 — no history).
+flattens sub-category -> top-category, and upserts into dim_product.
+Changed attributes are overwritten (SCD 1 -- no history).
 """
 
 import pathlib
@@ -30,7 +30,7 @@ def extract_dim_product(conn) -> list:
 
 
 def transform_dim_product(raw_rows: list) -> list[tuple]:
-    """Return product tuples ready for upsert (no filtering needed — handled in load)."""
+    """Return product tuples ready for upsert (no filtering needed -- handled in load)."""
     return [
         (r["product_id"], r["product_name"], r["colour"], r["material"],
          r["list_price"], r["category_name"], r["top_category_name"])

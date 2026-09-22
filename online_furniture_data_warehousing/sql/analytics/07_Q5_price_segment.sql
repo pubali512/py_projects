@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q5 — Revenue and discount share by product price segment
+-- Q5 -- Revenue and discount share by product price segment
 -- How does revenue and discount compare across Budget (<EUR 200) /
 -- Mid-range (EUR 200-799) / Premium (>=EUR 800) product segments?
 -- Dimensions: dim_product

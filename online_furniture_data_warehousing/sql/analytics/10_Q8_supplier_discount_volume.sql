@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q8 — Supplier discount behaviour vs. order volume
+-- Q8 -- Supplier discount behaviour vs. order volume
 -- Which suppliers' products carry the highest average discount rate,
 -- and does that correlate with order volume?
 -- Dimensions: dim_supplier

@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q3b — Peak order volume by calendar week (Top 10)
+-- Q3b -- Peak order volume by calendar week (Top 10)
 -- Which calendar weeks see the highest order volume?
 -- Dimensions: dim_date
 -- =============================================================================

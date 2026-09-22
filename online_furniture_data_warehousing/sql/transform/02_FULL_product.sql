@@ -1,5 +1,5 @@
 -- =============================================================================
--- FULL_Product — Transform: RAW_BusinessDB_Product → FULL_BusinessDB_DWH_Product
+-- FULL_Product -- Transform: RAW_BusinessDB_Product -> FULL_BusinessDB_DWH_Product
 -- Flattens the two-level category hierarchy:
 --   sub-category (category_name) + top-level category (top_category_name).
 -- If a category has no parent, it is treated as the top-level itself.

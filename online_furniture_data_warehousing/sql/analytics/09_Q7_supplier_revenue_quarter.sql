@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q7 — Supplier revenue by quarter
+-- Q7 -- Supplier revenue by quarter
 -- Which suppliers generate the most net revenue per quarter,
 -- and how has their share shifted over the two-year period?
 -- Dimensions: dim_supplier, dim_date

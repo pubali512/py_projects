@@ -25,17 +25,17 @@
 -- SCD Analysis Summary
 -- =============================================================================
 --
--- SCD TYPE 0  (keep original value — never overwrite)
+-- SCD TYPE 0  (keep original value -- never overwrite)
 -- Columns: customer_id, order_id, order_date
 -- Justification: natural keys and transaction timestamps are immutable.
 --
--- SCD TYPE 1  (overwrite — no history kept)
+-- SCD TYPE 1  (overwrite -- no history kept)
 -- Columns: dim_product.product_name, dim_product.list_price,
 --          dim_product.colour, dim_product.material
 -- Justification: corrections to product catalogue data (typos, price updates)
 --   do not require historical tracking for the defined analytical questions.
 --
--- SCD TYPE 2  (add new row — full history preserved)
+-- SCD TYPE 2  (add new row -- full history preserved)
 -- Columns: dim_customer.street_address, dim_customer.postal_code,
 --          dim_customer.city, dim_customer.federal_state,
 --          dim_customer.plz_region, dim_customer.plz_zone
@@ -45,7 +45,7 @@
 -- Tracking columns: valid_from DATE, valid_to DATE (NULL = active), is_current BIT
 --
 -- =============================================================================
--- ETL SCD 2 Logic (implemented in python/02_etl.py → load_dim_customer):
+-- ETL SCD 2 Logic (implemented in python/02_etl.py -> load_dim_customer):
 --
 --  IF customer_id NOT IN dim_customer:
 --      INSERT new row  (valid_from = customer_since, valid_to = NULL, is_current = 1)

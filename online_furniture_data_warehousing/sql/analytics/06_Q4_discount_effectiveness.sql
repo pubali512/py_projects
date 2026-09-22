@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q4 — Discount effectiveness
+-- Q4 -- Discount effectiveness
 -- Does a higher discount rate correlate with higher quantity sold
 -- or net revenue per order line?
 -- Dimensions: fact_sales

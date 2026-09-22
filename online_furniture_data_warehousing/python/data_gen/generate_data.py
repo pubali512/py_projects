@@ -6,52 +6,63 @@ Targets:
   - 10 categories (5 top-level, 5 sub-categories)
   - 120 products
   - 5,000 customers  (PLZ-city-state from curated mapping)
-  - 30,000 orders    (2024-01-01 – 2025-12-31)
+  - 30,000 orders    (2024-01-01 - 2025-12-31)
   - ~69,000 order lines (~2.3 per order on average)
 
 Run:
-    python python/01_generate_data.py
+    python python/data_gen/generate_data.py
 """
 
 import csv
+import importlib.util
 import pathlib
 import random
 import sqlite3
+import subprocess
+import sys
 from datetime import date, timedelta
+
+# -- Auto-install missing dependencies into the running Python -----------------
+def _ensure(package: str) -> None:
+    if importlib.util.find_spec(package) is None:
+        print(f"  Package '{package}' not found -- installing for {sys.executable} ...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+_ensure("faker")
+# -----------------------------------------------------------------------------
 
 from faker import Faker
 
-import sys
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 from db import connect, PLACEHOLDER
 
-# ── Reproducible seed ────────────────────────────────────────────────────────
+# -- Reproducible seed --------------------------------------------------------
 SEED = 42
 random.seed(SEED)
 fake = Faker("de_DE")
 Faker.seed(SEED)
 
-# ── Paths ────────────────────────────────────────────────────────────────────
+# -- Paths --------------------------------------------------------------------
 ROOT = pathlib.Path(__file__).parent.parent.parent
 SQL_DDL = ROOT / "sql" / "01_create_business_db.sql"
 PLZ_CSV = ROOT / "data" / "plz_city_mapping.csv"
 
-# ── Reference data ────────────────────────────────────────────────────────────
+# -- Reference data ------------------------------------------------------------
 PAYMENT_METHODS = ["credit_card", "paypal", "bank_transfer", "invoice"]
 PAYMENT_WEIGHTS = [0.35, 0.30, 0.20, 0.15]
 
-COLOURS   = ["Weiß", "Schwarz", "Grau", "Beige", "Braun", "Eiche", "Natur",
-             "Anthrazit", "Blau", "Grün"]
+COLOURS   = ["Weiss", "Schwarz", "Grau", "Beige", "Braun", "Eiche", "Natur",
+             "Anthrazit", "Blau", "Gruen"]
 MATERIALS = ["Massivholz", "MDF", "Spanplatte", "Metall", "Polster",
              "Kunstleder", "Echtleder", "Glas", "Bambus", "Kunststoff"]
 
-# Top-level categories → sub-categories
+# Top-level categories -> sub-categories
 CATEGORY_TREE = {
     "Wohnzimmer":   ["Sofas & Couches", "Couchtische"],
-    "Schlafzimmer": ["Betten & Matratzen", "Kleiderschränke"],
-    "Esszimmer":    ["Esstische", "Stühle & Bänke"],
-    "Büro":         ["Schreibtische", "Bürostühle"],
-    "Kinderzimmer": ["Kinderbetten", "Spielmöbel"],
+    "Schlafzimmer": ["Betten & Matratzen", "Kleiderschraenke"],
+    "Esszimmer":    ["Esstische", "Stuehle & Baenke"],
+    "Buero":         ["Schreibtische", "Buerostuehle"],
+    "Kinderzimmer": ["Kinderbetten", "Spielmoebel"],
 }
 
 # Product name templates per top-level category
@@ -62,7 +73,7 @@ PRODUCT_TEMPLATES = {
                      "Nachttisch {adj}", "Lattenrost {adj}"],
     "Esszimmer":    ["Esstisch {adj}", "Essstuhl {adj}", "Sitzbank {adj}",
                      "Buffet {adj}", "Barhocker {adj}"],
-    "Büro":         ["Schreibtisch {adj}", "Bürostuhl {adj}", "Aktenschrank {adj}",
+    "Buero":         ["Schreibtisch {adj}", "Buerostuhl {adj}", "Aktenschrank {adj}",
                      "Regalwand {adj}", "Rollcontainer {adj}"],
     "Kinderzimmer": ["Kinderbett {adj}", "Spieltisch {adj}", "Regal {adj}",
                      "Wickelkommode {adj}", "Hochbett {adj}"],
@@ -77,21 +88,21 @@ ADJECTIVES = ["Classic", "Modern", "Premium", "Comfort", "Slim", "XL",
 SUPPLIERS: list[tuple[str, str, str]] = [
     # Germany (10)
     ("Holzwerk GmbH",            "Hamburg",              "Germany"),
-    ("MöbelDesign AG",           "München",              "Germany"),
-    ("NaturMöbel AG",            "Stuttgart",            "Germany"),
-    ("FurnitureFirst GmbH",      "Köln",                 "Germany"),
+    ("MoebelDesign AG",           "Muenchen",              "Germany"),
+    ("NaturMoebel AG",            "Stuttgart",            "Germany"),
+    ("FurnitureFirst GmbH",      "Koeln",                 "Germany"),
     ("DesignHaus AG",            "Frankfurt am Main",    "Germany"),
-    ("WohnKultur GmbH",          "Düsseldorf",           "Germany"),
+    ("WohnKultur GmbH",          "Duesseldorf",           "Germany"),
     ("KomfortWelt KG",           "Berlin",               "Germany"),
     ("ClassicHome GmbH",         "Leipzig",              "Germany"),
     ("UrbanLiving KG",           "Hannover",             "Germany"),
-    ("GrünesMöbelhaus GmbH",     "Freiburg im Breisgau", "Germany"),
+    ("GruenesMoebelhaus GmbH",     "Freiburg im Breisgau", "Germany"),
     # Austria (3)
-    ("WienerMöbel GmbH",         "Wien",                 "Austria"),
+    ("WienerMoebel GmbH",         "Wien",                 "Austria"),
     ("AlpenDesign AG",           "Graz",                 "Austria"),
     ("SalzburgHome GmbH",        "Salzburg",             "Austria"),
     # Switzerland (2)
-    ("SwissFurniture AG",         "Zürich",               "Switzerland"),
+    ("SwissFurniture AG",         "Zuerich",               "Switzerland"),
     ("BaselWohn AG",              "Basel",                "Switzerland"),
     # Netherlands (2)
     ("DutchDesign B.V.",          "Amsterdam",            "Netherlands"),
@@ -104,37 +115,41 @@ SUPPLIERS: list[tuple[str, str, str]] = [
 ]
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# -- Helpers -------------------------------------------------------------------
 _EMAIL_DOMAINS = [
     "gmail.com", "gmx.de", "web.de", "yahoo.com", "t-online.de",
     "hotmail.com", "outlook.com", "freenet.de", "arcor.de", "vodafone.de",
     "icloud.com", "yahoo.de", "googlemail.com", "live.de", "online.de",
 ]
 
-_UMLAUT_MAP = str.maketrans({
-    'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss',
-    'Ä': 'ae', 'Ö': 'oe', 'Ü': 'ue',
-    ' ': '',   '-': '',   "'": '',
-})
-
-
 def _name_part(name: str) -> str:
-    """Lowercase, umlaut-replaced, ASCII-only alphabetic characters from a name."""
-    cleaned = name.translate(_UMLAUT_MAP).lower()
-    cleaned = cleaned.encode('ascii', errors='ignore').decode('ascii')
-    return ''.join(c for c in cleaned if c.isalpha())
+    """Lowercase, umlaut-replaced, ASCII-only alphabetic characters from a name.
+    Uses escape sequences so this function is unaffected by ASCII cleanup scripts.
+    """
+    s = name.lower()
+    # German umlauts via Unicode escape sequences (not literal characters)
+    s = (s.replace('\u00e4', 'ae')   # ae
+          .replace('\u00f6', 'oe')   # oe
+          .replace('\u00fc', 'ue')   # ue
+          .replace('\u00df', 'ss')   # ss
+          .replace('\u00c4', 'ae')   # Ae -> ae (already lowercased)
+          .replace('\u00d6', 'oe')   # Oe -> oe
+          .replace('\u00dc', 'ue')   # Ue -> ue
+          .replace(' ', '').replace('-', '').replace("'", ''))
+    s = s.encode('ascii', errors='ignore').decode('ascii')
+    return ''.join(c for c in s if c.isalpha())
 
 
 def generate_email(first_name: str, last_name: str) -> str:
     """Generate a realistic email address based on first and last name.
 
     Format options:
-        <first>.<last>          →  max.mustermann
-        <first>.<last[0]>       →  max.m
-        <first>_<last>          →  max_mustermann
-        <first[0]><last>        →  mmustermann
-        <first[0]>_<last>       →  m_mustermann
-    In 1 out of 10 cases a random 2–4 digit number is appended.
+        <first>.<last>          ->  max.mustermann
+        <first>.<last[0]>       ->  max.m
+        <first>_<last>          ->  max_mustermann
+        <first[0]><last>        ->  mmustermann
+        <first[0]>_<last>       ->  m_mustermann
+    In 1 out of 10 cases a random 2-4 digit number is appended.
     """
     fn = _name_part(first_name)
     ln = _name_part(last_name)
@@ -193,7 +208,7 @@ def random_customer_since(order_date_str: str) -> str:
     return (earliest + timedelta(days=random.randint(0, delta))).isoformat()
 
 
-# ── DDL ───────────────────────────────────────────────────────────────────────
+# -- DDL -----------------------------------------------------------------------
 
 def apply_ddl(conn: sqlite3.Connection) -> None:
     ddl = SQL_DDL.read_text(encoding="utf-8")
@@ -201,7 +216,7 @@ def apply_ddl(conn: sqlite3.Connection) -> None:
     conn.commit()
 
 
-# ── Insert helpers ─────────────────────────────────────────────────────────────
+# -- Insert helpers -------------------------------------------------------------
 
 def insert_suppliers(conn: sqlite3.Connection) -> list[int]:
     ids = []
@@ -216,7 +231,7 @@ def insert_suppliers(conn: sqlite3.Connection) -> list[int]:
 
 
 def insert_categories(conn: sqlite3.Connection) -> dict[str, int]:
-    """Returns mapping: category_name → category_id (all levels)."""
+    """Returns mapping: category_name -> category_id (all levels)."""
     cat_ids: dict[str, int] = {}
     for top_name, sub_names in CATEGORY_TREE.items():
         cur = conn.execute(
@@ -239,7 +254,7 @@ def insert_products(conn: sqlite3.Connection, cat_ids: dict[str, int],
                     supplier_ids: list[int]) -> list[int]:
     ids = []
     used_names: set[str] = set()
-    products_per_top = 24  # 5 top categories × 24 ≈ 120
+    products_per_top = 24  # 5 top categories * 24 ~ 120
 
     for top_name, templates in PRODUCT_TEMPLATES.items():
         all_subs = CATEGORY_TREE[top_name]
@@ -315,12 +330,12 @@ def insert_orders(conn: sqlite3.Connection,
         order_batch.append((order_date, payment, shipping, cust_id))
         order_id_counter += 1
 
-        # 1–5 lines per order; weighted toward 2–3
+        # 1-5 lines per order; weighted toward 2-3
         n_lines = random.choices([1, 2, 3, 4, 5], weights=[10, 30, 35, 15, 10], k=1)[0]
         chosen_products = random.sample(product_ids, min(n_lines, len(product_ids)))
         for prod_id in chosen_products:
             qty       = random.randint(1, 4)
-            # unit_price is list_price ± 10% (simulates dynamic pricing)
+            # unit_price is list_price +/- 10% (simulates dynamic pricing)
             row = conn.execute("SELECT list_price FROM product WHERE product_id = ?", (prod_id,)).fetchone()
             base_price = row[0]
             unit_price = round(base_price * random.uniform(0.90, 1.10), 2)
@@ -343,33 +358,33 @@ def insert_orders(conn: sqlite3.Connection,
     conn.commit()
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# -- Main ----------------------------------------------------------------------
 
 def main() -> None:
     plz_rows = load_plz_mapping()
     print(f"Loaded {len(plz_rows)} PLZ rows from mapping file.")
 
     conn = connect()
-    print("Applying DDL …")
+    print("Applying DDL ...")
     apply_ddl(conn)
 
-    print("Inserting suppliers …")
+    print("Inserting suppliers ...")
     supplier_ids = insert_suppliers(conn)
     print(f"  {len(supplier_ids)} suppliers")
 
-    print("Inserting categories …")
+    print("Inserting categories ...")
     cat_ids = insert_categories(conn)
     print(f"  {len(cat_ids)} categories ({len(CATEGORY_TREE)} top-level)")
 
-    print("Inserting products …")
+    print("Inserting products ...")
     product_ids = insert_products(conn, cat_ids, supplier_ids)
     print(f"  {len(product_ids)} products")
 
-    print("Inserting customers …")
+    print("Inserting customers ...")
     customer_records = insert_customers(conn, plz_rows, n=5_000)
     print(f"  {len(customer_records)} customers")
 
-    print("Inserting orders and order lines …")
+    print("Inserting orders and order lines ...")
     insert_orders(conn, customer_records, product_ids, n_orders=30_000)
 
     # Summary

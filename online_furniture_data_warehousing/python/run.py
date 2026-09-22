@@ -5,25 +5,28 @@ Usage:
     python python/run.py
 
 Options presented interactively:
-    1. Generate Business DB  (Faker — source tables only)
-    2. Run ETL pipeline      (DWH only — reads existing Business DB, read-only)
+    1. Generate Business DB  (Faker -- source tables only)
+    2. Run ETL pipeline      (DWH only -- reads existing Business DB, read-only)
     3. Full pipeline         (generate + ETL in one step)
-    4. Execute an analytical query (Q1–Q8)
+    4. Execute an analytical query (Q1-Q8)
 """
 
 import pathlib
 import sqlite3
 import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent))
+# sys.path.insert(0, str(pathlib.Path(__file__).parent))
+
 from db import connect
+from data_gen.generate_data import main as gen_main
+from etl.run_all_etl import run_all_etl as etl_main
 
 ROOT      = pathlib.Path(__file__).parent.parent
 SQL_DIR   = ROOT / "sql" / "analytics"
 
 # =============================================================================
 # Analytical question catalogue
-# Keys: question ID  →  (description text, SQL file path)
+# Keys: question ID  ->  (description text, SQL file path)
 # =============================================================================
 
 QUESTIONS: dict[str, tuple[str, pathlib.Path]] = {
@@ -33,23 +36,23 @@ QUESTIONS: dict[str, tuple[str, pathlib.Path]] = {
         "  and which category carries the highest discount share?",
         SQL_DIR / "01_Q1_revenue_category.sql",
     ),
-    "Q2a": (
+    "Q2A": (
         "Average order value by PLZ region (Part A)\n"
         "  Which postal code regions generate the highest average order value?\n"
         "  (order value = sum of net line amounts + shipping cost)",
         SQL_DIR / "02_Q2a_avg_order_value.sql",
     ),
-    "Q2b": (
+    "Q2B": (
         "Product category mix by PLZ region (Part B)\n"
         "  Does the product category mix differ between postal code regions?",
         SQL_DIR / "03_Q2b_category_mix_region.sql",
     ),
-    "Q3a": (
+    "Q3A": (
         "Peak order volume by weekday\n"
         "  Which weekdays see the highest order volume across the two-year period?",
         SQL_DIR / "04_Q3a_peak_weekday.sql",
     ),
-    "Q3b": (
+    "Q3B": (
         "Peak order volume by calendar week (Top 10)\n"
         "  Which calendar weeks see the highest order volume?",
         SQL_DIR / "05_Q3b_peak_calendar_week.sql",
@@ -90,10 +93,10 @@ QUESTIONS: dict[str, tuple[str, pathlib.Path]] = {
 # Table formatter
 # =============================================================================
 
-def _fmt(value) -> str:
+def _fmt(value, col: str = "") -> str:
     if isinstance(value, float):
         return f"{value:,.2f}"
-    if isinstance(value, int):
+    if isinstance(value, int) and col.lower() != "year":
         return f"{value:,}"
     return str(value) if value is not None else "NULL"
 
@@ -103,7 +106,7 @@ def print_table(rows: list[sqlite3.Row]) -> None:
         print("  (no rows returned)")
         return
     headers = list(rows[0].keys())
-    data = [[_fmt(r[h]) for h in headers] for r in rows]
+    data = [[_fmt(r[h], h) for h in headers] for r in rows]
     widths = [max(len(h), max(len(d[i]) for d in data)) for i, h in enumerate(headers)]
     sep = "+-" + "-+-".join("-" * w for w in widths) + "-+"
     header_row = "| " + " | ".join(h.ljust(widths[i]) for i, h in enumerate(headers)) + " |"
@@ -117,7 +120,7 @@ def print_table(rows: list[sqlite3.Row]) -> None:
 
 
 # =============================================================================
-# Option 1 — Generate Business DB (source tables only)
+# Option 1 -- Generate Business DB (source tables only)
 # =============================================================================
 
 def option_generate() -> None:
@@ -135,21 +138,13 @@ def option_generate() -> None:
         db_path.unlink()
         print()
 
-    print("  Generating Business DB (Faker) …")
-    try:
-        import importlib
-        gen = importlib.import_module("data_gen.generate_data")
-        importlib.reload(gen)
-        gen.main()
-        print("\n  Business DB created. Run option 2 to populate the DWH.")
-    except ModuleNotFoundError as exc:
-        print(f"\n  ERROR: {exc}")
-        print("  Install Faker for this Python interpreter:")
-        print(f"  {__import__('sys').executable} -m pip install faker")
+    print("  Generating Business DB (Faker) ...")
+    gen_main()
+    print("\n  Business DB created. Run option 2 to populate the DWH.")
 
 
 # =============================================================================
-# Option 2 — Run ETL pipeline (DWH only — does not touch source tables)
+# Option 2 -- Run ETL pipeline (DWH only -- does not touch source tables)
 # =============================================================================
 
 def option_etl() -> None:
@@ -159,16 +154,13 @@ def option_etl() -> None:
         print("\n  Business DB not found. Run option 1 first to generate source data.")
         return
 
-    print("  Running ETL pipeline …")
-    import importlib
-    etl_mod = importlib.import_module("etl.run_all_etl")
-    importlib.reload(etl_mod)
-    etl_mod.run_all_etl()
+    print("  Running ETL pipeline ...")
+    etl_main()
     print("\n  DWH updated.")
 
 
 # =============================================================================
-# Option 3 — Full pipeline: generate + ETL
+# Option 3 -- Full pipeline: generate + ETL
 # =============================================================================
 
 def option_full_pipeline() -> None:
@@ -185,28 +177,16 @@ def option_full_pipeline() -> None:
         db_path.unlink()
         print()
 
-    print("  Step 1/2 — Generating Business DB data …")
-    try:
-        import importlib
-        gen = importlib.import_module("data_gen.generate_data")
-        importlib.reload(gen)
-        gen.main()
-    except ModuleNotFoundError as exc:
-        print(f"\n  ERROR: {exc}")
-        print("  Install Faker for this Python interpreter:")
-        print(f"  {__import__('sys').executable} -m pip install faker")
-        return
+    print("  Step 1/2 -- Generating Business DB data ...")
+    gen_main()
 
-    print("\n  Step 2/2 — Running ETL pipeline …")
-    import importlib
-    etl_mod = importlib.import_module("etl.run_all_etl")
-    importlib.reload(etl_mod)
-    etl_mod.run_all_etl()
+    print("\n  Step 2/2 -- Running ETL pipeline ...")
+    etl_main()
     print("\n  Full pipeline complete.")
 
 
 # =============================================================================
-# Option 4 — Execute analytical query
+# Option 4 -- Execute analytical query
 # =============================================================================
 
 def print_question_menu() -> None:
@@ -254,15 +234,15 @@ def option_query() -> None:
 # =============================================================================
 
 BANNER = r"""
-  ╔══════════════════════════════════════════════════════════════╗
-  ║     Online Furniture Data Warehouse - CLI                    ║
-  ╚══════════════════════════════════════════════════════════════╝
+  +==============================================================+
+  |     Online Furniture Data Warehouse - CLI                    |
+  +==============================================================+
 """
 
 MAIN_MENU = """
   Main menu:
-    1  Generate Business DB           (Faker — source tables only)
-    2  Run ETL pipeline               (DWH only — requires Business DB)
+    1  Generate Business DB           (Faker -- source tables only)
+    2  Run ETL pipeline               (DWH only -- requires Business DB)
     3  Full pipeline: generate + ETL  (start from scratch)
     4  Execute an analytical query
     q  Quit

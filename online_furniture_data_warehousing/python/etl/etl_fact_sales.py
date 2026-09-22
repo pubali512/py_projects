@@ -1,5 +1,5 @@
 """
-ETL_FactSales.py — Fact table: fact_sales
+ETL_FactSales.py -- Fact table: fact_sales
 Reads order lines from RAW staging tables, computes monetary measures,
 resolves surrogate keys, and appends new rows to fact_sales.
 Grain: one row per order line.
@@ -50,7 +50,7 @@ def transform_fact_sales(
         product_sk  = product_map.get(r["product_id"])
         supplier_sk = supplier_map.get(r["supplier_id"])
         if not all([customer_sk, product_sk, supplier_sk]):
-            continue  # orphan row — should not occur with valid data
+            continue  # orphan row -- should not occur with valid data
         gross    = round(r["quantity"] * r["unit_price"], 2)
         discount = round(gross * r["discount"], 2)
         net      = round(gross - discount, 2)

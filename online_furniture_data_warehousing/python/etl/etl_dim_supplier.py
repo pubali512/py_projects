@@ -1,5 +1,5 @@
 """
-ETL_DimSupplier.py — Dimension: dim_supplier  (SCD Type 0)
+ETL_DimSupplier.py -- Dimension: dim_supplier  (SCD Type 0)
 Reads suppliers from RAW_BusinessDB_Supplier and inserts new rows.
 Existing suppliers are never overwritten (SCD 0).
 """

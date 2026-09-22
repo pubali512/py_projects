@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q2a — Average order value by PLZ region (Part A)
+-- Q2a -- Average order value by PLZ region (Part A)
 -- Which postal code regions generate the highest average order value?
 -- Note: order value = sum of net line amounts + shipping cost (once per order)
 -- Dimensions: dim_customer

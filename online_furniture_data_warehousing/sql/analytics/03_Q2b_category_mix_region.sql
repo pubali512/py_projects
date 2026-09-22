@@ -1,5 +1,5 @@
 -- =============================================================================
--- Q2b — Product category mix by PLZ region (Part B)
+-- Q2b -- Product category mix by PLZ region (Part B)
 -- Does the product category mix differ between postal code regions?
 -- Dimensions: dim_customer, dim_product
 -- =============================================================================
