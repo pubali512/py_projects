@@ -1,0 +1,5 @@
+__pycache__/
+.venv/
+project_docs/
+02_agent_instructions.md 
+03_project_plan.md

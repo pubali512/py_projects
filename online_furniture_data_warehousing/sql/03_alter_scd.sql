@@ -1,0 +1,59 @@
+-- =============================================================================
+-- SCD ALTER statements  |  Online Furniture DWH
+--
+-- Adds the SCD Type 2 tracking columns to dim_customer.
+-- Run ONCE after initial DWH creation (before the first ETL load).
+--
+-- Note: SQLite does not support ALTER TABLE ADD CONSTRAINT or DROP COLUMN
+-- (before 3.35), so SCD columns are defined here for documentation purposes.
+-- In the project, these columns are already present in 02_create_dwh.sql.
+-- This file serves as the formal SCD definition record for submission.
+-- =============================================================================
+
+-- For MSSQL / PostgreSQL, the equivalent statements would be:
+
+-- ALTER TABLE dim_customer
+--     ADD valid_from  DATE         NOT NULL DEFAULT GETDATE();   -- MSSQL
+--
+-- ALTER TABLE dim_customer
+--     ADD valid_to    DATE         NULL;
+--
+-- ALTER TABLE dim_customer
+--     ADD is_current  BIT          NOT NULL DEFAULT 1;
+
+-- =============================================================================
+-- SCD Analysis Summary
+-- =============================================================================
+--
+-- SCD TYPE 0  (keep original value — never overwrite)
+-- Columns: customer_id, order_id, order_date
+-- Justification: natural keys and transaction timestamps are immutable.
+--
+-- SCD TYPE 1  (overwrite — no history kept)
+-- Columns: dim_product.product_name, dim_product.list_price,
+--          dim_product.colour, dim_product.material
+-- Justification: corrections to product catalogue data (typos, price updates)
+--   do not require historical tracking for the defined analytical questions.
+--
+-- SCD TYPE 2  (add new row — full history preserved)
+-- Columns: dim_customer.street_address, dim_customer.postal_code,
+--          dim_customer.city, dim_customer.federal_state,
+--          dim_customer.plz_region, dim_customer.plz_zone
+-- Justification: a customer who relocates changes their PLZ region, which
+--   directly affects Q2 (regional order value analysis). Recording the old
+--   address ensures that historical orders are attributed to the correct region.
+-- Tracking columns: valid_from DATE, valid_to DATE (NULL = active), is_current BIT
+--
+-- =============================================================================
+-- ETL SCD 2 Logic (implemented in python/02_etl.py → load_dim_customer):
+--
+--  IF customer_id NOT IN dim_customer:
+--      INSERT new row  (valid_from = customer_since, valid_to = NULL, is_current = 1)
+--
+--  ELSE IF postal_code OR street_address changed:
+--      UPDATE current row  SET valid_to = etl_date, is_current = 0
+--      INSERT new row      (valid_from = etl_date, valid_to = NULL, is_current = 1)
+--
+--  ELSE:
+--      No action (SCD 0/1 attributes handled in load_dim_product)
+-- =============================================================================
