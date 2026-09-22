@@ -274,9 +274,9 @@ def option_load() -> None:
     gen.main()
 
     print("\n  Step 2/2 — Running ETL pipeline …")
-    etl_mod = importlib.import_module("etl.etl")
+    etl_mod = importlib.import_module("etl.run_all_etl")
     importlib.reload(etl_mod)
-    etl_mod.main()
+    etl_mod.run_all_etl()
 
     print("\n  Database loaded and transformed successfully.")
 
