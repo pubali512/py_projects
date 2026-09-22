@@ -268,16 +268,15 @@ def option_load() -> None:
         print()
 
     print("  Step 1/2 — Generating Business DB data …")
-    import importlib, sys as _sys
-    _sys.argv = ["01_generate_data.py"]
-    gen = importlib.import_module("01_generate_data")
+    import importlib
+    gen = importlib.import_module("data_gen.generate_data")
     importlib.reload(gen)
     gen.main()
 
     print("\n  Step 2/2 — Running ETL pipeline …")
-    etl = importlib.import_module("02_etl")
-    importlib.reload(etl)
-    etl.main()
+    etl_mod = importlib.import_module("etl.etl")
+    importlib.reload(etl_mod)
+    etl_mod.main()
 
     print("\n  Database loaded and transformed successfully.")
 
