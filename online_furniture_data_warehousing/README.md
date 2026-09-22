@@ -117,8 +117,10 @@ online_furniture_data_warehousing/
 | Q4 | Discount effectiveness vs. quantity | fact_sales |
 | Q5 | Revenue by price segment | dim_product |
 | Q6 | Federal state revenue growth 2024→2025 | dim_customer, dim_date |
-| Q-S1 | Supplier revenue by quarter | dim_supplier, dim_date |
-| Q-S2 | Supplier discount rate vs. order volume | dim_supplier |
+| Q7 | Supplier revenue by quarter | dim_supplier, dim_date |
+| Q8 | Supplier discount rate vs. order volume | dim_supplier |
+
+SQL for each query lives in `sql/analytics/` (one file per question).
 
 ---
 
