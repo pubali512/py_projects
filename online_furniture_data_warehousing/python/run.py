@@ -5,8 +5,10 @@ Usage:
     python python/run.py
 
 Options presented interactively:
-    1. Load and transform the database (generate data → run ETL)
-    2. Execute an analytical query (choose from Q1–Q8)
+    1. Generate Business DB  (Faker — source tables only)
+    2. Run ETL pipeline      (DWH only — reads existing Business DB, read-only)
+    3. Full pipeline         (generate + ETL in one step)
+    4. Execute an analytical query (Q1–Q8)
 """
 
 import pathlib
@@ -115,15 +117,16 @@ def print_table(rows: list[sqlite3.Row]) -> None:
 
 
 # =============================================================================
-# Option 1 - Load and transform
+# Option 1 — Generate Business DB (source tables only)
 # =============================================================================
 
-def option_load() -> None:
+def option_generate() -> None:
+    """Delete the database file and regenerate Business DB source tables via Faker."""
     db_path = ROOT / "data" / "furniture.db"
     if db_path.exists():
         answer = input(
-            f"\n  Database already exists ({db_path}).\n"
-            "  Re-generating will DELETE all existing data.\n"
+            f"\n  Business DB already exists ({db_path.name}).\n"
+            "  This will DELETE all existing data (source tables AND DWH).\n"
             "  Continue? (yes/no): "
         ).strip().lower()
         if answer != "yes":
@@ -132,22 +135,78 @@ def option_load() -> None:
         db_path.unlink()
         print()
 
-    print("  Step 1/2 - Generating Business DB data …")
-    import importlib
-    gen = importlib.import_module("data_gen.generate_data")
-    importlib.reload(gen)
-    gen.main()
-
-    print("\n  Step 2/2 - Running ETL pipeline …")
-    etl_mod = importlib.import_module("etl.run_all_etl")
-    importlib.reload(etl_mod)
-    etl_mod.run_all_etl()
-
-    print("\n  Database loaded and transformed successfully.")
+    print("  Generating Business DB (Faker) …")
+    try:
+        import importlib
+        gen = importlib.import_module("data_gen.generate_data")
+        importlib.reload(gen)
+        gen.main()
+        print("\n  Business DB created. Run option 2 to populate the DWH.")
+    except ModuleNotFoundError as exc:
+        print(f"\n  ERROR: {exc}")
+        print("  Install Faker for this Python interpreter:")
+        print(f"  {__import__('sys').executable} -m pip install faker")
 
 
 # =============================================================================
-# Option 2 - Execute analytical query
+# Option 2 — Run ETL pipeline (DWH only — does not touch source tables)
+# =============================================================================
+
+def option_etl() -> None:
+    """Run the ETL pipeline on the existing Business DB. Source tables are read-only."""
+    db_path = ROOT / "data" / "furniture.db"
+    if not db_path.exists():
+        print("\n  Business DB not found. Run option 1 first to generate source data.")
+        return
+
+    print("  Running ETL pipeline …")
+    import importlib
+    etl_mod = importlib.import_module("etl.run_all_etl")
+    importlib.reload(etl_mod)
+    etl_mod.run_all_etl()
+    print("\n  DWH updated.")
+
+
+# =============================================================================
+# Option 3 — Full pipeline: generate + ETL
+# =============================================================================
+
+def option_full_pipeline() -> None:
+    """Delete database, regenerate Business DB, then run the full ETL pipeline."""
+    db_path = ROOT / "data" / "furniture.db"
+    if db_path.exists():
+        answer = input(
+            f"\n  Database exists ({db_path.name}). Full pipeline will DELETE everything.\n"
+            "  Continue? (yes/no): "
+        ).strip().lower()
+        if answer != "yes":
+            print("  Aborted.")
+            return
+        db_path.unlink()
+        print()
+
+    print("  Step 1/2 — Generating Business DB data …")
+    try:
+        import importlib
+        gen = importlib.import_module("data_gen.generate_data")
+        importlib.reload(gen)
+        gen.main()
+    except ModuleNotFoundError as exc:
+        print(f"\n  ERROR: {exc}")
+        print("  Install Faker for this Python interpreter:")
+        print(f"  {__import__('sys').executable} -m pip install faker")
+        return
+
+    print("\n  Step 2/2 — Running ETL pipeline …")
+    import importlib
+    etl_mod = importlib.import_module("etl.run_all_etl")
+    importlib.reload(etl_mod)
+    etl_mod.run_all_etl()
+    print("\n  Full pipeline complete.")
+
+
+# =============================================================================
+# Option 4 — Execute analytical query
 # =============================================================================
 
 def print_question_menu() -> None:
@@ -157,13 +216,13 @@ def print_question_menu() -> None:
         first_line = description.split("\n")[0]
         print(f"  {key:5s}  {first_line}")
     print("  " + "-" * 62)
-    print("  (Enter question ID, e.g. Q1, Q2a, Q-S1)")
+    print("  (Enter question ID, e.g. Q1, Q2a, Q7)")
 
 
 def option_query() -> None:
     db_path = ROOT / "data" / "furniture.db"
     if not db_path.exists():
-        print("\n  Database not found. Please run option 1 first.")
+        print("\n  Database not found. Run option 1 or 3 first.")
         return
 
     print_question_menu()
@@ -172,6 +231,7 @@ def option_query() -> None:
     if choice not in QUESTIONS:
         print(f"\n  Unknown question '{choice}'.")
         return
+
 
     description, sql_path = QUESTIONS[choice]
     print(f"\n{'='*66}")
@@ -201,8 +261,10 @@ BANNER = r"""
 
 MAIN_MENU = """
   Main menu:
-    1  Load and transform the database (generate data + ETL)
-    2  Execute an analytical query
+    1  Generate Business DB           (Faker — source tables only)
+    2  Run ETL pipeline               (DWH only — requires Business DB)
+    3  Full pipeline: generate + ETL  (start from scratch)
+    4  Execute an analytical query
     q  Quit
 """
 
@@ -213,14 +275,18 @@ def main() -> None:
         print(MAIN_MENU)
         choice = input("  Enter option: ").strip().lower()
         if choice == "1":
-            option_load()
+            option_generate()
         elif choice == "2":
+            option_etl()
+        elif choice == "3":
+            option_full_pipeline()
+        elif choice == "4":
             option_query()
         elif choice in ("q", "quit", "exit"):
             print("\n  Goodbye.\n")
             break
         else:
-            print("  Invalid option. Please enter 1, 2, or q.")
+            print("  Invalid option. Please enter 1, 2, 3, 4, or q.")
 
 
 if __name__ == "__main__":
