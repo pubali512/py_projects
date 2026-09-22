@@ -72,21 +72,35 @@ ADJECTIVES = ["Classic", "Modern", "Premium", "Comfort", "Slim", "XL",
               "Eco", "Vintage", "Urban", "Loft", "Compact", "Deluxe",
               "Essential", "Pro", "Soft"]
 
-SUPPLIER_NAMES = [
-    "Holzwerk GmbH", "MöbelDesign AG", "EcoFurniture KG",
-    "Nordholz OHG", "SüdMöbel GmbH", "WohnKultur GmbH",
-    "FurnitureFirst GmbH", "DesignHaus AG", "KomfortWelt KG",
-    "HolzWerkstatt GmbH", "ModernWohn OHG", "ClassicHome GmbH",
-    "NaturMöbel AG", "UrbanLiving KG", "SleepWell GmbH",
-    "KidsFurniture AG", "OfficeStyle KG", "LuxuryHome GmbH",
-    "SmartMöbel OHG", "GrünesMöbelhaus GmbH",
-]
-
-SUPPLIER_CITIES = [
-    "Hamburg", "München", "Berlin", "Köln", "Frankfurt am Main",
-    "Stuttgart", "Düsseldorf", "Leipzig", "Dresden", "Hannover",
-    "Nürnberg", "Bremen", "Dortmund", "Essen", "Bonn",
-    "Mainz", "Erfurt", "Freiburg im Breisgau", "Augsburg", "Kiel",
+# Each tuple: (supplier_name, city, country)
+# ~50% Germany, remaining split across neighboring countries
+SUPPLIERS: list[tuple[str, str, str]] = [
+    # Germany (10)
+    ("Holzwerk GmbH",            "Hamburg",              "Germany"),
+    ("MöbelDesign AG",           "München",              "Germany"),
+    ("NaturMöbel AG",            "Stuttgart",            "Germany"),
+    ("FurnitureFirst GmbH",      "Köln",                 "Germany"),
+    ("DesignHaus AG",            "Frankfurt am Main",    "Germany"),
+    ("WohnKultur GmbH",          "Düsseldorf",           "Germany"),
+    ("KomfortWelt KG",           "Berlin",               "Germany"),
+    ("ClassicHome GmbH",         "Leipzig",              "Germany"),
+    ("UrbanLiving KG",           "Hannover",             "Germany"),
+    ("GrünesMöbelhaus GmbH",     "Freiburg im Breisgau", "Germany"),
+    # Austria (3)
+    ("WienerMöbel GmbH",         "Wien",                 "Austria"),
+    ("AlpenDesign AG",           "Graz",                 "Austria"),
+    ("SalzburgHome GmbH",        "Salzburg",             "Austria"),
+    # Switzerland (2)
+    ("SwissFurniture AG",         "Zürich",               "Switzerland"),
+    ("BaselWohn AG",              "Basel",                "Switzerland"),
+    # Netherlands (2)
+    ("DutchDesign B.V.",          "Amsterdam",            "Netherlands"),
+    ("HollandHout B.V.",          "Eindhoven",            "Netherlands"),
+    # Belgium (2)
+    ("BelgianCraft N.V.",         "Antwerpen",            "Belgium"),
+    ("MeubelHuis B.V.B.A.",       "Gent",                 "Belgium"),
+    # France (1)
+    ("MaisonDesign S.A.S.",       "Strasbourg",           "France"),
 ]
 
 
@@ -191,10 +205,10 @@ def apply_ddl(conn: sqlite3.Connection) -> None:
 
 def insert_suppliers(conn: sqlite3.Connection) -> list[int]:
     ids = []
-    for name, city in zip(SUPPLIER_NAMES, SUPPLIER_CITIES):
+    for name, city, country in SUPPLIERS:
         cur = conn.execute(
             f"INSERT INTO supplier (supplier_name, city, country) VALUES ({PLACEHOLDER},{PLACEHOLDER},{PLACEHOLDER})",
-            (name, city, "Germany"),
+            (name, city, country),
         )
         ids.append(cur.lastrowid)
     conn.commit()
