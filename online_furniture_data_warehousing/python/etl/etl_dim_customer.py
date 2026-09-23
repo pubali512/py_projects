@@ -16,29 +16,28 @@ from db import connect, PLACEHOLDER
 
 
 def extract_dim_customer(conn) -> list:
-    """Return all customer rows from the RAW staging table."""
-    return conn.execute("SELECT * FROM RAW_BusinessDB_Customer").fetchall()
+    """Return all customer rows from the FULL_ staging table."""
+    return conn.execute("SELECT * FROM FULL_BusinessDB_DWH_Customer").fetchall()
 
 
-def transform_dim_customer(raw_rows: list) -> list[dict]:
-    """Derive PlzRegion and PlzZone from PostalCode."""
-    result = []
-    for r in raw_rows:
-        plz = r["PostalCode"]
-        result.append({
+def transform_dim_customer(full_rows: list) -> list[dict]:
+    """Pass through enriched rows from FULL_ staging (PlzRegion/PlzZone already derived)."""
+    return [
+        {
             "CustomerId":    r["CustomerId"],
             "FirstName":     r["FirstName"],
             "LastName":      r["LastName"],
             "Email":          r["Email"],
             "StreetAddress": r["StreetAddress"],
-            "PostalCode":    plz,
-            "PlzRegion":     plz[:1],
-            "PlzZone":       plz[:2],
+            "PostalCode":    r["PostalCode"],
+            "PlzRegion":     r["PlzRegion"],
+            "PlzZone":       r["PlzZone"],
             "City":           r["City"],
             "FederalState":  r["FederalState"],
             "CustomerSince": r["CustomerSince"],
-        })
-    return result
+        }
+        for r in full_rows
+    ]
 
 
 def load_dim_customer(conn, rows: list[dict]) -> tuple[int, int]:

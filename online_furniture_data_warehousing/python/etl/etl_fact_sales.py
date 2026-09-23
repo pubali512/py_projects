@@ -1,6 +1,6 @@
 """
 ETL_FactSales.py -- Fact table: FACT_Sales
-Reads order lines from RAW staging tables, computes monetary measures,
+Reads pre-computed order line data from FULL_ staging table,
 resolves surrogate keys, and appends new rows to FACT_Sales.
 Grain: one row per order line.
 """
@@ -13,36 +13,22 @@ from db import connect, PLACEHOLDER
 
 
 def extract_fact_sales(conn) -> list:
-    """Join RAW order lines, headers, and products to get all measure source data."""
-    return conn.execute("""
-        SELECT ol.OrderLineId,
-               ol.OrderId,
-               oh.OrderDate,
-               oh.CustomerId,
-               ol.ProductId,
-               p.SupplierId,
-               ol.Quantity,
-               ol.UnitPrice,
-               ol.Discount,
-               oh.ShippingCost
-        FROM RAW_BusinessDB_OrderLine   ol
-        JOIN RAW_BusinessDB_OrderHeader oh ON ol.OrderId   = oh.OrderId
-        JOIN RAW_BusinessDB_Product     p  ON ol.ProductId = p.ProductId
-    """).fetchall()
+    """Return all sales rows from the FULL_ staging table (measures already computed)."""
+    return conn.execute("SELECT * FROM FULL_BusinessDB_DWH_Sales").fetchall()
 
 
 def transform_fact_sales(
-    raw_rows: list,
+    full_rows: list,
     product_map: dict,
     supplier_map: dict,
     customer_map: dict,
     loaded_order_ids: set,
 ) -> list[tuple]:
-    """Resolve surrogate keys and compute gross/Discount/net amounts.
+    """Resolve surrogate keys; measures are pre-computed in the FULL_ staging table.
     Skips rows for orders already present in FACT_Sales (idempotent re-run).
     """
     rows = []
-    for r in raw_rows:
+    for r in full_rows:
         if r["OrderId"] in loaded_order_ids:
             continue
         DateSk     = int(r["OrderDate"].replace("-", ""))
@@ -51,13 +37,10 @@ def transform_fact_sales(
         SupplierSk = supplier_map.get(r["SupplierId"])
         if not all([CustomerSk, ProductSk, SupplierSk]):
             continue  # orphan row -- should not occur with valid data
-        gross    = round(r["Quantity"] * r["UnitPrice"], 2)
-        Discount = round(gross * r["Discount"], 2)
-        net      = round(gross - Discount, 2)
         rows.append((
             DateSk, CustomerSk, ProductSk, SupplierSk,
             r["OrderId"], r["Quantity"],
-            gross, Discount, net,
+            r["GrossAmount"], r["DiscountAmount"], r["NetAmount"],
             r["ShippingCost"],
         ))
     return rows

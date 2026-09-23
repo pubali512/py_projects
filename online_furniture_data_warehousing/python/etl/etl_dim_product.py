@@ -1,7 +1,7 @@
 """
 ETL_DimProduct.py -- Dimension: DIM_Product  (SCD Type 1)
-Reads products and their category hierarchy from RAW staging tables,
-flattens sub-category -> top-category, and upserts into DIM_Product.
+Reads products with flattened category hierarchy from FULL_ staging table,
+and upserts into DIM_Product.
 Changed attributes are overwritten (SCD 1 -- no history).
 """
 
@@ -13,20 +13,8 @@ from db import connect, PLACEHOLDER
 
 
 def extract_dim_product(conn) -> list:
-    """Join RAW products with category hierarchy to resolve top-category name."""
-    return conn.execute("""
-        SELECT p.ProductId,
-               p.ProductName,
-               p.Colour,
-               p.Material,
-               p.ListPrice,
-               c.CategoryName,
-               COALESCE(top.CategoryName, c.CategoryName) AS TopCategoryName
-        FROM RAW_BusinessDB_Product   p
-        JOIN RAW_BusinessDB_Category  c   ON p.CategoryId    = c.CategoryId
-        LEFT JOIN RAW_BusinessDB_Category top
-                                          ON c.ParentCategoryId = top.CategoryId
-    """).fetchall()
+    """Return all product rows from the FULL_ staging table (hierarchy already flattened)."""
+    return conn.execute("SELECT * FROM FULL_BusinessDB_DWH_Product").fetchall()
 
 
 def transform_dim_product(raw_rows: list) -> list[tuple]:
