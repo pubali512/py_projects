@@ -11,7 +11,7 @@ PRAGMA foreign_keys = ON;
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS Supplier (
     SupplierId   INTEGER PRIMARY KEY AUTOINCREMENT,
-    SupplierName TEXT    NOT NULL,
+    SupplierName TEXT    NOT NULL UNIQUE,
     City          TEXT    NOT NULL,
     Country       TEXT    NOT NULL DEFAULT 'Germany'
 );
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Category (
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS Product (
     ProductId    INTEGER PRIMARY KEY AUTOINCREMENT,
-    ProductName  TEXT    NOT NULL,
+    ProductName  TEXT    NOT NULL UNIQUE,
     ListPrice    REAL    NOT NULL CHECK (ListPrice > 0),
     Colour        TEXT,
     Material      TEXT,
