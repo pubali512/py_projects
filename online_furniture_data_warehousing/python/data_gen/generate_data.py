@@ -288,7 +288,8 @@ def insert_customers(conn: sqlite3.Connection, plz_rows: list[dict],
                      n: int = 5_000) -> list[tuple[int, str]]:
     """Returns list of (CustomerId, CustomerSince) for order generation."""
     result = []
-    used_emails: set[str] = set()
+    # Pre-load existing emails to prevent UNIQUE constraint violations on re-runs
+    used_emails: set[str] = {r[0] for r in conn.execute("SELECT Email FROM Customer")}
     inserted = 0
     while inserted < n:
         plz_row   = random.choice(plz_rows)

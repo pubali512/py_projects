@@ -63,25 +63,60 @@ erDiagram
     Product     ||--o{ OrderLine   : "ordered in"
 ```
 
-### 1.2 Relational Schema
+### 1.2 Relational Schema (with Data Types)
 
 ```
-Supplier(SupplierId PK, SupplierName, City, Country)
+Supplier(
+  SupplierId    INTEGER   PK  AUTOINCREMENT,
+  SupplierName  TEXT      NOT NULL  UNIQUE,
+  City          TEXT      NOT NULL,
+  Country       TEXT      NOT NULL  DEFAULT 'Germany'
+)
 
-Category(CategoryId PK, CategoryName,
-         ParentCategoryId FK → Category)
+Category(
+  CategoryId        INTEGER   PK  AUTOINCREMENT,
+  CategoryName      TEXT      NOT NULL  UNIQUE,
+  ParentCategoryId  INTEGER   FK -> Category(CategoryId)  NULL
+)
 
-Product(ProductId PK, ProductName, ListPrice, Colour, Material,
-        CategoryId FK → Category, SupplierId FK → Supplier)
+Product(
+  ProductId    INTEGER   PK  AUTOINCREMENT,
+  ProductName  TEXT      NOT NULL  UNIQUE,
+  ListPrice    REAL      NOT NULL  CHECK(>0),
+  Colour       TEXT,
+  Material     TEXT,
+  CategoryId   INTEGER   NOT NULL  FK -> Category(CategoryId),
+  SupplierId   INTEGER   NOT NULL  FK -> Supplier(SupplierId)
+)
 
-Customer(CustomerId PK, FirstName, LastName, Email, StreetAddress,
-         PostalCode, City, FederalState, CustomerSince)
+Customer(
+  CustomerId     INTEGER   PK  AUTOINCREMENT,
+  FirstName      TEXT      NOT NULL,
+  LastName       TEXT      NOT NULL,
+  Email          TEXT      NOT NULL  UNIQUE,
+  StreetAddress  TEXT      NOT NULL,
+  PostalCode     TEXT      NOT NULL,
+  City           TEXT      NOT NULL,
+  FederalState   TEXT      NOT NULL,
+  CustomerSince  TEXT      NOT NULL   -- ISO date YYYY-MM-DD
+)
 
-OrderHeader(OrderId PK, OrderDate, PaymentMethod, ShippingCost,
-             CustomerId FK → Customer)
+OrderHeader(
+  OrderId        INTEGER   PK  AUTOINCREMENT,
+  OrderDate      TEXT      NOT NULL,  -- ISO date YYYY-MM-DD
+  PaymentMethod  TEXT      NOT NULL  CHECK IN ('credit_card','paypal','bank_transfer','invoice'),
+  ShippingCost   REAL      NOT NULL  CHECK(>=0),
+  CustomerId     INTEGER   NOT NULL  FK -> Customer(CustomerId)
+)
 
-OrderLine(OrderLineId PK, Quantity, UnitPrice, Discount,
-           OrderId FK → OrderHeader, ProductId FK → Product)
+OrderLine(
+  OrderLineId  INTEGER   PK  AUTOINCREMENT,
+  Quantity     INTEGER   NOT NULL  CHECK(>0),
+  UnitPrice    REAL      NOT NULL  CHECK(>0),
+  Discount     REAL      NOT NULL  CHECK(>=0 AND <1),
+  OrderId      INTEGER   NOT NULL  FK -> OrderHeader(OrderId),
+  ProductId    INTEGER   NOT NULL  FK -> Product(ProductId)
+)
 ```
 
 ### 1.3 Normal Form Verification
@@ -364,27 +399,78 @@ SQL scripts in `sql/transform/`.
 
 ## 5. Storage Calculation
 
-### Business DB
+### 5.1 Business DB — Per-Column Analysis
+
+| Table | Column | Type | Bytes/row |
+|---|---|---|---|
+| Supplier | SupplierId | INTEGER | 8 |
+| | SupplierName | TEXT | ~22 |
+| | City | TEXT | ~14 |
+| | Country | TEXT | ~12 |
+| | Row overhead | | 8 |
+| **Supplier total** | | ~64 B/row | 20 rows = **1.3 KB** |
+| Category | CategoryId | INTEGER | 8 |
+| | CategoryName | TEXT | ~17 |
+| | ParentCategoryId | INTEGER (nullable) | 8 |
+| | Row overhead | | 8 |
+| **Category total** | | ~41 B/row | 15 rows = **0.6 KB** |
+| Product | ProductId | INTEGER | 8 |
+| | ProductName | TEXT | ~22 |
+| | ListPrice | REAL | 8 |
+| | Colour | TEXT | ~10 |
+| | Material | TEXT | ~12 |
+| | CategoryId | INTEGER | 8 |
+| | SupplierId | INTEGER | 8 |
+| | Row overhead | | 8 |
+| **Product total** | | ~84 B/row | 120 rows = **10 KB** |
+| Customer | CustomerId | INTEGER | 8 |
+| | FirstName | TEXT | ~10 |
+| | LastName | TEXT | ~12 |
+| | Email | TEXT | ~27 |
+| | StreetAddress | TEXT | ~32 |
+| | PostalCode | TEXT | 7 |
+| | City | TEXT | ~14 |
+| | FederalState | TEXT | ~17 |
+| | CustomerSince | TEXT | 12 |
+| | Row overhead | | 8 |
+| **Customer total** | | ~147 B/row | 5,000 rows = **720 KB** |
+| OrderHeader | OrderId | INTEGER | 8 |
+| | OrderDate | TEXT | 12 |
+| | PaymentMethod | TEXT | ~14 |
+| | ShippingCost | REAL | 8 |
+| | CustomerId | INTEGER | 8 |
+| | Row overhead | | 8 |
+| **OrderHeader total** | | ~58 B/row | 30,000 rows = **1.7 MB** |
+| OrderLine | OrderLineId | INTEGER | 8 |
+| | Quantity | INTEGER | 8 |
+| | UnitPrice | REAL | 8 |
+| | Discount | REAL | 8 |
+| | OrderId | INTEGER | 8 |
+| | ProductId | INTEGER | 8 |
+| | Row overhead | | 8 |
+| **OrderLine total** | | ~56 B/row | 85,500 rows = **4.7 MB** |
+
+### 5.2 Business DB Summary
 
 | Table | Rows | Avg row (bytes) | Estimated |
 |---|---|---|---|
-| Supplier | 20 | 80 | 1.6 KB |
-| Category | 15 | 60 | 0.9 KB |
-| Product | 120 | 120 | 14.4 KB |
-| Customer | 5,000 | 250 | 1.2 MB |
-| OrderHeader | 30,000 | 100 | 2.9 MB |
-| OrderLine | 85,500 | 60 | 4.9 MB |
-| **Subtotal** | | | **~9.0 MB** |
+| Supplier | 20 | 64 | 1.3 KB |
+| Category | 15 | 41 | 0.6 KB |
+| Product | 120 | 84 | 10 KB |
+| Customer | 5,000 | 147 | 720 KB |
+| OrderHeader | 30,000 | 58 | 1.7 MB |
+| OrderLine | 85,500 | 56 | 4.7 MB |
+| **Subtotal** | | | **~7.1 MB** |
 
-With SQLite overhead (B-tree, indexes, pages): **~11–12 MB**.
+With SQLite overhead (B-tree pages, indexes, free pages): **~9–10 MB**.
 
-### DWH + Staging (additional)
+### 5.3 DWH + Staging (additional)
 
 | Layer | Approx. |
 |---|---|
 | DWH dimensions + FACT_Sales | ~8 MB |
 | RAW_ + FULL_ staging | ~12 MB |
-| **Total combined DB** | **~30–35 MB** |
+| **Total combined DB** | **~29–30 MB** |
 
 ---
 
@@ -392,19 +478,18 @@ With SQLite overhead (B-tree, indexes, pages): **~11–12 MB**.
 
 All SQL in `sql/analytics/`. Run via `python python/run.py` → option 4.
 
-| ID | Question | Dimensions |
+| ID | Question | Dimensions used |
 |---|---|---|
-| Q1 | Revenue and Discount per Category and Quarter | DIM_Date, DIM_Product |
-| Q2a | Average order value by PLZ region | DIM_Customer |
-| Q2b | Category mix by PLZ region | DIM_Customer, DIM_Product |
-| Q3a | Peak order volume by Weekday | DIM_Date |
-| Q3b | Top 10 peak calendar weeks | DIM_Date |
-| Q4 | Discount effectiveness vs. Quantity and revenue | FACT_Sales |
-| Q5 | Revenue by price segment (Budget/Mid/Premium) | DIM_Product |
-| Q6 | Federal state revenue growth 2024→2025 | DIM_Customer, DIM_Date |
-| Q7 | Supplier revenue by Quarter and share | DIM_Supplier, DIM_Date |
-| Q8 | Supplier Discount rate vs. order volume | DIM_Supplier |
+| **Q1** | Revenue and Discount by category over time: *How does net revenue as well as Discounts develop per top-level product category and Quarter?* | DIM_Date, DIM_Product |
+| **Q2** | Top 10 PLZ zones by net revenue: *Which 10 postal code zones (first 2 digits of PLZ) generate the maximum net revenue?* | DIM_Customer |
+| **Q3** | Top 2 categories per federal state: *What are the two highest net revenue generating product categories per federal state?* | DIM_Customer, DIM_Product |
+| **Q4** | Peak order volume by weekday: *Which weekdays see the highest order volume across the two-year period?* | DIM_Date |
+| **Q5** | Peak calendar weeks (Top 10): *Which calendar weeks see the highest order volume?* | DIM_Date |
+| **Q6** | Revenue by price segment: *How does revenue compare across Budget / Mid-range / Premium product segments?* | DIM_Product |
+| **Q7** | Federal state revenue growth: *Which federal states show the strongest revenue growth from 2024 to 2025?* | DIM_Customer, DIM_Date |
+| **Q8** | Top 3 suppliers per quarter: *Which 3 suppliers generate the most net revenue per Quarter?* | DIM_Supplier, DIM_Date |
+| **Q9** | Supplier Discount behaviour: *Which suppliers' products carry the highest average Discount rate, and does that correlate with order volume?* | DIM_Supplier |
 
-**Mandatory for submission:** Q1, Q2 (covers Q2a + Q2b).
+**Mandatory for submission:** Q1, Q2, Q3.
 
-**Supplier-specific (extends DIM_Supplier):** Q7, Q8.
+**Supplier-specific (extends DIM_Supplier):** Q8, Q9.

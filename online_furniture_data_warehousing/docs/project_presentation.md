@@ -37,7 +37,7 @@
 
 ## Slide 3 — Business DB Design (ER)
 
-**Visual:** `docs/ER_Diagram_Business-DB.png`
+**Visual:** `[TO ADD — ER Diagram image]`
 
 ### Key Points
 
@@ -62,7 +62,7 @@
 
 ## Slide 4 — DWH Conceptual Design (mER)
 
-**Visual:** `docs/mER_Diagram_DWH.png`
+**Visual:** `[TO ADD — mER Diagram image]`
 
 ### Key Points
 
@@ -190,8 +190,8 @@ Business DB       Stage 1: Extract          Stage 2: Transform         Stage 3: 
 
 - Single CLI entry point: **`python python/run.py`**
   - Option 1: Generate Business DB (Faker)
-  - Option 2: Run full ETL pipeline
-  - Option 3: Run individual ETL stages
+  - Option 2: Generate demo delta (incremental data + SCD 2 address changes)
+  - Option 3: Run ETL pipeline
   - Option 4: Execute analytical queries interactively
 - Full pipeline: **`run_all_etl.py`** (Extract → Transform → DimDate → DimSupplier → DimProduct → DimCustomer → FactSales)
 - All ETL steps are **idempotent** — safe to re-run without duplicates
@@ -209,27 +209,19 @@ Business DB       Stage 1: Extract          Stage 2: Transform         Stage 3: 
 
 ## Slide 8 — Analytical Questions
 
-### Mandatory Questions
+| ID | Question | Dimensions |
+|---|---|---|
+| **Q1** | How does net revenue as well as Discounts develop per top-level product category and Quarter? | DIM_Date, DIM_Product |
+| **Q2** | Which 10 postal code zones (first 2 digits of PLZ) generate the maximum net revenue? | DIM_Customer |
+| **Q3** | What are the two highest net revenue generating product categories per federal state? | DIM_Customer, DIM_Product |
+| **Q4** | Which weekdays see the highest order volume across the two-year period? | DIM_Date |
+| **Q5** | Which calendar weeks see the highest order volume? (Top 10) | DIM_Date |
+| **Q6** | How does revenue compare across Budget / Mid-range / Premium product price segments? | DIM_Product |
+| **Q7** | Which federal states show the strongest revenue growth from 2024 to 2025? | DIM_Customer, DIM_Date |
+| **Q8** | Which 3 suppliers generate the most net revenue per Quarter? | DIM_Supplier, DIM_Date |
+| **Q9** | Which suppliers’ products carry the highest average Discount rate, and does it correlate with order volume? | DIM_Supplier |
 
-**Q1 — Revenue & Discount by Product Category over Time**
-
-> *"How does net revenue develop per top-level product category and quarter, and which category carries the highest discount share?"*
-
-- Dimensions used: `DIM_Date`, `DIM_Product`
-- Groups by: `TopCategoryName`, `Year`, `Quarter`
-- Metrics: net revenue, gross revenue, discount share %
-- File: `sql/analytics/01_Q1_revenue_category.sql`
-
----
-
-**Q2 — Regional Differences in Order Value**
-
-> *Q2a: "Which PLZ regions generate the highest average order value?"*  
-> *Q2b: "Does the product category mix differ between PLZ regions?"*
-
-- Dimensions used: `DIM_Customer`, `DIM_Product`
-- Groups by: `PlzRegion` (first digit of PostalCode, 10 regions: 0–9)
-- Files: `sql/analytics/02_Q2a_avg_order_value.sql`, `03_Q2b_category_mix_region.sql`
+**Mandatory for submission:** Q1, Q2, Q3.
 
 > **[TODO]** Add sample query result screenshots / key numbers once DB is regenerated.
 

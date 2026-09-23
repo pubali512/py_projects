@@ -6,10 +6,9 @@ Usage:
 
 Options presented interactively:
     1. Generate Business DB  (Faker -- source tables only)
-    2. Run ETL pipeline      (DWH only -- reads existing Business DB, read-only)
-    3. Full pipeline         (generate + ETL in one step)
-    4. Execute an analytical query (Q1-Q8)
-    5. Generate demo delta   (new suppliers/products/customers/orders + SCD 2 address changes)
+    2. Generate demo delta   (new data + SCD 2 address changes)
+    3. Run ETL pipeline      (DWH only -- reads existing Business DB)
+    4. Execute an analytical query (Q1-Q9)
 """
 
 import pathlib
@@ -158,30 +157,6 @@ def option_etl() -> None:
 # =============================================================================
 # Option 3 -- Full pipeline: generate + ETL
 # =============================================================================
-
-def option_full_pipeline() -> None:
-    """Delete database, regenerate Business DB, then run the full ETL pipeline."""
-    db_path = ROOT / "data" / "furniture.db"
-    if db_path.exists():
-        answer = input(
-            f"\n  Database exists ({db_path.name}). Full pipeline will DELETE everything.\n"
-            "  Continue? (yes/no): "
-        ).strip().lower()
-        if answer != "yes":
-            print("  Aborted.")
-            return
-        db_path.unlink()
-        print()
-
-    print("  Step 1/2 -- Generating Business DB data ...")
-    gen_main()
-
-    print("\n  Step 2/2 -- Running ETL pipeline ...")
-    etl_main()
-    print("\n  Full pipeline complete.")
-
-
-# =============================================================================
 # Option 4 -- Execute analytical query
 # =============================================================================
 
@@ -198,7 +173,7 @@ def print_question_menu() -> None:
 def option_query() -> None:
     db_path = ROOT / "data" / "furniture.db"
     if not db_path.exists():
-        print("\n  Database not found. Run option 1 or 3 first.")
+        print("\n  Database not found. Run option 1 first.")
         return
 
     print_question_menu()
@@ -233,11 +208,11 @@ def option_delta() -> None:
     """Add 2 suppliers, 2 products, 10 customers, 100 orders, and change 5 addresses."""
     db_path = ROOT / "data" / "furniture.db"
     if not db_path.exists():
-        print("\n  Business DB not found. Run option 1 or 3 first to generate source data.")
+        print("\n  Business DB not found. Run option 1 first to generate source data.")
         return
     print("  Generating incremental demo data ...")
     delta_main()
-    print("\n  Delta applied. Re-run option 2 (ETL) to load changes into the DWH.")
+    print("\n  Delta applied. Re-run option 3 (ETL) to load changes into the DWH.")
 
 
 # =============================================================================
@@ -252,11 +227,10 @@ BANNER = r"""
 
 MAIN_MENU = """
   Main menu:
-    1  Generate Business DB           (Faker -- source tables only)
-    2  Run ETL pipeline               (DWH only -- requires Business DB)
-    3  Full pipeline: generate + ETL  (start from scratch)
+    1  Generate Business DB      (Faker -- source tables only)
+    2  Generate demo delta       (new data + SCD 2 address changes)
+    3  Run ETL pipeline          (DWH only -- requires Business DB)
     4  Execute an analytical query
-    5  Generate demo delta            (new data + SCD 2 address changes)
     q  Quit
 """
 
@@ -269,13 +243,11 @@ def main() -> None:
         if choice == "1":
             option_generate()
         elif choice == "2":
-            option_etl()
+            option_delta()
         elif choice == "3":
-            option_full_pipeline()
+            option_etl()
         elif choice == "4":
             option_query()
-        elif choice == "5":
-            option_delta()
         elif choice in ("q", "quit", "exit"):
             print("\n  Goodbye.\n")
             break
