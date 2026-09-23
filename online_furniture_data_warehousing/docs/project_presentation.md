@@ -205,6 +205,16 @@ Business DB       Stage 1: Extract          Stage 2: Transform         Stage 3: 
 | Data generation | Faker + OpenPLZ API |
 | SQL | Standard SQL (SQLite dialect) |
 
+### ETL Schedule
+
+| Trigger | When | Rationale |
+|---|---|---|
+| **Daily batch** (primary) | Every night at 02:00 | Orders are placed during business hours; DWH is refreshed overnight before the next working day |
+| **On-demand** | Manual via `python run.py` → Option 3 | Demo, testing, or one-off loads |
+
+- Scheduling tools: **Windows Task Scheduler** (Windows) or **cron** (Linux/macOS)
+- All ETL steps are **idempotent** — safe to re-run; already-loaded orders are automatically skipped
+
 ---
 
 ## Slide 8 — Analytical Questions
