@@ -20,7 +20,7 @@
             <mxRectangle height="25" width="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fakt_r1_txt" parent="fakt_r1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;" value="CustomerId" vertex="1">
+        <mxCell id="fakt_r1_txt" parent="fakt_r1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;" value="CustomerSk" vertex="1">
           <mxGeometry height="25" width="190" x="40" as="geometry">
             <mxRectangle height="25" width="190" as="alternateBounds" />
           </mxGeometry>
@@ -33,7 +33,7 @@
             <mxRectangle height="25" width="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fakt_r2_txt" parent="fakt_r2" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;" value="DateId" vertex="1">
+        <mxCell id="fakt_r2_txt" parent="fakt_r2" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;" value="DateSk" vertex="1">
           <mxGeometry height="25" width="190" x="40" as="geometry">
             <mxRectangle height="25" width="190" as="alternateBounds" />
           </mxGeometry>
@@ -46,7 +46,7 @@
             <mxRectangle height="25" width="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fakt_r3_txt" parent="fakt_r3" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;" value="ProductId" vertex="1">
+        <mxCell id="fakt_r3_txt" parent="fakt_r3" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;" value="ProductSk" vertex="1">
           <mxGeometry height="25" width="190" x="40" as="geometry">
             <mxRectangle height="25" width="190" as="alternateBounds" />
           </mxGeometry>
@@ -59,7 +59,7 @@
             <mxRectangle height="25" width="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fakt_r4_txt" parent="fakt_r4" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;" value="SupplierId" vertex="1">
+        <mxCell id="fakt_r4_txt" parent="fakt_r4" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;" value="SupplierSk" vertex="1">
           <mxGeometry height="25" width="190" x="40" as="geometry">
             <mxRectangle height="25" width="190" as="alternateBounds" />
           </mxGeometry>
@@ -72,7 +72,7 @@
             <mxRectangle height="135" width="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fakt_rf_txt" parent="fakt_rf" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;verticalAlign=top;spacingTop=6;" value="&lt;b&gt;&lt;u&gt;SalesId&lt;/u&gt;&lt;/b&gt;&lt;div&gt;OrderId&lt;/div&gt;&lt;div&gt;Quantity&lt;br&gt;GrossAmount&lt;/div&gt;&lt;div&gt;DiscountAmount&lt;/div&gt;&lt;div&gt;NetAmount&lt;/div&gt;&lt;div&gt;ShippingCost&lt;/div&gt;" vertex="1">
+        <mxCell id="fakt_rf_txt" parent="fakt_rf" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;verticalAlign=top;spacingTop=6;" value="&lt;b&gt;&lt;u&gt;SalesSk&lt;/u&gt;&lt;/b&gt;&lt;div&gt;OrderId&lt;/div&gt;&lt;div&gt;Quantity&lt;br&gt;GrossAmount&lt;/div&gt;&lt;div&gt;DiscountAmount&lt;/div&gt;&lt;div&gt;NetAmount&lt;/div&gt;&lt;div&gt;ShippingCost&lt;/div&gt;" vertex="1">
           <mxGeometry height="135" width="190" x="40" as="geometry">
             <mxRectangle height="135" width="190" as="alternateBounds" />
           </mxGeometry>
@@ -104,7 +104,7 @@
             <mxRectangle height="150" width="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kunde_txt_cell" parent="kunde_r1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;verticalAlign=top;spacingTop=4;" value="&lt;br&gt;&lt;br&gt;ProductName&lt;br&gt;Colour&lt;br&gt;Material&lt;br&gt;ListPrice&lt;br&gt;CategoryName&lt;div&gt;TopCategoryName&lt;/div&gt;" vertex="1">
+        <mxCell id="kunde_txt_cell" parent="kunde_r1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;verticalAlign=top;spacingTop=4;" value="&lt;br&gt;&lt;br&gt;ProductId&lt;div&gt;ProductName&lt;br&gt;Colour&lt;br&gt;Material&lt;br&gt;ListPrice&lt;br&gt;CategoryName&lt;div&gt;TopCategoryName&lt;/div&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="150" width="190" x="40" as="geometry">
             <mxRectangle height="150" width="190" as="alternateBounds" />
           </mxGeometry>
@@ -120,7 +120,7 @@
             <mxRectangle height="235" width="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kasse_txt_cell" parent="kasse_r1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;verticalAlign=top;spacingTop=4;" value="&lt;br&gt;&lt;br&gt;FirstName&lt;br&gt;LastName&lt;br&gt;Email&lt;br&gt;StreetAddress&lt;br&gt;PostalCode&lt;br&gt;PlzRegion&lt;br&gt;PlzZone&lt;br&gt;City&lt;br&gt;FederalState&lt;br&gt;ValidFrom&lt;br&gt;ValidTo&lt;div&gt;IsCurrent&lt;/div&gt;" vertex="1">
+        <mxCell id="kasse_txt_cell" parent="kasse_r1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;verticalAlign=top;spacingTop=4;" value="&lt;br&gt;&lt;br&gt;CustomerId&lt;div&gt;FirstName&lt;br&gt;LastName&lt;br&gt;Email&lt;br&gt;StreetAddress&lt;br&gt;PostalCode&lt;br&gt;PlzRegion&lt;br&gt;PlzZone&lt;br&gt;City&lt;br&gt;FederalState&lt;br&gt;ValidFrom&lt;br&gt;ValidTo&lt;div&gt;IsCurrent&lt;/div&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="235" width="199" x="40" as="geometry">
             <mxRectangle height="235" width="199" as="alternateBounds" />
           </mxGeometry>
@@ -147,21 +147,18 @@
             <mxPoint x="428" y="409" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="R_bukQdtsxa7QhqkZEVc-1" parent="1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;strokeWidth=2;" value="CustomerId" vertex="1">
+        <mxCell id="R_bukQdtsxa7QhqkZEVc-1" parent="1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;strokeWidth=2;" value="CustomerSk" vertex="1">
           <mxGeometry height="25" width="199" x="122" y="299" as="geometry" />
         </mxCell>
-        <mxCell id="R_bukQdtsxa7QhqkZEVc-3" parent="1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;strokeWidth=2;" value="DateId" vertex="1">
+        <mxCell id="R_bukQdtsxa7QhqkZEVc-3" parent="1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;strokeWidth=2;" value="DateSk" vertex="1">
           <mxGeometry height="25" width="190" x="839" y="323" as="geometry">
             <mxRectangle height="25" width="190" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="R_bukQdtsxa7QhqkZEVc-4" parent="1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;strokeWidth=2;" value="ProductId" vertex="1">
+        <mxCell id="R_bukQdtsxa7QhqkZEVc-4" parent="1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;strokeWidth=2;" value="ProductSk" vertex="1">
           <mxGeometry height="25" width="190" x="489" y="638" as="geometry">
             <mxRectangle height="25" width="190" as="alternateBounds" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="R_bukQdtsxa7QhqkZEVc-9" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;b&gt;&lt;font style=&quot;font-size: 25px;&quot;&gt;Star Schema - DWH&lt;/font&gt;&lt;/b&gt;" vertex="1">
-          <mxGeometry height="30" width="263" x="431" y="15" as="geometry" />
         </mxCell>
         <mxCell id="Ii53rDQVFWp_jjSlZByW-1" parent="1" style="text;whiteSpace=wrap;html=1;rotation=45;" value="🔑" vertex="1">
           <mxGeometry height="40" width="50" x="313" y="397" as="geometry" />
@@ -189,12 +186,12 @@
             <mxRectangle height="109" width="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ii53rDQVFWp_jjSlZByW-12" parent="Ii53rDQVFWp_jjSlZByW-10" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;verticalAlign=top;spacingTop=4;" value="&lt;br&gt;&lt;br&gt;SupplierName&lt;br&gt;City&lt;br&gt;Country&lt;br&gt;&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="Ii53rDQVFWp_jjSlZByW-12" parent="Ii53rDQVFWp_jjSlZByW-10" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;verticalAlign=top;spacingTop=4;" value="&lt;br&gt;&lt;br&gt;SupplierId&lt;div&gt;SupplierName&lt;br&gt;City&lt;br&gt;Country&lt;br&gt;&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="109" width="207" x="40" as="geometry">
             <mxRectangle height="109" width="207" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ii53rDQVFWp_jjSlZByW-13" parent="1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;strokeWidth=2;" value="SupplierId" vertex="1">
+        <mxCell id="Ii53rDQVFWp_jjSlZByW-13" parent="1" style="shape=tableCell;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;fillColor=none;strokeColor=#000000;align=left;spacingLeft=6;fontStyle=5;verticalAlign=middle;strokeWidth=2;" value="SupplierSk" vertex="1">
           <mxGeometry height="25" width="207" x="479" y="93" as="geometry">
             <mxRectangle height="25" width="190" as="alternateBounds" />
           </mxGeometry>
