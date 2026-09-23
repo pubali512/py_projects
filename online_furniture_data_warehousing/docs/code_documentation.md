@@ -30,3 +30,5 @@
         - run_etl_fact_sales()
             - Inserts new sales records into FACT_Sales (If new sales are added to the business DB) 
             - For customers, the current surrogate key from DIM_Customer is used to maintain the relationship between sales and customers (IsCurrent = 1)
+
+

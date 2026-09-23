@@ -34,59 +34,53 @@ SQL_DIR   = ROOT / "sql" / "analytics"
 QUESTIONS: dict[str, tuple[str, pathlib.Path]] = {
     "Q1": (
         "Revenue and Discount by category over time\n"
-        "  How does net revenue develop per top-level product category and Quarter,\n"
-        "  and which category carries the highest Discount share?",
+        "  How does net revenue as well as Discounts develop per top-level product\n"
+        "  category and Quarter?",
         SQL_DIR / "01_Q1_revenue_category.sql",
     ),
-    "Q2A": (
-        "Average order value by PLZ region (Part A)\n"
-        "  Which postal code regions generate the highest average order value?\n"
-        "  (order value = sum of net line amounts + shipping cost)",
-        SQL_DIR / "02_Q2a_avg_order_value.sql",
+    "Q2": (
+        "Top 10 PLZ zones by net revenue\n"
+        "  Which 10 postal code zones (first 2 digits of PLZ) generate\n"
+        "  the maximum net revenue?",
+        SQL_DIR / "02_Q2_top_plz_zones.sql",
     ),
-    "Q2B": (
-        "Product category mix by PLZ region (Part B)\n"
-        "  Does the product category mix differ between postal code regions?",
-        SQL_DIR / "03_Q2b_category_mix_region.sql",
-    ),
-    "Q3A": (
-        "Peak order volume by Weekday\n"
-        "  Which weekdays see the highest order volume across the two-Year period?",
-        SQL_DIR / "04_Q3a_peak_weekday.sql",
-    ),
-    "Q3B": (
-        "Peak order volume by calendar week (Top 10)\n"
-        "  Which calendar weeks see the highest order volume?",
-        SQL_DIR / "05_Q3b_peak_calendar_week.sql",
+    "Q3": (
+        "Top 2 product categories per federal state by net revenue\n"
+        "  What are the two highest net revenue generating product\n"
+        "  categories per federal state?",
+        SQL_DIR / "03_Q3_top_categories_per_state.sql",
     ),
     "Q4": (
-        "Discount effectiveness\n"
-        "  Does a higher Discount rate correlate with higher Quantity sold\n"
-        "  or net revenue per order line?",
-        SQL_DIR / "06_Q4_discount_effectiveness.sql",
+        "Peak order volume by Weekday\n"
+        "  Which weekdays see the highest order volume across the two-Year period?",
+        SQL_DIR / "04_Q4_peak_weekday.sql",
     ),
     "Q5": (
+        "Peak order volume by calendar week (Top 10)\n"
+        "  Which calendar weeks see the highest order volume?",
+        SQL_DIR / "05_Q5_peak_calendar_week.sql",
+    ),
+    "Q6": (
         "Revenue and Discount share by price segment\n"
         "  How does revenue and Discount compare across Budget (<EUR 200) /\n"
         "  Mid-range (EUR 200-799) / Premium (>=EUR 800) product segments?",
-        SQL_DIR / "07_Q5_price_segment.sql",
-    ),
-    "Q6": (
-        "Federal state revenue growth: Year 1 (2024) vs Year 2 (2025)\n"
-        "  Which federal states show the strongest revenue growth?",
-        SQL_DIR / "08_Q6_state_growth.sql",
+        SQL_DIR / "06_Q6_price_segment.sql",
     ),
     "Q7": (
-        "Supplier revenue by Quarter\n"
-        "  Which suppliers generate the most net revenue per Quarter,\n"
-        "  and how has their share shifted over the two-Year period?",
-        SQL_DIR / "09_Q7_supplier_revenue_quarter.sql",
+        "Federal state revenue growth: Year 1 (2024) vs Year 2 (2025)\n"
+        "  Which federal states show the strongest revenue growth?",
+        SQL_DIR / "07_Q7_state_growth.sql",
     ),
     "Q8": (
+        "Top 3 suppliers by net revenue per quarter\n"
+        "  Which 3 suppliers generate the most net revenue per Quarter?",
+        SQL_DIR / "08_Q8_top3_suppliers_per_quarter.sql",
+    ),
+    "Q9": (
         "Supplier Discount behaviour vs. order volume\n"
         "  Which suppliers' products carry the highest average Discount rate,\n"
         "  and does that correlate with order volume?",
-        SQL_DIR / "10_Q8_supplier_discount_volume.sql",
+        SQL_DIR / "09_Q9_supplier_discount_volume.sql",
     ),
 }
 

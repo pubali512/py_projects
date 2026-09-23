@@ -1,7 +1,6 @@
 -- =============================================================================
 -- Q1 -- Revenue and Discount by category over time
--- How does net revenue develop per top-level product category and Quarter,
--- and which category carries the highest Discount share?
+-- How does net revenue as well as Discounts develop per top-level product category and Quarter?
 -- Dimensions: DIM_Date, DIM_Product
 -- =============================================================================
 
