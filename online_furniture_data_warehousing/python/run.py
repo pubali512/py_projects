@@ -9,6 +9,7 @@ Options presented interactively:
     2. Run ETL pipeline      (DWH only -- reads existing Business DB, read-only)
     3. Full pipeline         (generate + ETL in one step)
     4. Execute an analytical query (Q1-Q8)
+    5. Generate demo delta   (new suppliers/products/customers/orders + SCD 2 address changes)
 """
 
 import pathlib
@@ -19,6 +20,7 @@ import sys
 
 from db import connect
 from data_gen.generate_data import main as gen_main
+from data_gen.generate_incremental_data import main as delta_main
 from etl.run_all_etl import run_all_etl as etl_main
 
 ROOT      = pathlib.Path(__file__).parent.parent
@@ -230,6 +232,21 @@ def option_query() -> None:
 
 
 # =============================================================================
+# Option 5 -- Generate demo incremental data
+# =============================================================================
+
+def option_delta() -> None:
+    """Add 2 suppliers, 2 products, 10 customers, 100 orders, and change 5 addresses."""
+    db_path = ROOT / "data" / "furniture.db"
+    if not db_path.exists():
+        print("\n  Business DB not found. Run option 1 or 3 first to generate source data.")
+        return
+    print("  Generating incremental demo data ...")
+    delta_main()
+    print("\n  Delta applied. Re-run option 2 (ETL) to load changes into the DWH.")
+
+
+# =============================================================================
 # Main loop
 # =============================================================================
 
@@ -245,6 +262,7 @@ MAIN_MENU = """
     2  Run ETL pipeline               (DWH only -- requires Business DB)
     3  Full pipeline: generate + ETL  (start from scratch)
     4  Execute an analytical query
+    5  Generate demo delta            (new data + SCD 2 address changes)
     q  Quit
 """
 
@@ -262,6 +280,8 @@ def main() -> None:
             option_full_pipeline()
         elif choice == "4":
             option_query()
+        elif choice == "5":
+            option_delta()
         elif choice in ("q", "quit", "exit"):
             print("\n  Goodbye.\n")
             break
