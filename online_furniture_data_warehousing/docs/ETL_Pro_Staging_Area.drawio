@@ -4,30 +4,30 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;fontStyle=1" value="ETL-Prozess mit relationaler Staging Area" vertex="1">
-          <mxGeometry height="40" width="920" x="210" y="20" as="geometry" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;fontStyle=1" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;ETL-Process with Staging Area&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="500" x="390" y="80" as="geometry" />
         </mxCell>
         <mxCell id="extract" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13" value="&lt;b&gt;EXTRACT&lt;/b&gt;&lt;br&gt;Select data&lt;div&gt;(Full Load)&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="95" width="189" x="85.5" y="344" as="geometry" />
+          <mxGeometry height="95" width="189" x="85.5" y="218" as="geometry" />
         </mxCell>
         <mxCell id="raw" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13" value="&lt;b&gt;STAGING – RAW Schema&lt;/b&gt;&lt;br&gt;Raw data unchanged&amp;nbsp;&lt;div&gt;(Direct copy from source)&lt;br&gt;&lt;br&gt;RAW_staging tables&lt;br&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;etl_extract.py&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="150" width="200" x="300" y="316.5" as="geometry" />
+          <mxGeometry height="150" width="200" x="300" y="190.5" as="geometry" />
         </mxCell>
         <mxCell id="transform" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13" value="&lt;b&gt;TRANSFORM&lt;/b&gt;&lt;br&gt;Cleaning &amp;amp; enriching&lt;div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;b&gt;Key transformation&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;• PLZ region/zone derivation&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;• Category hierarchy flattening&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;• GrossAmount computation&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;• DiscountAmount computation&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;• NetAmount computation&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="165" width="250" x="530" y="309" as="geometry" />
+          <mxGeometry height="165" width="250" x="530" y="183" as="geometry" />
         </mxCell>
         <mxCell id="full" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13" value="&lt;b&gt;STAGING – FULL Schema&lt;/b&gt;&lt;br&gt;Cleaned &amp;amp; transformed data&lt;br&gt;&lt;br&gt;FULL_staging tables&lt;br&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;etl_transform.py&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;sql/transform/*.sq&lt;/font&gt;l&lt;/div&gt;" vertex="1">
-          <mxGeometry height="150" width="200" x="820" y="316.5" as="geometry" />
+          <mxGeometry height="150" width="200" x="820" y="190.5" as="geometry" />
         </mxCell>
         <mxCell id="load" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13" value="&lt;b&gt;LOAD&lt;/b&gt;&lt;br&gt;Load data in to the target system&lt;div&gt;DIM* + FACT_Sales&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;etl_dim_*.py&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;etl_fact_sales.py&lt;/font&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="80" width="260" x="1060" y="351.5" as="geometry" />
+          <mxGeometry height="80" width="260" x="1060" y="225.5" as="geometry" />
         </mxCell>
         <mxCell id="target" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13" value="&lt;b&gt;Target system&lt;/b&gt;&lt;br&gt;DWH&amp;nbsp;" vertex="1">
-          <mxGeometry height="90" width="160" x="1110" y="182" as="geometry" />
+          <mxGeometry height="90" width="160" x="1110" y="56" as="geometry" />
         </mxCell>
         <mxCell id="e1" edge="1" parent="1" source="yrxr2ll43HHvjlOYcHyi-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="extract">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="240" y="239" as="sourcePoint" />
+            <mxPoint x="240" y="113" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="e2" edge="1" parent="1" source="extract" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1" target="raw">
@@ -41,17 +41,17 @@
         </mxCell>
         <mxCell id="e9" edge="1" parent="1" source="full" style="rounded=0;html=1;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="load">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1070" y="450" as="targetPoint" />
+            <mxPoint x="1070" y="324" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="e10" edge="1" parent="1" source="load" style="rounded=0;html=1;endArrow=block;endFill=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="target">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1320" y="650" as="sourcePoint" />
-            <mxPoint x="1400" y="584" as="targetPoint" />
+            <mxPoint x="1320" y="524" as="sourcePoint" />
+            <mxPoint x="1400" y="458" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="yrxr2ll43HHvjlOYcHyi-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14" value="&lt;b&gt;Source System&lt;/b&gt;&lt;br&gt;Business DB" vertex="1">
-          <mxGeometry height="90" width="180" x="90" y="182" as="geometry" />
+          <mxGeometry height="90" width="180" x="90" y="56" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
