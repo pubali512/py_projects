@@ -422,7 +422,67 @@ SQL scripts in `sql/transform/`.
 
 ## 5. Storage Calculation
 
-### 5.1 Business DB — Per-Column Analysis
+### 5.0 Methodology
+
+**STRING (TEXT) storage in SQLite**
+
+SQLite stores TEXT values using its internal record format. Each TEXT field occupies:
+
+```
+bytes_stored = len(string_in_utf8) + varint_bytes_for_type_code
+```
+
+- The string content is stored verbatim in UTF-8 (1 byte per ASCII character; 2-4 bytes for non-ASCII)
+- A 1–2 byte *serial type code* is prepended in the row header to encode both the type (TEXT) and the length: code = `2 × n + 13` where n is the byte length. For strings up to ~120 characters, this code fits in 1 byte (varint encoding); for 121–240 characters it takes 2 bytes.
+- Practical approximation used in the table below: **avg_chars + 2 bytes** (1 byte type code + 1 byte alignment margin).
+
+**INTEGER and REAL storage**
+
+| SQLite type | Storage | Notes |
+|---|---|---|
+| `INTEGER` (autoincrement PK or FK) | 4–8 bytes | SQLite stores integers in the minimum needed bytes (1–8). For IDs up to ~2 billion: 4 bytes. For safety we use **8 bytes**. |
+| `REAL` | Always 8 bytes | IEEE 754 double-precision float |
+| `INTEGER NULL` | 0 bytes (if NULL) or 4–8 bytes | NULL is encoded as serial type 0 (zero bytes). Average ~4 bytes assumed for nullable integers. |
+
+**Row overhead (8 bytes)**
+
+Every SQLite row includes a *record header* stored inside the B-tree cell:
+- 1 byte: total header length (varint)
+- 1 byte per column: serial type code (varint, ~1 byte for our column sizes)
+- For a table with 7 columns: ~8 bytes header total
+
+Additionally, each B-tree cell has a ~2-byte entry in the cell pointer array per page. At 4 096 bytes per page and ~60 bytes per row, about 68 rows fit per page, giving ~0.03 bytes/row overhead from cell pointers. This is folded into the 8-byte estimate.
+
+**Conclusion**: the 8-byte overhead approximates the record-header cost for a typical row in our schema (5–9 columns).
+
+### Comparison: Microsoft SQL Server storage
+
+SQL Server uses a different on-disk format. Key differences relevant to this schema:
+
+| Aspect | SQLite | SQL Server |
+|---|---|---|
+| **Integer** | 1–8 bytes (varint) | `INT` = 4 bytes, `BIGINT` = 8 bytes (fixed) |
+| **Float** | 8 bytes | `FLOAT(53)` = 8 bytes, `DECIMAL(p,s)` = 5–17 bytes |
+| **String** | `TEXT`: UTF-8, variable | `VARCHAR(n)`: 2-byte length prefix + actual bytes; `NVARCHAR(n)`: 2-byte length + UCS-2 (2 bytes/char) |
+| **Row header** | ~8 bytes (varint header) | ~7–10 bytes (status bits, null bitmap, variable-col count) |
+| **NULL storage** | 0 bytes (type code 0) | Stored in a null bitmap (1 bit per nullable column, rounded to bytes) |
+| **Page size** | 4 KB (SQLite default) | 8 KB (SQL Server default) |
+
+**Practical impact on this schema:**
+
+For columns like `SupplierName` (avg 20 chars):
+- SQLite: 20 bytes (UTF-8) + 1 byte type code = ~21 bytes
+- SQL Server `VARCHAR(100)`: 20 bytes + 2-byte length prefix = **22 bytes** (similar)
+- SQL Server `NVARCHAR(100)`: 40 bytes (UCS-2) + 2-byte length prefix = **42 bytes** (2× larger for Unicode)
+
+For primary keys (`INTEGER` in SQLite → typically `INT` or `BIGINT` in SQL Server):
+- SQLite `INTEGER` with ID ≤ 2 billion: 4 bytes (varint)
+- SQL Server `INT`: fixed **4 bytes** (slightly more predictable)
+- SQL Server `BIGINT`: fixed **8 bytes**
+
+**Estimated SQL Server size for the Business DB:** Using `VARCHAR` (not `NVARCHAR`) and `INT` for IDs, the total storage would be **similar to SQLite** (~7–9 MB for Business DB), since row sizes are comparable. Using `NVARCHAR` would roughly **double** the string storage, increasing Business DB to ~11–14 MB.
+
+---
 
 | Table | Column | Type | Bytes/row |
 |---|---|---|---|
