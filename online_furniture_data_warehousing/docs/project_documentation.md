@@ -561,17 +561,142 @@ With SQLite overhead (B-tree pages, indexes, free pages): **~9–10 MB**.
 
 All SQL in `sql/analytics/`. Run via `python python/run.py` → option 4.
 
-| ID | Question | Dimensions used |
-|---|---|---|
-| **Q1** | Revenue and Discount by category over time: *How does net revenue as well as Discounts develop per top-level product category and Quarter?* | DIM_Date, DIM_Product |
-| **Q2** | Top 10 PLZ zones by net revenue: *Which 10 postal code zones (first 2 digits of PLZ) generate the maximum net revenue?* | DIM_Customer |
-| **Q3** | Top 2 categories per federal state: *What are the two highest net revenue generating product categories per federal state?* | DIM_Customer, DIM_Product |
-| **Q4** | Peak order volume by weekday: *Which weekdays see the highest order volume across the two-year period?* | DIM_Date |
-| **Q5** | Peak calendar weeks (Top 10): *Which calendar weeks see the highest order volume?* | DIM_Date |
-| **Q6** | Revenue by price segment: *How does revenue compare across Budget / Mid-range / Premium product segments?* | DIM_Product |
-| **Q7** | Federal state revenue growth: *Which federal states show the strongest revenue growth from 2024 to 2025?* | DIM_Customer, DIM_Date |
-| **Q8** | Top 3 suppliers per quarter: *Which 3 suppliers generate the most net revenue per Quarter?* | DIM_Supplier, DIM_Date |
-| **Q9** | Supplier Discount behaviour: *Which suppliers' products carry the highest average Discount rate, and does that correlate with order volume?* | DIM_Supplier |
+---
+
+### Q1 — Revenue and Discount by Category over Time
+
+**Question:** How does net revenue as well as Discounts develop per top-level product category and Quarter?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/01_Q1_revenue_category.sql` |
+| **Dimensions** | `DIM_Date`, `DIM_Product` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Date` (on `DateSk`), `FACT_Sales` ⟶ `DIM_Product` (on `ProductSk`) |
+| **GROUP BY** | `TopCategoryName, Year, Quarter` |
+| **Output columns** | `TopCategoryName`, `Year`, `Quarter`, `net_revenue`, `gross_revenue`, `total_discount`, `discount_share_pct` |
+| **Key technique** | `NULLIF(SUM(GrossAmount), 0)` prevents division-by-zero in discount share calculation |
+
+---
+
+### Q2 — Top 10 PLZ Zones by Net Revenue
+
+**Question:** Which 10 postal code zones (first 2 digits of PLZ) generate the maximum net revenue?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/02_Q2_top_plz_zones.sql` |
+| **Dimensions** | `DIM_Customer` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Customer` (on `CustomerSk`, `WHERE IsCurrent=1`) |
+| **GROUP BY** | `PlzZone` (first 2 digits of PostalCode, ~83 zones) |
+| **Output columns** | `PlzZone`, `order_count`, `total_net_revenue` |
+| **Key technique** | `COUNT(DISTINCT OrderId)` for order count; `LIMIT 10` for top 10 |
+
+---
+
+### Q3 — Top 2 Categories per Federal State
+
+**Question:** What are the two highest net revenue generating product categories per federal state?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/03_Q3_top_categories_per_state.sql` |
+| **Dimensions** | `DIM_Customer`, `DIM_Product` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Customer` (IsCurrent=1), `FACT_Sales` ⟶ `DIM_Product` |
+| **GROUP BY** | `FederalState, TopCategoryName` (inner CTE) |
+| **Output columns** | `FederalState`, `TopCategoryName`, `net_revenue` |
+| **Key technique** | **CTE + Window function**: `RANK() OVER (PARTITION BY FederalState ORDER BY net_revenue DESC)` → filter `WHERE rnk <= 2` |
+
+---
+
+### Q4 — Peak Order Volume by Weekday
+
+**Question:** Which weekdays see the highest order volume across the two-year period?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/04_Q4_peak_weekday.sql` |
+| **Dimensions** | `DIM_Date` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Date` (on `DateSk`) |
+| **GROUP BY** | `Weekday, WeekdayName` (0=Monday … 6=Sunday) |
+| **Output columns** | `WeekdayName`, `Weekday`, `order_count`, `total_units`, `net_revenue` |
+| **Key technique** | `COUNT(DISTINCT OrderId)` for order count (not line count) |
+
+---
+
+### Q5 — Peak Calendar Weeks (Top 10)
+
+**Question:** Which calendar weeks see the highest order volume?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/05_Q5_peak_calendar_week.sql` |
+| **Dimensions** | `DIM_Date` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Date` (on `DateSk`) |
+| **GROUP BY** | `Year, CalendarWeek` |
+| **Output columns** | `Year`, `CalendarWeek`, `order_count`, `net_revenue` |
+| **Key technique** | `LIMIT 10` after `ORDER BY order_count DESC` |
+
+---
+
+### Q6 — Revenue by Product Price Segment
+
+**Question:** How does revenue compare across Budget / Mid-range / Premium product price segments?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/06_Q6_price_segment.sql` |
+| **Dimensions** | `DIM_Product` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Product` (on `ProductSk`) |
+| **GROUP BY** | `price_segment` (derived via `CASE WHEN` on `ListPrice`) |
+| **Output columns** | `price_segment`, `order_line_count`, `total_units_sold`, `net_revenue`, `discount_share_pct` |
+| **Key technique** | `CASE WHEN ListPrice < 200 THEN 'Budget' WHEN < 800 THEN 'Mid-range' ELSE 'Premium'` |
+
+---
+
+### Q7 — Federal State Revenue Growth 2024 → 2025
+
+**Question:** Which federal states show the strongest revenue growth from 2024 to 2025?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/07_Q7_state_growth.sql` |
+| **Dimensions** | `DIM_Customer`, `DIM_Date` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Customer` (IsCurrent=1), `FACT_Sales` ⟶ `DIM_Date` |
+| **GROUP BY** | `FederalState, Year` (inner CTE) |
+| **Output columns** | `FederalState`, `revenue_2024`, `revenue_2025`, `growth_pct` |
+| **Key technique** | **Self-join CTE**: `yearly y1 JOIN yearly y2 ON y1.FederalState=y2.FederalState AND y1.Year=2024 AND y2.Year=2025` |
+
+---
+
+### Q8 — Top 3 Suppliers by Net Revenue per Quarter
+
+**Question:** Which 3 suppliers generate the most net revenue per Quarter?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/08_Q8_top3_suppliers_per_quarter.sql` |
+| **Dimensions** | `DIM_Supplier`, `DIM_Date` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Date` (on `DateSk`), `FACT_Sales` ⟶ `DIM_Supplier` (on `SupplierSk`) |
+| **GROUP BY** | `Year, Quarter, SupplierName` (inner CTE) |
+| **Output columns** | `Year`, `Quarter`, `SupplierName`, `net_revenue`, `rank_in_quarter` |
+| **Key technique** | **CTE + Window function**: `RANK() OVER (PARTITION BY Year, Quarter ORDER BY SUM(NetAmount) DESC)` → filter `WHERE rnk <= 3` |
+
+---
+
+### Q9 — Supplier Discount Behaviour vs. Order Volume
+
+**Question:** Which suppliers' products carry the highest average Discount rate, and does that correlate with order volume?
+
+| Attribute | Detail |
+|---|---|
+| **File** | `sql/analytics/09_Q9_supplier_discount_volume.sql` |
+| **Dimensions** | `DIM_Supplier` |
+| **Joins** | `FACT_Sales` ⟶ `DIM_Supplier` (on `SupplierSk`) |
+| **GROUP BY** | `SupplierName` |
+| **Output columns** | `SupplierName`, `order_line_count`, `total_units_sold`, `total_net_revenue`, `avg_discount_pct`, `avg_revenue_per_line` |
+| **Key technique** | `NULLIF` guards in both discount and revenue-per-line calculations |
+
+---
 
 **Mandatory for submission:** Q1, Q2, Q3.
 

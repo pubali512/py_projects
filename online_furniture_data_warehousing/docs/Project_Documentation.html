@@ -237,10 +237,16 @@
   <!-- 1. MOTIVATION & BACKGROUND -->
   <h2>1. MOTIVATION & BACKGROUND</h2>
   <p>
-    A German online furniture retailer (comparable to home24) sells furniture and home accessories to private customers throughout Germany. The operational shop database is designed exclusively for processing individual transactional orders answering <em>"what is in order 41725?"</em> quickly. However, it cannot efficiently answer high-level analytical queries such as <em>"how did revenue per product category develop over the last two years?"</em> without executing expensive joins and aggregations across the live transactional system.
+    A German online furniture retailer (comparable to home24) sells furniture and home accessories to private customers 
+    throughout Germany. The operational shop database is designed exclusively for processing individual transactional
+     orders answering <em>"what is in order 41725?"</em> quickly. However, it cannot efficiently answer high-level 
+     analytical queries such as <em>"how did revenue per product category develop over the last two years?"</em>
+      without executing expensive joins and aggregations across the live transactional system.
   </p>
+
   <p>
-    This project builds a compact yet complete data warehouse solution for the retailer: a normalized operational source database, a dimensional target model, and a Python-based ETL process connecting the two systems.
+    This project builds a compact yet complete data warehouse solution for the retailer: a normalized operational 
+    source database, a dimensional target model, and a Python-based ETL process connecting the two systems.
   </p>
 
   <!-- 2. PROJECT OBJECTIVES -->
@@ -265,16 +271,29 @@
   </div>
 
   <!-- 3. SCOPE & OPERATIONAL ENTITIES -->
-  <h2>3. SCOPE & OPERATIONAL ENTITIES</h2>
-  <p>The primary domain covers the order-taking process: a customer places an order containing one or more order lines, each referencing a specific product assigned to a category.</p>
+  <h2>3. BUSINESS DB DESIGN</h2>
+
+  <h3>3.1 ERM DESIGN</h3>
+  
+  <ul>
+    <li>The primary domain covers the order-taking process: a customer (entity <em>Customer</em>) places an order (entity <em>OrderHeader</em>) 
+      containing one or more order lines (entity <em>OrderLine</em>). 
+    <li>Each order line is associated with the sale of a specific product (entity <em>Product</em>) in a certain quantity. 
+      Each product might be discounted for a specific order (e.g., due to a promotional campaign).</li>
+    <li>Each product is assigned to a category (e.g., Sofa, Tisch etc.). A category might be associated with a parent 
+      category (e.g., Sofa is associated with the parent category <em>Wohnzimmer</em>).</li>
+    <li>Each product is supplied by a specific supplier (entity <em>Supplier</em>).</li>
+  </ul>
+
+  <p>The corresponding ERM diagram is shown below:</p>
   <!-- INSERTING ER-DIAGRAM IMAGE -->
   <div class="diagram-container">
     <img src="ER_Diagram_Business_DB_prsntn.png" alt="ER-Diagram: Business DB">
-    <div class="diagram-caption">Figure 1.1 — ER-Diagram: Business DB</div>
+    <div class="diagram-caption">Figure 1 — ER-Diagram: Business DB</div>
   </div>
 
     <!-- 7. RELATIONAL SCHEMA REFERENCE -->
-  <h2>7. RELATIONAL SCHEMA (with Data Types)</h2>
+  <h3>3.2 RELATIONAL SCHEMA (with Data Types)</h3>
   <pre>
 Supplier(
   SupplierId    INTEGER   PK  AUTOINCREMENT,
@@ -329,40 +348,8 @@ OrderLine(
 )
   </pre>
 
-  <table>
-    <thead>
-      <tr>
-        <th style="width: 25%;">Entity</th>
-        <th style="width: 75%;">Content & Attributes</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Customer</strong></td>
-        <td>Name, e-mail, street address, postal code, city, federal state, customer since date.</td>
-      </tr>
-      <tr>
-        <td><strong>OrderHeader</strong></td>
-        <td>Order date, payment method, shipping cost, reference to customer.</td>
-      </tr>
-      <tr>
-        <td><strong>OrderLine</strong></td>
-        <td>Quantity, unit price, discount percentage; references to order header and product.</td>
-      </tr>
-      <tr>
-        <td><strong>Product</strong></td>
-        <td>Product name, list price, colour, material, references to category and supplier.</td>
-      </tr>
-      <tr>
-        <td><strong>Category</strong></td>
-        <td>Category name and optional parent category (representing a two-level hierarchy).</td>
-      </tr>
-      <tr>
-        <td><strong>Supplier</strong></td>
-        <td>Supplier name, city, and country (10 German + 10 neighbouring suppliers).</td>
-      </tr>
-    </tbody>
-  </table>
+
+  <h3>3.3 NORMAL FORM VERIFICATION</h3>
   <!-- Table 1.3: Normal Form Verification -->
   <table>
     <thead>
@@ -380,18 +367,38 @@ OrderLine(
       </tr>
       <tr>
         <td><strong>2NF</strong></td>
-        <td>No partial dependencies (all PKs are surrogates — no composite PK)</td>
+        <td>No partial dependencies (all PKs are surrogates - no composite PK)</td>
         <td>✅</td>
       </tr>
       <tr>
         <td><strong>3NF</strong></td>
-        <td><code>PostalCode → City</code>? No — City stored independently. <code>UnitPrice ≠ ListPrice</code> (dynamic pricing). Category attributes separated.</td>
+        <td><em>PostalCode</em> is not derived from <em>City</em>. City is stored independently. <em>UnitPrice != ListPrice</em> (dynamic pricing is considered). Category attributes separated.</td>>
         <td>✅</td>
       </tr>
     </tbody>
   </table> 
   
-    <!-- Table 1.4: Synthetic Data Generation -->
+  
+  <h3>3.4 SYNTHETIC DATA GENERATION</h3>
+
+  <ul>
+    <li>Suitable data for a suitable business DB was not available from real sources. Business data was generated 
+      synthetically. 
+    </li>
+    <li>
+      The python <em>faker</em> module was used for generating realistic customer names and addresses. Because faker generates PLZ and cities indepdently, faker generated PLZ/city associations are not correct. Therefore, 
+      a separate script was used to generate correct PLZ/city associations for 75 cities (city list suggested by AI). This was 
+      necessary because analytical questions can be modelled on PLZ/City association.
+    </li>
+    <li>Faker generated street names do match cities - but it is not important because no street level analytics are considered.</li>
+    <li>Product, category and supplier name tables were generated using AI suggestions.</li>
+  
+  </ul>
+
+  The data is generated and imported into the SQLite3 database using a python script. Summary of the generated data 
+  is presented in the table below: 
+
+  <!-- Table 1.4: Synthetic Data Generation -->
   <table>
     <thead>
       <tr>
@@ -414,12 +421,12 @@ OrderLine(
       <tr>
         <td>Product</td>
         <td>120</td>
-        <td>Templates × adjectives; price €50–€2,500 random</td>
+        <td>Name generated using Templates (e.g., Sofa) + adjectives (e.g., Classic ); price 50€–2,500€ random</td>
       </tr>
       <tr>
         <td>Customer</td>
         <td>5,000</td>
-        <td>Faker <code>de_DE</code>; Email derived from name; PLZ/City from curated CSV</td>
+        <td>Faker <code>de_DE</code>; Email derived from name; PLZ/City generated using a simple algorithm for 75 cities</td>
       </tr>
       <tr>
         <td>OrderHeader</td>
@@ -429,17 +436,29 @@ OrderLine(
       <tr>
         <td>OrderLine</td>
         <td>~85,500</td>
-        <td>1–5 lines/order; UnitPrice = ListPrice ±10%; 80% zero Discount</td>
+        <td>1-5 lines/order; UnitPrice = ListPrice ± 10%; 80% zero Discount (random generation)</td>
       </tr>
     </tbody>
   </table>
 
-  <h3>Normal Form Verification & Data Generation Summary</h3>
-  <ul>
-    <li><strong>3NF Integrity:</strong> Atomic fields (1NF), surrogate primary keys preventing partial dependencies (2NF), and zero transitive dependencies (3NF).</li>
-    <li><strong>Synthetic Data:</strong> Generated via Python Faker + real OpenPLZ API mapping (1,150 real German PLZ codes for 75 cities) ensuring geographic accuracy.</li>
-    <li><strong>Data Volumes:</strong> 20 Suppliers | 15 Categories | 120 Products | 5,000 Customers | 30,000 Order Headers | ~85,500 Order Lines.</li>
-  </ul>
+<h3>3.5 STORAGE ANALYSIS</h3>
+
+Storage analysis was carried out for SQLite3 database. Following assumptions were made (some of the values were suggested by AI - proper SQ Lite documentation was not found):
+<ul>
+  <li> 
+    8 bytes per INTEGER column
+  </li>
+  <li>
+    8 bytes overhead per row (This was suggested by AI - could not find a value in SQLite documentation)
+  </li>
+  <li>
+    For customer name, e-mail and address fields the average length (in bytes) was taken for one data generation instance.
+    With each new run of the data generation process, these average lengths may vary slightly (and the DB storage will 
+    also vary).
+  </li>
+
+</ul>
+
 
   <!-- Table 1: Business DB — Per-Column Analysis -->
 <table>
@@ -485,7 +504,7 @@ OrderLine(
       <td>20 rows = <strong>1.3 KB</strong></td>
     </tr>
     <tr>
-      <td rowspan="5">Category</td>
+      <td rowspan="4">Category</td>
       <td>CategoryId</td>
       <td>INTEGER</td>
       <td>8</td>
@@ -512,7 +531,7 @@ OrderLine(
       <td>15 rows = <strong>0.6 KB</strong></td>
     </tr>
     <tr>
-      <td rowspan="9">Product</td>
+      <td rowspan="8">Product</td>
       <td>ProductId</td>
       <td>INTEGER</td>
       <td>8</td>
@@ -559,7 +578,7 @@ OrderLine(
       <td>120 rows = <strong>10 KB</strong></td>
     </tr>
     <tr>
-      <td rowspan="11">Customer</td>
+      <td rowspan="10">Customer</td>
       <td>CustomerId</td>
       <td>INTEGER</td>
       <td>8</td>
@@ -616,7 +635,7 @@ OrderLine(
       <td>5,000 rows = <strong>720 KB</strong></td>
     </tr>
     <tr>
-      <td rowspan="7">OrderHeader</td>
+      <td rowspan="6">OrderHeader</td>
       <td>OrderId</td>
       <td>INTEGER</td>
       <td>8</td>
@@ -653,7 +672,7 @@ OrderLine(
       <td>30,000 rows = <strong>1.7 MB</strong></td>
     </tr>
     <tr>
-      <td rowspan="8">OrderLine</td>
+      <td rowspan="7">OrderLine</td>
       <td>OrderLineId</td>
       <td>INTEGER</td>
       <td>8</td>
@@ -749,73 +768,6 @@ OrderLine(
       <td></td>
       <td></td>
       <td><strong>~7.1 MB</strong></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- Table 3:DWH + Staging (additional) -->
-<table>
-  <thead>
-    <tr>
-      <th>Layer</th>
-      <th>Approx.</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>DWH dimensions + FACT_Sales</td>
-      <td>~8 MB</td>
-    </tr>
-    <tr>
-      <td>RAW_ + FULL_ staging</td>
-      <td>~12 MB</td>
-    </tr>
-    <tr>
-      <td><strong>Total combined DB</strong></td>
-      <td><strong>~29–30 MB</strong></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- Table 1.4: Synthetic Data Generation -->
-<table>
-  <thead>
-    <tr>
-      <th>Entity</th>
-      <th>Count</th>
-      <th>Method</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Supplier</td>
-      <td>20</td>
-      <td>Hardcoded (10 Germany, 10 neighboring countries)</td>
-    </tr>
-    <tr>
-      <td>Category</td>
-      <td>15</td>
-      <td>5 top-level + 10 sub-categories (hardcoded tree)</td>
-    </tr>
-    <tr>
-      <td>Product</td>
-      <td>120</td>
-      <td>Templates × adjectives; price €50–€2,500 random</td>
-    </tr>
-    <tr>
-      <td>Customer</td>
-      <td>5,000</td>
-      <td>Faker <code>de_DE</code>; Email derived from name; PLZ/City from curated CSV</td>
-    </tr>
-    <tr>
-      <td>OrderHeader</td>
-      <td>30,000</td>
-      <td>Random dates 2024-01-01 to 2025-12-31; weighted payment methods</td>
-    </tr>
-    <tr>
-      <td>OrderLine</td>
-      <td>~85,500</td>
-      <td>1–5 lines/order; UnitPrice = ListPrice ±10%; 80% zero Discount</td>
     </tr>
   </tbody>
 </table>
