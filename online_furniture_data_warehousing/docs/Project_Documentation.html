@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Specification & Architecture — Online Furniture Data Warehouse</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 20mm 15mm 20mm 15mm;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.5;
+      color: #334155;
+      background-color: #ffffff;
+      padding: 2.5rem 3rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* --- Dark Header Banner --- */
+    .header-card {
+      background-color: #0d1322;
+      border-radius: 10px;
+      padding: 24px 28px;
+      color: #ffffff;
+      margin-bottom: 24px;
+    }
+
+    .header-sub {
+      font-size: 8.5pt;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .header-title {
+      font-size: 18pt;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .header-desc {
+      font-size: 9.5pt;
+      color: #cbd5e1;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    /* --- Section Headings with Blue Underline --- */
+    h2 {
+      font-size: 11pt;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 3px solid #2563eb;
+    }
+
+    h3 {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 6px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #334155;
+      text-align: justify;
+    }
+
+    /* --- Cards Grid Layout --- */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .card p {
+      margin-bottom: 0;
+      font-size: 9pt;
+      color: #475569;
+      text-align: left;
+    }
+
+    /* --- Tables --- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      margin-bottom: 18px;
+      font-size: 9pt;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      text-align: left;
+      padding: 8px 10px;
+      border-top: 1px solid #cbd5e1;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: top;
+      color: #334155;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 12px;
+      color: #334155;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    /* --- Code Blocks --- */
+    pre, code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 8.5pt;
+    }
+
+    pre {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      overflow-x: auto;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      line-height: 1.4;
+      color: #0f172a;
+    }
+
+    code {
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    /* --- Footer --- */
+    .doc-footer {
+      margin-top: 36px;
+      padding-top: 10px;
+      border-top: 1px solid #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8pt;
+      color: #64748b;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dark Banner Header -->
+  <div class="header-card">
+    <div class="header-sub">SYSTEM SPECIFICATION & ARCHITECTURE</div>
+    <div class="header-title">Data Warehouse Solution for Online Furniture Retailer<br>(Online Möbelhandel)</div>
+    <div class="header-desc">
+      End-to-End Implementation of an Operational Business DB, Dimensional Star Schema, and ETL Pipeline
+    </div>
+  </div>
+
+  <!-- 1. MOTIVATION & BACKGROUND -->
+  <h2>1. MOTIVATION & BACKGROUND</h2>
+  <p>
+    A German online furniture retailer (comparable to home24) sells furniture and home accessories to private customers throughout Germany. The operational shop database is designed exclusively for processing individual transactional orders answering <em>"what is in order 41725?"</em> quickly. However, it cannot efficiently answer high-level analytical queries such as <em>"how did revenue per product category develop over the last two years?"</em> without executing expensive joins and aggregations across the live transactional system.
+  </p>
+  <p>
+    This project builds a compact yet complete data warehouse solution for the retailer: a normalized operational source database, a dimensional target model, and a Python-based ETL process connecting the two systems.
+  </p>
+
+  <!-- 2. PROJECT OBJECTIVES -->
+  <h2>2. PROJECT OBJECTIVES</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>1. Operational Source (Business DB)</h3>
+      <p>Design and implement a relational database in 3NF representing the shop's order-taking process.</p>
+    </div>
+    <div class="card">
+      <h3>2. Target Data Warehouse</h3>
+      <p>Design a Star Schema dimensional model and implement an automated ETL pipeline in Python to transform and load transactional data.</p>
+    </div>
+    <div class="card">
+      <h3>3. Slowly Changing Dimensions (SCD)</h3>
+      <p>Analyze dimension attribute behavior and demonstrate precise handling of SCD Types 0, 1, and 2.</p>
+    </div>
+    <div class="card">
+      <h3>4. Business Intelligence & Analytics</h3>
+      <p>Formulate and execute analytical SQL queries against the warehouse to deliver key operational insights.</p>
+    </div>
+  </div>
+
+  <!-- 3. SCOPE & OPERATIONAL ENTITIES -->
+  <h2>3. SCOPE & OPERATIONAL ENTITIES</h2>
+  <p>The primary domain covers the order-taking process: a customer places an order containing one or more order lines, each referencing a specific product assigned to a category.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Entity</th>
+        <th style="width: 75%;">Content & Attributes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Customer</strong></td>
+        <td>Name, e-mail, street address, postal code, city, federal state, customer since date.</td>
+      </tr>
+      <tr>
+        <td><strong>OrderHeader</strong></td>
+        <td>Order date, payment method, shipping cost, reference to customer.</td>
+      </tr>
+      <tr>
+        <td><strong>OrderLine</strong></td>
+        <td>Quantity, unit price, discount percentage; references to order header and product.</td>
+      </tr>
+      <tr>
+        <td><strong>Product</strong></td>
+        <td>Product name, list price, colour, material, references to category and supplier.</td>
+      </tr>
+      <tr>
+        <td><strong>Category</strong></td>
+        <td>Category name and optional parent category (representing a two-level hierarchy).</td>
+      </tr>
+      <tr>
+        <td><strong>Supplier</strong></td>
+        <td>Supplier name, city, and country (10 German + 10 neighbouring suppliers).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Normal Form Verification & Data Generation Summary</h3>
+  <ul>
+    <li><strong>3NF Integrity:</strong> Atomic fields (1NF), surrogate primary keys preventing partial dependencies (2NF), and zero transitive dependencies (3NF).</li>
+    <li><strong>Synthetic Data:</strong> Generated via Python Faker + real OpenPLZ API mapping (1,150 real German PLZ codes for 75 cities) ensuring geographic accuracy.</li>
+    <li><strong>Data Volumes:</strong> 20 Suppliers | 15 Categories | 120 Products | 5,000 Customers | 30,000 Order Headers | ~85,500 Order Lines.</li>
+  </ul>
+
+  <div class="page-break"></div>
+
+  <!-- 4. CORE ANALYTICAL QUESTIONS -->
+  <h2>4. CORE ANALYTICAL QUESTIONS</h2>
+  <p>The dimensional warehouse is specifically designed to evaluate two core business queries alongside supplemental extensions:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 30%;">Question</th>
+        <th style="width: 70%;">Business Description & Dimensions Required</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Question 1<br>Revenue & Discount by Category</strong></td>
+        <td>How does net revenue develop per top-level product category and quarter, and which category carries the highest discount share?<br><em>Requires DIM_Date and DIM_Product.</em></td>
+      </tr>
+      <tr>
+        <td><strong>Question 2<br>Regional Order Value</strong></td>
+        <td>Which postal code regions generate the highest average order value, and does the product category mix differ between them?<br><em>Requires DIM_Customer and DIM_Product.</em></td>
+      </tr>
+      <tr>
+        <td><strong>Q3 – Q9<br>Analytical Extensions</strong></td>
+        <td>Includes peak order volume by weekday/calendar week, top 2 categories per state, revenue growth per state (2024–2025), and supplier discount behaviour.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 5. TARGET WAREHOUSE SCHEMA -->
+  <h2>5. TARGET WAREHOUSE SCHEMA</h2>
+  <p>A star schema layout where the grain of the fact table is <strong>one row per order line</strong>.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 20%;">Table</th>
+        <th style="width: 15%;">Role</th>
+        <th style="width: 65%;">Content & Transformations</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>FACT_Sales</strong></td>
+        <td>Fact Table</td>
+        <td>Quantity, GrossAmount, DiscountAmount, NetAmount, ShippingCost. Uses OrderId as a degenerate dimension. (~85,500 rows)</td>
+      </tr>
+      <tr>
+        <td><strong>DIM_Date</strong></td>
+        <td>Dimension (SCD 0)</td>
+        <td>Day, month, month name, quarter, year, weekday, calendar week. Derived from order date boundaries. (731 rows)</td>
+      </tr>
+      <tr>
+        <td><strong>DIM_Customer</strong></td>
+        <td>Dimension (SCD 2)</td>
+        <td>Name, address, postal code, city, state, plus derived <code>PlzRegion</code> (1 digit) and <code>PlzZone</code> (2 digits). Tracks history with <code>ValidFrom</code>, <code>ValidTo</code>, <code>IsCurrent</code>. (5,000 rows)</td>
+      </tr>
+      <tr>
+        <td><strong>DIM_Product</strong></td>
+        <td>Dimension (SCD 1)</td>
+        <td>Product name, colour, material, list price. Category hierarchy is flattened into top-level and sub-categories. Overwrites changes. (120 rows)</td>
+      </tr>
+      <tr>
+        <td><strong>DIM_Supplier</strong></td>
+        <td>Dimension (SCD 0)</td>
+        <td>Supplier name, city, country. Immutable baseline reference. (20 rows)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 6. ETL PROCESS & TRANSFORMATION LOGIC -->
+  <h2>6. ETL PROCESS & TRANSFORMATION LOGIC</h2>
+  <p>A 3-stage Python ETL pipeline extracts data from the Business DB, executes transformations, and loads the target star schema:</p>
+  <ul>
+    <li><strong>Surrogate Keys:</strong> Sequence-based primary keys (<code>*Sk</code>) for all dimensions, completely decoupled from source keys (<code>*Id</code>).</li>
+    <li><strong>Hierarchy Flattening:</strong> Unrolls two-level normalized category hierarchies directly into <code>DIM_Product</code>.</li>
+    <li><strong>Measure Calculations:</strong> Pre-computes <code>GrossAmount</code>, <code>DiscountAmount</code>, and <code>NetAmount</code> per fact row.</li>
+    <li><strong>Idempotent Execution:</strong> Executed via staged scripts (<code>RAW_</code> staging &rarr; <code>FULL_</code> staging &rarr; DWH tables).</li>
+  </ul>
+
+  <!-- 7. RELATIONAL SCHEMA REFERENCE -->
+  <h2>7. RELATIONAL SCHEMA REFERENCE (DDL STRUCTURE)</h2>
+  <pre>
+Supplier(SupplierId PK, SupplierName, City, Country)
+Category(CategoryId PK, CategoryName, ParentCategoryId FK -> Category)
+Product(ProductId PK, ProductName, ListPrice, Colour, Material, CategoryId FK, SupplierId FK)
+Customer(CustomerId PK, FirstName, LastName, Email, StreetAddress, PostalCode, City, FederalState, CustomerSince)
+OrderHeader(OrderId PK, OrderDate, PaymentMethod, ShippingCost, CustomerId FK)
+OrderLine(OrderLineId PK, Quantity, UnitPrice, Discount, OrderId FK, ProductId FK)
+  </pre>
+
+  <div class="doc-footer">
+    <span>Project Specification — Online Möbelhandel</span>
+    <span>Page 1 of 2</span>
+  </div>
+
+</body>
+</html>
