@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>System Specification & Architecture — Online Furniture Data Warehouse</title>
+  <title>System Specification & Architecture - Online Furniture Data Warehouse</title>
   <style>
     @page {
       size: A4 portrait;
       margin: 20mm 15mm 20mm 15mm;
     }
-    
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -139,7 +140,8 @@
       background-color: #f8fafc;
     }
 
-    ul, ol {
+    ul,
+    ol {
       margin-left: 20px;
       margin-bottom: 12px;
       color: #334155;
@@ -150,7 +152,8 @@
     }
 
     /* --- Code Blocks --- */
-    pre, code {
+    pre,
+    code {
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
       font-size: 8.5pt;
     }
@@ -176,29 +179,29 @@
 
     /* --- Image Styling --- */
     .diagram-container {
-        background-color: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 12px;
-        margin: 18px 0;
-        text-align: center;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        page-break-inside: avoid;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 18px 0;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      page-break-inside: avoid;
     }
 
     .diagram-container img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 4px;
-        display: block;
-        margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      display: block;
+      margin: 0 auto;
     }
 
     .diagram-caption {
-        font-size: 9pt;
-        color: var(--text-muted);
-        margin-top: 8px;
-        font-style: italic;
+      font-size: 9pt;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-style: italic;
     }
 
     /* --- Footer --- */
@@ -217,12 +220,14 @@
         padding: 0;
         max-width: 100%;
       }
+
       .page-break {
         page-break-before: always;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Dark Banner Header -->
@@ -237,15 +242,15 @@
   <!-- 1. MOTIVATION & BACKGROUND -->
   <h2>1. MOTIVATION & BACKGROUND</h2>
   <p>
-    A German online furniture retailer (comparable to home24) sells furniture and home accessories to private customers 
+    A German online furniture retailer (comparable to home24) sells furniture and home accessories to private customers
     throughout Germany. The operational shop database is designed exclusively for processing individual transactional
-     orders answering <em>"what is in order 41725?"</em> quickly. However, it cannot efficiently answer high-level 
-     analytical queries such as <em>"how did revenue per product category develop over the last two years?"</em>
-      without executing expensive joins and aggregations across the live transactional system.
+    orders answering <em>"what is in order 41725?"</em> quickly. However, it cannot efficiently answer high-level
+    analytical queries such as <em>"how did revenue per product category develop over the last two years?"</em>
+    without executing expensive joins and aggregations across the live database.
   </p>
 
   <p>
-    This project builds a compact yet complete data warehouse solution for the retailer: a normalized operational 
+    This project builds a compact yet complete data warehouse solution for the retailer: a normalized operational
     source database, a dimensional target model, and a Python-based ETL process connecting the two systems.
   </p>
 
@@ -258,7 +263,8 @@
     </div>
     <div class="card">
       <h3>2. Target Data Warehouse</h3>
-      <p>Design a Star Schema dimensional model and implement an automated ETL pipeline in Python to transform and load transactional data.</p>
+      <p>Design a Star Schema dimensional model and implement an automated ETL pipeline in Python to transform and load
+        transactional data.</p>
     </div>
     <div class="card">
       <h3>3. Slowly Changing Dimensions (SCD)</h3>
@@ -274,13 +280,15 @@
   <h2>3. BUSINESS DB DESIGN</h2>
 
   <h3>3.1 ERM DESIGN</h3>
-  
+
   <ul>
-    <li>The primary domain covers the order-taking process: a customer (entity <em>Customer</em>) places an order (entity <em>OrderHeader</em>) 
-      containing one or more order lines (entity <em>OrderLine</em>). 
-    <li>Each order line is associated with the sale of a specific product (entity <em>Product</em>) in a certain quantity. 
+    <li>The primary domain covers the order-taking process: a customer (entity <em>Customer</em>) places an order
+      (entity <em>OrderHeader</em>)
+      containing one or more order lines (entity <em>OrderLine</em>).
+    <li>Each order line is associated with the sale of a specific product (entity <em>Product</em>) in a certain
+      quantity.
       Each product might be discounted for a specific order (e.g., due to a promotional campaign).</li>
-    <li>Each product is assigned to a category (e.g., Sofa, Tisch etc.). A category might be associated with a parent 
+    <li>Each product is assigned to a category (e.g., Sofa, Tisch etc.). A category might be associated with a parent
       category (e.g., Sofa is associated with the parent category <em>Wohnzimmer</em>).</li>
     <li>Each product is supplied by a specific supplier (entity <em>Supplier</em>).</li>
   </ul>
@@ -289,10 +297,10 @@
   <!-- INSERTING ER-DIAGRAM IMAGE -->
   <div class="diagram-container">
     <img src="ER_Diagram_Business_DB_prsntn.png" alt="ER-Diagram: Business DB">
-    <div class="diagram-caption">Figure 1 — ER-Diagram: Business DB</div>
+    <div class="diagram-caption">Figure 1 - ER-Diagram: Business DB</div>
   </div>
 
-    <!-- 7. RELATIONAL SCHEMA REFERENCE -->
+  <!-- 7. RELATIONAL SCHEMA REFERENCE -->
   <h3>3.2 RELATIONAL SCHEMA (with Data Types)</h3>
   <pre>
 Supplier(
@@ -372,31 +380,35 @@ OrderLine(
       </tr>
       <tr>
         <td><strong>3NF</strong></td>
-        <td><em>PostalCode</em> is not derived from <em>City</em>. City is stored independently. <em>UnitPrice != ListPrice</em> (dynamic pricing is considered). Category attributes separated.</td>>
+        <td><em>PostalCode</em> (i.e., PLZ) is not derived from <em>City</em>. City is stored independently. <em>UnitPrice !=
+            ListPrice</em> (dynamic pricing is considered). Category attributes separated.</td>>
         <td>✅</td>
       </tr>
     </tbody>
-  </table> 
-  
-  
+  </table>
+
+
   <h3>3.4 SYNTHETIC DATA GENERATION</h3>
 
   <ul>
-    <li>Suitable data for a suitable business DB was not available from real sources. Business data was generated 
-      synthetically. 
+    <li>Real data for a suitable business DB was not available from real sources. Business data was generated
+      synthetically.
     </li>
     <li>
-      The python <em>faker</em> module was used for generating realistic customer names and addresses. Because faker generates PLZ and cities indepdently, faker generated PLZ/city associations are not correct. Therefore, 
-      a separate script was used to generate correct PLZ/city associations for 75 cities (city list suggested by AI). This was 
+      The python <em>faker</em> module was used for generating realistic customer names and addresses. Because faker
+      generates PLZ and cities independently, faker generated PLZ/city associations are not correct. Therefore,
+      a separate script was used to generate correct PLZ/city associations for 75 cities (city list suggested by AI).
+      This was
       necessary because analytical questions can be modelled on PLZ/City association.
     </li>
-    <li>Faker generated street names do match cities - but it is not important because no street level analytics are considered.</li>
+    <li>Faker generated street names do match cities - but it is not important because no street level analytics are
+      considered.</li>
     <li>Product, category and supplier name tables were generated using AI suggestions.</li>
-  
+
   </ul>
 
-  The data is generated and imported into the SQLite3 database using a python script. Summary of the generated data 
-  is presented in the table below: 
+  The data is generated and imported into the SQLite3 database using a python script. Summary of the generated data
+  is presented in the table below:
 
   <!-- Table 1.4: Synthetic Data Generation -->
   <table>
@@ -426,7 +438,8 @@ OrderLine(
       <tr>
         <td>Customer</td>
         <td>5,000</td>
-        <td>Faker <code>de_DE</code>; Email derived from name; PLZ/City generated using a simple algorithm for 75 cities</td>
+        <td>Faker <code>de_DE</code>; Email derived from name; PLZ/City generated using a simple algorithm for 75 cities
+        </td>
       </tr>
       <tr>
         <td>OrderHeader</td>
@@ -441,342 +454,344 @@ OrderLine(
     </tbody>
   </table>
 
-<h3>3.5 STORAGE ANALYSIS</h3>
+  <h3>3.5 STORAGE ANALYSIS</h3>
 
-Storage analysis was carried out for SQLite3 database. Following assumptions were made (some of the values were suggested by AI - proper SQ Lite documentation was not found):
-<ul>
-  <li> 
-    8 bytes per INTEGER column
-  </li>
-  <li>
-    8 bytes overhead per row (This was suggested by AI - could not find a value in SQLite documentation)
-  </li>
-  <li>
-    For customer name, e-mail and address fields the average length (in bytes) was taken for one data generation instance.
-    With each new run of the data generation process, these average lengths may vary slightly (and the DB storage will 
-    also vary).
-  </li>
+  Storage analysis was carried out for SQLite3 database. Following assumptions were made (some of the values were
+  suggested by AI - proper SQ Lite documentation was not found):
+  <ul>
+    <li>
+      8 bytes per INTEGER column
+    </li>
+    <li>
+      8 bytes overhead per row (This was suggested by AI - could not find a value in SQLite documentation)
+    </li>
+    <li>
+      For customer name, e-mail and address fields the average length (in bytes) was taken for one data generation
+      instance.
+      With each new run of the data generation process, these average lengths may vary slightly (and the DB storage will
+      also vary).
+    </li>
 
-</ul>
+  </ul>
 
 
-  <!-- Table 1: Business DB — Per-Column Analysis -->
-<table>
-  <thead>
-    <tr>
-      <th>Table</th>
-      <th>Column</th>
-      <th>Type</th>
-      <th>Bytes/row</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td rowspan="5">Supplier</td>
-      <td>SupplierId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>SupplierName</td>
-      <td>TEXT</td>
-      <td>~22</td>
-    </tr>
-    <tr>
-      <td>City</td>
-      <td>TEXT</td>
-      <td>~14</td>
-    </tr>
-    <tr>
-      <td>Country</td>
-      <td>TEXT</td>
-      <td>~12</td>
-    </tr>
-    <tr>
-      <td>Row overhead</td>
-      <td></td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td><strong>Supplier total</strong></td>
-      <td></td>
-      <td>~64 B/row</td>
-      <td>20 rows = <strong>1.3 KB</strong></td>
-    </tr>
-    <tr>
-      <td rowspan="4">Category</td>
-      <td>CategoryId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>CategoryName</td>
-      <td>TEXT</td>
-      <td>~17</td>
-    </tr>
-    <tr>
-      <td>ParentCategoryId</td>
-      <td>INTEGER (nullable)</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Row overhead</td>
-      <td></td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td><strong>Category total</strong></td>
-      <td></td>
-      <td>~41 B/row</td>
-      <td>15 rows = <strong>0.6 KB</strong></td>
-    </tr>
-    <tr>
-      <td rowspan="8">Product</td>
-      <td>ProductId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>ProductName</td>
-      <td>TEXT</td>
-      <td>~22</td>
-    </tr>
-    <tr>
-      <td>ListPrice</td>
-      <td>REAL</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Colour</td>
-      <td>TEXT</td>
-      <td>~10</td>
-    </tr>
-    <tr>
-      <td>Material</td>
-      <td>TEXT</td>
-      <td>~12</td>
-    </tr>
-    <tr>
-      <td>CategoryId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>SupplierId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Row overhead</td>
-      <td></td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td><strong>Product total</strong></td>
-      <td></td>
-      <td>~84 B/row</td>
-      <td>120 rows = <strong>10 KB</strong></td>
-    </tr>
-    <tr>
-      <td rowspan="10">Customer</td>
-      <td>CustomerId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>FirstName</td>
-      <td>TEXT</td>
-      <td>~10</td>
-    </tr>
-    <tr>
-      <td>LastName</td>
-      <td>TEXT</td>
-      <td>~12</td>
-    </tr>
-    <tr>
-      <td>Email</td>
-      <td>TEXT</td>
-      <td>~27</td>
-    </tr>
-    <tr>
-      <td>StreetAddress</td>
-      <td>TEXT</td>
-      <td>~32</td>
-    </tr>
-    <tr>
-      <td>PostalCode</td>
-      <td>TEXT</td>
-      <td>7</td>
-    </tr>
-    <tr>
-      <td>City</td>
-      <td>TEXT</td>
-      <td>~14</td>
-    </tr>
-    <tr>
-      <td>FederalState</td>
-      <td>TEXT</td>
-      <td>~17</td>
-    </tr>
-    <tr>
-      <td>CustomerSince</td>
-      <td>TEXT</td>
-      <td>12</td>
-    </tr>
-    <tr>
-      <td>Row overhead</td>
-      <td></td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td><strong>Customer total</strong></td>
-      <td></td>
-      <td>~147 B/row</td>
-      <td>5,000 rows = <strong>720 KB</strong></td>
-    </tr>
-    <tr>
-      <td rowspan="6">OrderHeader</td>
-      <td>OrderId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>OrderDate</td>
-      <td>TEXT</td>
-      <td>12</td>
-    </tr>
-    <tr>
-      <td>PaymentMethod</td>
-      <td>TEXT</td>
-      <td>~14</td>
-    </tr>
-    <tr>
-      <td>ShippingCost</td>
-      <td>REAL</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>CustomerId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Row overhead</td>
-      <td></td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td><strong>OrderHeader total</strong></td>
-      <td></td>
-      <td>~58 B/row</td>
-      <td>30,000 rows = <strong>1.7 MB</strong></td>
-    </tr>
-    <tr>
-      <td rowspan="7">OrderLine</td>
-      <td>OrderLineId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Quantity</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>UnitPrice</td>
-      <td>REAL</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Discount</td>
-      <td>REAL</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>OrderId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>ProductId</td>
-      <td>INTEGER</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Row overhead</td>
-      <td></td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td><strong>OrderLine total</strong></td>
-      <td></td>
-      <td>~56 B/row</td>
-      <td>85,500 rows = <strong>4.7 MB</strong></td>
-    </tr>
-  </tbody>
-</table>
+  <!-- Table 1: Business DB - Per-Column Analysis -->
+  <table>
+    <thead>
+      <tr>
+        <th>Table</th>
+        <th>Column</th>
+        <th>Type</th>
+        <th>Bytes/row</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="5">Supplier</td>
+        <td>SupplierId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>SupplierName</td>
+        <td>TEXT</td>
+        <td>~22</td>
+      </tr>
+      <tr>
+        <td>City</td>
+        <td>TEXT</td>
+        <td>~14</td>
+      </tr>
+      <tr>
+        <td>Country</td>
+        <td>TEXT</td>
+        <td>~12</td>
+      </tr>
+      <tr>
+        <td>Row overhead</td>
+        <td></td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>Supplier total</strong></td>
+        <td></td>
+        <td>~64 B/row</td>
+        <td>20 rows = <strong>1.3 KB</strong></td>
+      </tr>
+      <tr>
+        <td rowspan="4">Category</td>
+        <td>CategoryId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>CategoryName</td>
+        <td>TEXT</td>
+        <td>~17</td>
+      </tr>
+      <tr>
+        <td>ParentCategoryId</td>
+        <td>INTEGER (nullable)</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>Row overhead</td>
+        <td></td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>Category total</strong></td>
+        <td></td>
+        <td>~41 B/row</td>
+        <td>15 rows = <strong>0.6 KB</strong></td>
+      </tr>
+      <tr>
+        <td rowspan="8">Product</td>
+        <td>ProductId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>ProductName</td>
+        <td>TEXT</td>
+        <td>~22</td>
+      </tr>
+      <tr>
+        <td>ListPrice</td>
+        <td>REAL</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>Colour</td>
+        <td>TEXT</td>
+        <td>~10</td>
+      </tr>
+      <tr>
+        <td>Material</td>
+        <td>TEXT</td>
+        <td>~12</td>
+      </tr>
+      <tr>
+        <td>CategoryId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>SupplierId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>Row overhead</td>
+        <td></td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>Product total</strong></td>
+        <td></td>
+        <td>~84 B/row</td>
+        <td>120 rows = <strong>10 KB</strong></td>
+      </tr>
+      <tr>
+        <td rowspan="10">Customer</td>
+        <td>CustomerId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>FirstName</td>
+        <td>TEXT</td>
+        <td>~10</td>
+      </tr>
+      <tr>
+        <td>LastName</td>
+        <td>TEXT</td>
+        <td>~12</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>TEXT</td>
+        <td>~27</td>
+      </tr>
+      <tr>
+        <td>StreetAddress</td>
+        <td>TEXT</td>
+        <td>~32</td>
+      </tr>
+      <tr>
+        <td>PostalCode</td>
+        <td>TEXT</td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>City</td>
+        <td>TEXT</td>
+        <td>~14</td>
+      </tr>
+      <tr>
+        <td>FederalState</td>
+        <td>TEXT</td>
+        <td>~17</td>
+      </tr>
+      <tr>
+        <td>CustomerSince</td>
+        <td>TEXT</td>
+        <td>12</td>
+      </tr>
+      <tr>
+        <td>Row overhead</td>
+        <td></td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>Customer total</strong></td>
+        <td></td>
+        <td>~147 B/row</td>
+        <td>5,000 rows = <strong>720 KB</strong></td>
+      </tr>
+      <tr>
+        <td rowspan="6">OrderHeader</td>
+        <td>OrderId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>OrderDate</td>
+        <td>TEXT</td>
+        <td>12</td>
+      </tr>
+      <tr>
+        <td>PaymentMethod</td>
+        <td>TEXT</td>
+        <td>~14</td>
+      </tr>
+      <tr>
+        <td>ShippingCost</td>
+        <td>REAL</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>CustomerId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>Row overhead</td>
+        <td></td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>OrderHeader total</strong></td>
+        <td></td>
+        <td>~58 B/row</td>
+        <td>30,000 rows = <strong>1.7 MB</strong></td>
+      </tr>
+      <tr>
+        <td rowspan="7">OrderLine</td>
+        <td>OrderLineId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>Quantity</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>UnitPrice</td>
+        <td>REAL</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>Discount</td>
+        <td>REAL</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>OrderId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>ProductId</td>
+        <td>INTEGER</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>Row overhead</td>
+        <td></td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>OrderLine total</strong></td>
+        <td></td>
+        <td>~56 B/row</td>
+        <td>85,500 rows = <strong>4.7 MB</strong></td>
+      </tr>
+    </tbody>
+  </table>
 
-<!-- Table 2: Business DB Summary -->
-<table>
-  <thead>
-    <tr>
-      <th>Table</th>
-      <th>Rows</th>
-      <th>Avg row (bytes)</th>
-      <th>Estimated</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Supplier</td>
-      <td>20</td>
-      <td>64</td>
-      <td>1.3 KB</td>
-    </tr>
-    <tr>
-      <td>Category</td>
-      <td>15</td>
-      <td>41</td>
-      <td>0.6 KB</td>
-    </tr>
-    <tr>
-      <td>Product</td>
-      <td>120</td>
-      <td>84</td>
-      <td>10 KB</td>
-    </tr>
-    <tr>
-      <td>Customer</td>
-      <td>5,000</td>
-      <td>147</td>
-      <td>720 KB</td>
-    </tr>
-    <tr>
-      <td>OrderHeader</td>
-      <td>30,000</td>
-      <td>58</td>
-      <td>1.7 MB</td>
-    </tr>
-    <tr>
-      <td>OrderLine</td>
-      <td>85,500</td>
-      <td>56</td>
-      <td>4.7 MB</td>
-    </tr>
-    <tr>
-      <td><strong>Subtotal</strong></td>
-      <td></td>
-      <td></td>
-      <td><strong>~7.1 MB</strong></td>
-    </tr>
-  </tbody>
-</table>
+  <!-- Table 2: Business DB Summary -->
+  <table>
+    <thead>
+      <tr>
+        <th>Table</th>
+        <th>Rows</th>
+        <th>Avg row (bytes)</th>
+        <th>Estimated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Supplier</td>
+        <td>20</td>
+        <td>64</td>
+        <td>1.3 KB</td>
+      </tr>
+      <tr>
+        <td>Category</td>
+        <td>15</td>
+        <td>41</td>
+        <td>0.6 KB</td>
+      </tr>
+      <tr>
+        <td>Product</td>
+        <td>120</td>
+        <td>84</td>
+        <td>10 KB</td>
+      </tr>
+      <tr>
+        <td>Customer</td>
+        <td>5,000</td>
+        <td>147</td>
+        <td>720 KB</td>
+      </tr>
+      <tr>
+        <td>OrderHeader</td>
+        <td>30,000</td>
+        <td>58</td>
+        <td>1.7 MB</td>
+      </tr>
+      <tr>
+        <td>OrderLine</td>
+        <td>85,500</td>
+        <td>56</td>
+        <td>4.7 MB</td>
+      </tr>
+      <tr>
+        <td><strong>Subtotal</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>~7.1 MB</strong></td>
+      </tr>
+    </tbody>
+  </table>
 
   <div class="page-break"></div>
 
   <!-- 4. CORE ANALYTICAL QUESTIONS -->
   <h2>4. CORE ANALYTICAL QUESTIONS</h2>
-  <p>The dimensional warehouse is specifically designed to evaluate two core business queries alongside supplemental extensions:</p>
+  <p>The dimensional warehouse is specifically designed to evaluate the following core business questions:</p>
 
   <table>
     <thead>
@@ -787,131 +802,272 @@ Storage analysis was carried out for SQLite3 database. Following assumptions wer
       </tr>
     </thead>
     <tbody>
-    <tr>
-      <td><strong>Q1<br>Revenue and Discount by category over time</strong></td>
-      <td>How does net revenue as well as Discounts develop per top-level product category and Quarter?</td>
-      <td>DIM_Date, DIM_Product</td>
-    </tr>
-    <tr>
-      <td><strong>Q2<br>Top 10 PLZ zones by net revenue</strong></td>
-      <td>Which 10 postal code zones (first 2 digits of PLZ) generate the maximum net revenue?</td>
-      <td>DIM_Customer</td>
-    </tr>
-    <tr>
-      <td><strong>Q3<br>Top 2 categories per federal state</strong></td>
-      <td>What are the two highest net revenue generating product categories per federal state?</td>
-      <td>DIM_Customer, DIM_Product</td>
-    </tr>
-    <tr>
-      <td><strong>Q4<br>Peak order volume by weekday</strong></td>
-      <td>Which weekdays see the highest order volume across the two-year period?</td>
-      <td>DIM_Date</td>
-    </tr>
-    <tr>
-      <td><strong>Q5<br>Peak calendar weeks (Top 10)</strong></td>
-      <td>Which calendar weeks see the highest order volume?</td>
-      <td>DIM_Date</td>
-    </tr>
-    <tr>
-      <td><strong>Q6<br>Revenue by price segment</strong></td>
-      <td>How does revenue compare across Budget / Mid-range / Premium product segments?</td>
-      <td>DIM_Product</td>
-    </tr>
-    <tr>
-      <td><strong>Q7<br>Federal state revenue growth</strong></td>
-      <td>Which federal states show the strongest revenue growth from 2024 to 2025?</td>
-      <td>DIM_Customer, DIM_Date</td>
-    </tr>
-    <tr>
-      <td><strong>Q8<br>Top 3 suppliers per quarter</strong></td>
-      <td>Which 3 suppliers generate the most net revenue per Quarter?</td>
-      <td>DIM_Supplier, DIM_Date</td>
-    </tr>
-    <tr>
-      <td><strong>Q9<br>Supplier Discount behaviour</strong></td>
-      <td>Which suppliers' products carry the highest average Discount rate, and does that correlate with order volume?</td>
-      <td>DIM_Supplier</td>
-    </tr>
-  </tbody>
+      <tr>
+        <td><strong>Q1<br>Revenue and Discount by category over time</strong></td>
+        <td>How does net revenue as well as Discounts develop per top-level product category and Quarter?</td>
+        <td>DIM_Date, DIM_Product</td>
+      </tr>
+      <tr>
+        <td><strong>Q2<br>Top 10 PLZ zones by net revenue</strong></td>
+        <td>Which 10 postal code zones (first 2 digits of PLZ) generate the maximum net revenue?</td>
+        <td>DIM_Customer</td>
+      </tr>
+      <tr>
+        <td><strong>Q3<br>Top 2 product categories per federal state by net revenue</strong></td>
+        <td>What are the two highest net revenue generating product categories per federal state?</td>
+        <td>DIM_Customer, DIM_Product</td>
+      </tr>
+      <tr>
+        <td><strong>Q4<br>Peak order volume by weekday</strong></td>
+        <td>Which weekdays see the highest order volume across the two-year period?</td>
+        <td>DIM_Date</td>
+      </tr>
+      <tr>
+        <td><strong>Q5<br>Peak calendar weeks (Top 10)</strong></td>
+        <td>Which calendar weeks see the highest order volume?</td>
+        <td>DIM_Date</td>
+      </tr>
+      <tr>
+        <td><strong>Q6<br>Revenue by price segment</strong></td>
+        <td>How does revenue compare across Budget / Mid-range / Premium product segments?</td>
+        <td>DIM_Product</td>
+      </tr>
+      <tr>
+        <td><strong>Q7<br>Federal state revenue growth: Year 1 (2024) vs Year 2 (2025)</strong></td>
+        <td>Which federal states show the strongest revenue growth from 2024 to 2025?</td>
+        <td>DIM_Customer, DIM_Date</td>
+      </tr>
+      <tr>
+        <td><strong>Q8<br>Top 3 suppliers per quarter</strong></td>
+        <td>Which 3 suppliers generate the most net revenue per Quarter?</td>
+        <td>DIM_Supplier, DIM_Date</td>
+      </tr>
+      <tr>
+        <td><strong>Q9<br>Supplier Discount behaviour vs. order volume</strong></td>
+        <td>Which suppliers' products carry the highest average Discount rate, and does that correlate with order
+          volume?</td>
+        <td>DIM_Supplier</td>
+      </tr>
+    </tbody>
   </table>
 
   <!-- 5. TARGET WAREHOUSE SCHEMA -->
   <h2>5. TARGET WAREHOUSE SCHEMA</h2>
-  <p>A star schema layout where the grain of the fact table is <strong>one row per order line</strong>.</p>
+  <p>A star schema layout was designed where the grain of the fact table is <em>one row per order line</em>. The mER and the star schema are presented below.</p>
 
   <!-- INSERTING mER-DIAGRAM IMAGE -->
   <div class="diagram-container">
     <img src="mER_Diagram_DWH_prsntn.png" alt="mER-Diagram: Data Warehouse">
-    <div class="diagram-caption">Figure 1.1 — mER-Diagram: Data Warehouse</div>
+    <div class="diagram-caption">Figure 2 - mER-Diagram: Data Warehouse</div>
   </div>
 
   <!-- INSERTING Star Schema IMAGE -->
   <div class="diagram-container">
     <img src="Star_Schema_DWH_prsntn.png" alt="Star Schema: Data Warehouse">
-    <div class="diagram-caption">Figure 1.2 — Star Schema: Data Warehouse</div>
+    <div class="diagram-caption">Figure 3 - Star Schema: Data Warehouse</div>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th style="width: 20%;">Table</th>
-        <th style="width: 15%;">Role</th>
-        <th style="width: 65%;">Content & Transformations</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>FACT_Sales</strong></td>
-        <td>Fact Table</td>
-        <td>Quantity, GrossAmount, DiscountAmount, NetAmount, ShippingCost. Uses OrderId as a degenerate dimension. (~85,500 rows)</td>
-      </tr>
-      <tr>
-        <td><strong>DIM_Date</strong></td>
-        <td>Dimension (SCD 0)</td>
-        <td>Day, month, month name, quarter, year, weekday, calendar week. Derived from order date boundaries. (731 rows)</td>
-      </tr>
-      <tr>
-        <td><strong>DIM_Customer</strong></td>
-        <td>Dimension (SCD 2)</td>
-        <td>Name, address, postal code, city, state, plus derived <code>PlzRegion</code> (1 digit) and <code>PlzZone</code> (2 digits). Tracks history with <code>ValidFrom</code>, <code>ValidTo</code>, <code>IsCurrent</code>. (5,000 rows)</td>
-      </tr>
-      <tr>
-        <td><strong>DIM_Product</strong></td>
-        <td>Dimension (SCD 1)</td>
-        <td>Product name, colour, material, list price. Category hierarchy is flattened into top-level and sub-categories. Overwrites changes. (120 rows)</td>
-      </tr>
-      <tr>
-        <td><strong>DIM_Supplier</strong></td>
-        <td>Dimension (SCD 0)</td>
-        <td>Supplier name, city, country. Immutable baseline reference. (20 rows)</td>
-      </tr>
-    </tbody>
-  </table>
 
   <!-- 6. ETL PROCESS & TRANSFORMATION LOGIC -->
   <h2>6. ETL PROCESS & TRANSFORMATION LOGIC</h2>
-  <p>A 3-stage Python ETL pipeline extracts data from the Business DB, executes transformations, and loads the target star schema:</p>
+
+ 
+  <h3>6.1 BRIEF CODE OVERVIEW</h3>
+
+
   <ul>
-    <li><strong>Surrogate Keys:</strong> Sequence-based primary keys (<code>*Sk</code>) for all dimensions, completely decoupled from source keys (<code>*Id</code>).</li>
-    <li><strong>Hierarchy Flattening:</strong> Unrolls two-level normalized category hierarchies directly into <code>DIM_Product</code>.</li>
-    <li><strong>Measure Calculations:</strong> Pre-computes <code>GrossAmount</code>, <code>DiscountAmount</code>, and <code>NetAmount</code> per fact row.</li>
-    <li><strong>Idempotent Execution:</strong> Executed via staged scripts (<code>RAW_</code> staging &rarr; <code>FULL_</code> staging &rarr; DWH tables).</li>
+    <li>Implemented using python 3.11+, and SQLite3 </li>
+    <li>The code is organized in two directories - <code>sql/</code> and <code>python/</code></li>
+    <li><code>sql/</code> contains all SQL scripts for creating and transforming tables in the data warehouse. These scripts 
+      are executed from python code during the data generation and etl process.
+      <ul>
+        <li>
+          The scripts for RAW_ to FULL_ table transformations are included in <code>sql/transform/</code>.
+        </li>
+        <li>
+          The scripts for analytics questions are included in <code>sql/analytics/</code>.
+        </li>
+      </ul>
+    </li>
+    <li><code>python/</code> contains Python scripts for orchestrating the ETL process. 
+      <ul>
+        <li><code>python/data_gen/</code> contains scripts to generate and import business data</li>
+        <li><code>python/etl/</code> contains scripts to orchestrate the ETL process (See details below)</li>
+        <li><code>python/run.py</code> is a menu driven orchestrator script. The script offers menu choices to generate
+        the business DB, run the ETL process, and execute analytics queries. Additionally, it provides an option to 
+        generate new order and customer data so as to test the SCD implementation.</li>
+      </ul>
+    </li>
+
   </ul>
 
-  <!-- 7. RELATIONAL SCHEMA REFERENCE -->
-  <h2>7. RELATIONAL SCHEMA REFERENCE (DDL STRUCTURE)</h2>
-  <pre>
-Supplier(SupplierId PK, SupplierName, City, Country)
-Category(CategoryId PK, CategoryName, ParentCategoryId FK -> Category)
-Product(ProductId PK, ProductName, ListPrice, Colour, Material, CategoryId FK, SupplierId FK)
-Customer(CustomerId PK, FirstName, LastName, Email, StreetAddress, PostalCode, City, FederalState, CustomerSince)
-OrderHeader(OrderId PK, OrderDate, PaymentMethod, ShippingCost, CustomerId FK)
-OrderLine(OrderLineId PK, Quantity, UnitPrice, Discount, OrderId FK, ProductId FK)
-  </pre>
+  <h3>6.2 ETL PROCESS</h3>
+
+  <!-- INSERTING ETL Process -->
+  <div class="diagram-container">
+    <img src="ETL_Pro_Staging_Area.png" alt="ETL Process">
+    <div class="diagram-caption">Figure 4 - ETL Process</div>
+  </div>
+
+  <ul>
+    <li>
+      <em>run_all_etl</em> (entire data pipeline)
+
+      <ul>
+        <li>
+          <em>Stage 1: run_etl_extract()</em>
+          Copies business DB to <code>RAW_</code> tables in the data warehouse
+
+          <ul>
+            <li>
+              <em>apply_dwh_ddl</em>
+              Creates <code>RAW_</code>, <code>FULL_</code>, <code>DIM_</code>,
+              <code>FACT_</code> tables if they do not exist
+              (<code>sql/02_create_dwh.sql</code>)
+            </li>
+
+            <li>
+              <em>extract_to_raw</em>
+              <ul>
+                <li>
+                  Iterates over <code>_RAW_MAP</code>
+                  (Business DB to <code>RAW_</code> table name mapping,
+                  e.g. <code>Customer</code> → <code>RAW_BusinessDB_Customer</code>)
+                </li>
+                <li>
+                  For each <code>RAW_</code> table, deletes data and copies
+                  from the corresponding Business DB table.
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <em>Stage 2: run_etl_transform()</em>
+          → Transforms <code>RAW_</code> tables into <code>FULL_</code> tables
+
+          <ul>
+            <li>
+              Executes the 3 transformation scripts for the 3
+              <code>FULL_</code> tables (from <code>sql/transform/</code>)
+            </li>
+
+            <li>
+              Each script performs the following:
+              Deletes existing table data and copies data from
+              <code>RAW_</code> tables while transforming it.
+
+              <ul>
+                <li>
+                  For customers → Additional <em>PlzZone</em> and
+                  <em>PlzRegion</em> are added
+                </li>
+
+                <li>
+                  For products → Category name and top category names are added
+                  by joining with the Category table
+                  (flattening of category hierarchy)
+                </li>
+
+                <li>
+                  For sales → Full sales table is created by joining order header,
+                  order line, and product data
+                  (i.e. each line corresponds to an order line)
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <em>Stage 3: Update dimension and fact tables</em>
+
+          <ul>
+            <li>
+              <em>run_etl_dim_date()</em>
+              <ul>
+                <li>
+                  <code>DIM_Date</code> stores all unique order dates with a
+                  surrogate key in the form <code>&lt;&lt;YYYYMMDD&gt;&gt;</code>,
+                  i.e. by replacing the <em>-</em> in the original date
+                  with an empty string.
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <em>run_etl_dim_supplier()</em>
+              <ul>
+                <li>
+                  Inserts new supplier IDs with a surrogate key into
+                  <code>DIM_Supplier</code> if new suppliers are added to the
+                  business DB.
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <em>run_etl_dim_product()</em>
+              <ul>
+                <li>
+                  Inserts a new product ID with a surrogate key into
+                  <code>DIM_Product</code> if new products are added to the
+                  business DB.
+                </li>
+
+                <li>
+                  If any attribute of a product is updated in the business DB,
+                  the corresponding record in <code>DIM_Product</code> is also
+                  updated (SCD 1 approach).
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <em>run_etl_dim_customer()</em>
+              <ul>
+                <li>
+                  Inserts a new customer ID with a surrogate key into
+                  <code>DIM_Customer</code> if new customers are added to the
+                  business DB.
+                </li>
+
+                <li>
+                  If the address of a customer is changed, the corresponding
+                  record in <code>DIM_Customer</code> is updated by changing <code>IsCurrent</code> to 0 and 
+                  inserting a new record with the updated address (<code>IsCurrent = 1</code>)
+                  (SCD 2 approach). See the SCD logic table below for details.
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <em>run_etl_fact_sales()</em>
+              <ul>
+                <li>
+                  Inserts new sales records into <code>FACT_Sales</code> if new
+                  sales are added to the business DB.
+                </li>
+
+                <li>
+                  For customers, the current surrogate key from
+                  <code>DIM_Customer</code> is used to maintain the relationship
+                  between sales and customers.
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
 
 
 
-    <!-- Table 3a: SCD Analysis -->
+  <h2>7. SCD LOGIC</h2>
+
+  <!-- Table 3a: SCD Analysis -->
   <table>
     <thead>
       <tr>
@@ -925,13 +1081,13 @@ OrderLine(OrderLineId PK, Quantity, UnitPrice, Discount, OrderId FK, ProductId F
       <tr>
         <td>DIM_Date</td>
         <td>0</td>
-        <td>—</td>
+        <td>-</td>
         <td>Dates immutable</td>
       </tr>
       <tr>
         <td>DIM_Supplier</td>
         <td>0</td>
-        <td>—</td>
+        <td>-</td>
         <td>Supplier identity stable</td>
       </tr>
       <tr>
@@ -944,10 +1100,12 @@ OrderLine(OrderLineId PK, Quantity, UnitPrice, Discount, OrderId FK, ProductId F
         <td>DIM_Customer</td>
         <td><strong>2</strong> (expire + insert)</td>
         <td>PostalCode, StreetAddress, City, FederalState, PlzRegion, PlzZone</td>
-        <td>Relocation changes region → historical order assignment matters for Q2/Q6</td>
+        <td>Relocation may change PLZ and street address. Historical order assignment matters for analytics.</td>
       </tr>
     </tbody>
   </table>
+
+  The following attributes are used to track changes in customer address:
 
   <!-- Table 3b: SCD 2 tracking columns (DIM_Customer) -->
   <table>
@@ -978,9 +1136,10 @@ OrderLine(OrderLineId PK, Quantity, UnitPrice, Discount, OrderId FK, ProductId F
   </table>
 
   <div class="doc-footer">
-    <span>Project Specification — Online Möbelhandel</span>
+    <span>Project Specification - Online Möbelhandel</span>
     <span>Page 1 of 2</span>
   </div>
 
 </body>
+
 </html>
